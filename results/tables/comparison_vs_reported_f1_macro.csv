@@ -1,0 +1,5 @@
+dataset,model,variant,reported,ours,abs_diff,rel_diff,status,n_runs
+instagram,gcn,baseline,47.88±0.96,51.91±0.00,+4.03,+8.4%,DEVIATION,1
+instagram,gcn,text,47.29±0.01,47.62±0.00,+0.33,+0.7%,MATCH,1
+reddit,gcn,baseline,45.46±0.01,49.58±0.00,+4.12,+9.1%,DEVIATION,1
+reddit,gcn,text,45.84±0.36,48.32±0.00,+2.48,+5.4%,DEVIATION,1

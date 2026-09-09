@@ -1,0 +1,470 @@
+[
+  {
+    "experiment_id": "a3ec69e79558",
+    "timestamp": "2026-09-09T09:27:25+00:00",
+    "git_commit": "6cba573ce1c733925f872bc5016cc73ab05260aa-dirty",
+    "schema_version": "results-v1",
+    "dataset": "instagram",
+    "model": "gcn",
+    "variant": "baseline",
+    "impl_source": "flag_bundled",
+    "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+    "seed": 0,
+    "initialization": 0,
+    "device": "cpu",
+    "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "framework": "torch 2.3.1+cpu",
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "argmax",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "none",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "none_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "fa7cbbf35dca07cd7e7afa9b59900fa261e9f5d64c2453eae672d79e2515cff8",
+    "prompt_version": "",
+    "llm_model": "",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.5,
+    "threshold_policy": "argmax",
+    "validation_auc": 0.49939404432132967,
+    "validation_f1_macro": 0.5262508255334654,
+    "test_auc": 0.535827366770034,
+    "test_f1_macro": 0.5190544582076193,
+    "test_precision_fraud": 0.12439418416801293,
+    "test_recall_fraud": 0.13321799307958476,
+    "test_f1_fraud": 0.1286549707602339,
+    "test_accuracy": 0.8359547027367097,
+    "test_ks": 0.07231833910034602,
+    "test_ece": 0.15936098040364427,
+    "training_time": 66.62,
+    "inference_time": 28.28,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cpu",
+      "feature_source": "stored graph features (4096d). The paper calls these 'shallow embeddings'; measured to be 4096-d and Llama-2-derived - see research/dataset_notes.md section 7.",
+      "split_sizes": {
+        "train": 794,
+        "val": 794,
+        "test": 6358
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 8.53628,
+          "val_auc": 0.52051,
+          "val_f1_macro": 0.50288
+        },
+        {
+          "epoch": 2,
+          "train_loss": 2.93981,
+          "val_auc": 0.53027,
+          "val_f1_macro": 0.48664
+        },
+        {
+          "epoch": 3,
+          "train_loss": 3.31299,
+          "val_auc": 0.50692,
+          "val_f1_macro": 0.5058
+        },
+        {
+          "epoch": 4,
+          "train_loss": 2.92409,
+          "val_auc": 0.49939,
+          "val_f1_macro": 0.52625
+        },
+        {
+          "epoch": 5,
+          "train_loss": 2.09308,
+          "val_auc": 0.5297,
+          "val_f1_macro": 0.48869
+        }
+      ],
+      "test_label_distribution": {
+        "0": 5780,
+        "1": 578
+      }
+    }
+  },
+  {
+    "experiment_id": "017af1c102ec",
+    "timestamp": "2026-09-09T09:29:07+00:00",
+    "git_commit": "6cba573ce1c733925f872bc5016cc73ab05260aa-dirty",
+    "schema_version": "results-v1",
+    "dataset": "instagram",
+    "model": "gcn",
+    "variant": "text",
+    "impl_source": "flag_bundled",
+    "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+    "seed": 0,
+    "initialization": 0,
+    "device": "cpu",
+    "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "framework": "torch 2.3.1+cpu",
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "argmax",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "none",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "none_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "fa7cbbf35dca07cd7e7afa9b59900fa261e9f5d64c2453eae672d79e2515cff8",
+    "prompt_version": "",
+    "llm_model": "",
+    "llm_finetuned": false,
+    "best_epoch": 1,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.5,
+    "threshold_policy": "argmax",
+    "validation_auc": 0.6755924899969221,
+    "validation_f1_macro": 0.4762532981530343,
+    "test_auc": 0.6034054309694568,
+    "test_f1_macro": 0.47619047619047616,
+    "test_precision_fraud": 0.0,
+    "test_recall_fraud": 0.0,
+    "test_f1_fraud": 0.0,
+    "test_accuracy": 0.9090909090909091,
+    "test_ks": 0.1596885813148789,
+    "test_ece": 0.013532887408190534,
+    "training_time": 39.35,
+    "inference_time": 20.08,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cpu",
+      "feature_source": "Sentence-BERT of raw node text (384d)",
+      "split_sizes": {
+        "train": 794,
+        "val": 794,
+        "test": 6358
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33895,
+          "val_auc": 0.67559,
+          "val_f1_macro": 0.47625
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.28071,
+          "val_auc": 0.65843,
+          "val_f1_macro": 0.47625
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27484,
+          "val_auc": 0.6356,
+          "val_f1_macro": 0.47625
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26515,
+          "val_auc": 0.62208,
+          "val_f1_macro": 0.47591
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24247,
+          "val_auc": 0.60188,
+          "val_f1_macro": 0.47591
+        }
+      ],
+      "test_label_distribution": {
+        "0": 5780,
+        "1": 578
+      }
+    }
+  },
+  {
+    "experiment_id": "11463f609fa5",
+    "timestamp": "2026-09-09T09:22:54+00:00",
+    "git_commit": "6cba573ce1c733925f872bc5016cc73ab05260aa-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gcn",
+    "variant": "baseline",
+    "impl_source": "flag_bundled",
+    "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+    "seed": 0,
+    "initialization": 0,
+    "device": "cpu",
+    "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "framework": "torch 2.3.1+cpu",
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "argmax",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "none",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "none_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "df3ae0eca55cdcf3cc3e91a9cf3365d5f2261b437a72dea6cf7322fa29901a0b",
+    "prompt_version": "",
+    "llm_model": "",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.5,
+    "threshold_policy": "argmax",
+    "validation_auc": 0.5920604962324154,
+    "validation_f1_macro": 0.5039712505635123,
+    "test_auc": 0.5850807971844301,
+    "test_f1_macro": 0.4957647406041175,
+    "test_precision_fraud": 0.12263936291240045,
+    "test_recall_fraud": 0.40284005979073245,
+    "test_f1_fraud": 0.18803418803418803,
+    "test_accuracy": 0.6835701175990755,
+    "test_ks": 0.14732566355004173,
+    "test_ece": 0.2894732303332497,
+    "training_time": 82.57,
+    "inference_time": 45.42,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cpu",
+      "feature_source": "stored graph features (4096d). The paper calls these 'shallow embeddings'; measured to be 4096-d and Llama-2-derived - see research/dataset_notes.md section 7.",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 6.38362,
+          "val_auc": 0.62675,
+          "val_f1_macro": 0.47607
+        },
+        {
+          "epoch": 2,
+          "train_loss": 4.65355,
+          "val_auc": 0.58385,
+          "val_f1_macro": 0.48192
+        },
+        {
+          "epoch": 3,
+          "train_loss": 4.64841,
+          "val_auc": 0.58463,
+          "val_f1_macro": 0.4479
+        },
+        {
+          "epoch": 4,
+          "train_loss": 2.7856,
+          "val_auc": 0.58384,
+          "val_f1_macro": 0.48084
+        },
+        {
+          "epoch": 5,
+          "train_loss": 2.77633,
+          "val_auc": 0.59206,
+          "val_f1_macro": 0.50397
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "0adfa33f853c",
+    "timestamp": "2026-09-09T09:25:21+00:00",
+    "git_commit": "6cba573ce1c733925f872bc5016cc73ab05260aa-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gcn",
+    "variant": "text",
+    "impl_source": "flag_bundled",
+    "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+    "seed": 0,
+    "initialization": 0,
+    "device": "cpu",
+    "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "framework": "torch 2.3.1+cpu",
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "argmax",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "none",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "none_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "df3ae0eca55cdcf3cc3e91a9cf3365d5f2261b437a72dea6cf7322fa29901a0b",
+    "prompt_version": "",
+    "llm_model": "",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.5,
+    "threshold_policy": "argmax",
+    "validation_auc": 0.600002148812423,
+    "validation_f1_macro": 0.4876689794239775,
+    "test_auc": 0.5968939154893117,
+    "test_f1_macro": 0.4831888079907288,
+    "test_precision_fraud": 0.29411764705882354,
+    "test_recall_fraud": 0.007473841554559043,
+    "test_f1_fraud": 0.014577259475218658,
+    "test_accuracy": 0.9080959825980559,
+    "test_ks": 0.14900843756640142,
+    "test_ece": 0.04205668336425465,
+    "training_time": 72.46,
+    "inference_time": 39.73,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cpu",
+      "feature_source": "Sentence-BERT of raw node text (384d)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.32947,
+          "val_auc": 0.58636,
+          "val_f1_macro": 0.47622
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.28327,
+          "val_auc": 0.60367,
+          "val_f1_macro": 0.47622
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.26524,
+          "val_auc": 0.61481,
+          "val_f1_macro": 0.48745
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25428,
+          "val_auc": 0.6,
+          "val_f1_macro": 0.48767
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24328,
+          "val_auc": 0.61146,
+          "val_f1_macro": 0.48659
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  }
+]
