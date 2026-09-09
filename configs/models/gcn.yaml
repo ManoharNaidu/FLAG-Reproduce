@@ -1,0 +1,37 @@
+# GCN. The only bundled backbone that is faithful to its published algorithm.
+
+name: gcn
+display_name: GCN
+paper: "Kipf & Welling, Semi-Supervised Classification with GCNs, ICLR 2017"
+
+implementations:
+  flag_bundled:
+    source: methods/flag/models.py:GCN
+    impl_source: flag_bundled
+    fidelity: "faithful - two GCNConv layers plus the Eq. 6 skip"
+    has_skip: true
+    reproduces: "the FLAG paper's Table 4 numbers"
+  official:
+    source: "torch_geometric.nn.GCNConv"
+    impl_source: official
+    fidelity: "PyG's canonical implementation"
+    reproduces: "GCN as published"
+    note: >
+      tkipf/gcn is TensorFlow 1.x with 119 open issues; tkipf/pygcn's own README
+      states it is "not intended for reproduction of the results". FLAG also uses
+      PyG, so PyG is both the practical and the faithful choice.
+
+capabilities:
+  homogeneous_graph: true
+  multi_relation: false
+  requires_native_text: false
+  cpu: true
+  gpu: true
+  mini_batch: true
+
+hyperparameters:
+  hidden_dim: 32        # code default; the paper says 64 (decision S-001)
+  num_layers: 2
+  dropout: 0.5
+  lr: 0.01
+  weight_decay: 0.0

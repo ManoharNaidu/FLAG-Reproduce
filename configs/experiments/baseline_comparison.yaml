@@ -1,0 +1,32 @@
+# CPU-runnable subset: everything that does not need the 9B LLM.
+#
+# This is the experiment to run first, and the only one runnable end to end
+# without renting a GPU.
+
+name: baseline_comparison
+description: "All 7 backbones, baseline and +text, on Reddit and Instagram"
+
+datasets: [reddit, instagram]
+models: [gcn, gat, geniepath, care_gnn, bwgnn, dga_gnn, pmp]
+variants: [baseline, text]
+
+runs:
+  seeds: 5
+  inits: 5
+
+training:
+  epochs: 5
+  lr: 0.01
+  hidden_dim: 32
+  dropout: 0.5
+  accumulation_steps: 10
+  early_stopping: true
+  patience: 10
+  threshold_policy: argmax
+
+sampling:
+  hops: 2
+  top_k: 10
+  similarity_threshold: 0.0
+
+device: cpu

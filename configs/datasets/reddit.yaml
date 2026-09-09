@@ -1,0 +1,54 @@
+# Reddit -- text-attributed social graph, FLAG's public benchmark.
+#
+# Provenance: FLAG [25] -> GLBench (NeurIPS'24) -> GraphAdapter (WWW'24)
+#             -> ConvoKit Subreddit Corpus (Cornell)
+# Verified against GLBench's published signature on download.
+# See research/dataset_notes.md.
+
+name: reddit
+display_name: Reddit
+
+source:
+  benchmark: GLBench
+  repo: https://github.com/NineAbyss/GLBench
+  drive_folder: https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj
+  file: reddit.pt
+  license: "GLBench packaging is MIT; Reddit content terms still apply"
+
+# Published by GLBench, and confirmed by measurement on download.
+published:
+  num_nodes: 33434
+  num_edges: 198448          # DIRECTED, before symmetrisation
+  num_classes: 2
+
+# What the shipped file actually contains (measured 2026-09-09).
+measured:
+  num_nodes: 33434
+  edge_index_stored: 302876
+  self_loops: 34404          # = num_nodes + 970 pre-existing
+  edges_excluding_self_loops: 268472
+  undirected_edges: 134236
+  feature_shape: [33434, 4096]
+  class_counts: {0: 16717, 1: 16717}   # exactly balanced
+  sha256: b655cc08693b59ff45cfa89ca06ee7c7c5c91c63716af583198ae047d3d02be3
+
+semantics:
+  node: user
+  edge: reply between users
+  text: content of the user's last three posts, ';'-separated
+  labels: ["Normal Users", "Popular Users"]
+  minority_class: 1          # 'Popular Users' -- resolved from label_name, not hardcoded
+  has_native_text: true
+  num_relations: 1
+
+# FLAG's fraud-detection transformation. REIMPLEMENTED -- the paper gives one
+# sentence and no seed, so ours cannot be theirs.
+benchmark:
+  imbalance_ratio: 10.0
+  downsample_seed: 0
+  split_ratios: [0.10, 0.10, 0.80]   # inherited from GraphAdapter/GLBench (S-003)
+  split_seed: 0
+  stratified: true
+  drop_self_loops: true      # self-loops inflate homophily and waste a top-k slot
+
+text_encoder: all-MiniLM-L6-v2

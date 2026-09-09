@@ -341,6 +341,59 @@ never sent. Effectively zero retries.
 `pmp.LILinear.reset_parameters` calls `math.sqrt` but `pmp.py` never imports `math`. `LILinear` is
 never instantiated by `LASAGE_S`, so this is dormant.
 
+### 5.12 SEMANTIC — `dga.py` drops `dim_size`, so DGA cannot aggregate sparse subgraphs
+
+**Found by running it, not by reading it** — this defect is not visible from a
+forward pass on a dense graph.
+
+`dga.py:42-43` overrides message passing as:
+
+```python
+def aggregate(self, inputs, index):
+    return torch_scatter.scatter_mean(inputs, index, dim=0)
+```
+
+PyG's `MessagePassing` inspects the signature of `aggregate` and passes only the
+parameters it declares. This one does not declare `dim_size`, so PyG cannot
+supply the node count and `scatter_mean` infers the output length from
+`max(index) + 1`.
+
+**Consequence.** The aggregated tensor is shorter than the node count whenever
+the highest-indexed node has no incoming edge, and the subsequent `out + x_self`
+either raises or broadcasts wrongly. Measured on a 3-node graph:
+
+| edges | result |
+|---|---|
+| into every node | 3 rows — correct |
+| `0 -> 1` only | `RuntimeError`: size 2 vs 3 |
+| none at all | `RuntimeError`: size 0 vs 3 |
+
+**Why it did not surface upstream.** FLAG's sampled subgraphs are undirected and
+centred, so every included node normally has at least one incoming edge and the
+inferred length happens to be right. The bug only bites on subgraphs containing a
+node with no incoming edge — in practice, **isolated nodes**.
+
+**Why it bites here.** The 1:10 downsampling strands a large fraction of nodes:
+**3,690 of 18,389 (20%) Reddit benchmark nodes are isolated**, and their 2-hop
+subgraph is a single node with no edges. Every one crashes DGA. So this defect is
+latent in the published pipeline but fatal in any reproduction that rebuilds the
+benchmark — which is unavoidable, since the authors' seed is unpublished.
+
+**Our fix: LEVEL 3** (Phase 36 — obvious repository bug, behaviour preserved),
+applied in `flagbench/adapters/backbone.py:_patch_dga_class`, **not** in upstream
+source. It re-declares `aggregate` to accept and forward `dim_size`. It must
+patch the *class* rather than an instance, because `MessagePassing.__init__`
+caches the inspected signature at construction time.
+
+**Legitimacy is tested, not asserted.**
+`tests/unit/test_dga_isolated_nodes.py::test_repair_is_identical_where_upstream_already_worked`
+runs an unpatched and a patched model with identical weights on a fully connected
+subgraph — the case upstream could already compute — and requires bit-comparable
+output. `scatter_mean` with an explicit `dim_size` only ever *extends* the result
+with empty groups, which are zero, so no previously-computable value changes.
+10/10 tests pass, including two regression tests that will fail if upstream ever
+fixes this itself.
+
 ### 5.11 MINOR — CPU is not supported anywhere
 `.cuda()` is hardcoded at ~40 call sites across all 14 files, including
 `criterion = torch.nn.CrossEntropyLoss().cuda()` at module scope and `GeniePathLazy(4096, 2, 'cuda')`.

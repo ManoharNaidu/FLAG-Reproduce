@@ -47,6 +47,98 @@ def _ensure_upstream_importable() -> None:
     sys.path.insert(0, str(COMPAT_DIR))   # compat must win
 
 
+def _repair_dga_aggregate(net) -> None:
+    """LEVEL 3 fix (Phase 36): restore `dim_size` in upstream DGA's aggregation.
+
+    THE BUG. `methods/flag/dga.py` overrides message passing as
+
+        def aggregate(self, inputs, index):
+            return torch_scatter.scatter_mean(inputs, index, dim=0)
+
+    PyG inspects the signature of `aggregate` and passes only the parameters it
+    declares. This one does not declare `dim_size`, so PyG cannot supply the node
+    count and `scatter_mean` infers the output length from `max(index) + 1`.
+
+    THE CONSEQUENCE. The aggregated tensor is shorter than the node count
+    whenever the highest-indexed node has no incoming edge, and `out + x_self`
+    then either raises or broadcasts wrongly. Measured on a 3-node graph:
+
+        edges into every node   -> 3 rows   OK
+        edge 0->1 only          -> RuntimeError (2 vs 3)
+        no edges at all         -> RuntimeError (0 vs 3)
+
+    It matters here because FLAG's 1:10 downsampling strands many nodes: 3,690
+    of 18,389 Reddit benchmark nodes (20%) are isolated, and their 2-hop
+    subgraph is a single node with no edges. Every one of those crashes DGA.
+
+    THE FIX. Re-bind `aggregate` to a version that accepts and forwards
+    `dim_size`. This is what the upstream code clearly intended -- the comment
+    says mean aggregation over neighbours -- and it changes no result that
+    upstream could already compute: where the old code produced the right length
+    it produced identical values, because `scatter_mean` with an explicit
+    `dim_size` only ever *extends* the output with empty groups, which are 0.
+
+    WHY IT PATCHES THE CLASS, NOT THE INSTANCE. `MessagePassing.__init__`
+    inspects `aggregate`'s signature once and caches which arguments to collect.
+    Rebinding the method on an already-constructed instance is therefore too
+    late -- PyG still refuses to pass `dim_size`. The patch has to land on the
+    class before any layer is built, which is what `_patch_dga_class` does; this
+    function then verifies it actually took effect.
+
+    Applied in the adapter, so `methods/flag/dga.py` stays byte-identical to
+    upstream. Covered by tests in tests/unit/test_dga_isolated_nodes.py.
+    """
+    _patch_dga_class()
+    found = [m for m in net.modules() if type(m).__name__ == "IntraConv"]
+    if not found:
+        raise RuntimeError(
+            "expected at least one IntraConv layer in DGA; upstream may have "
+            "changed. Re-check research/flag_code_audit.md."
+        )
+    for module in found:
+        params = getattr(getattr(module, "inspector", None), "params", {})
+        if "dim_size" not in params.get("aggregate", {}):
+            # The layer predates the patch, so PyG cached the old signature.
+            # Surfacing that beats returning a model that will crash later.
+            raise RuntimeError(
+                "this DGA layer was constructed before the dim_size patch was "
+                "applied, so PyG will not pass dim_size and isolated nodes will "
+                "crash. Build DGA through flagbench build_backbone()."
+            )
+
+
+_DGA_PATCHED = False
+
+
+def _patch_dga_class() -> None:
+    """Install the fixed `aggregate` on `dga.IntraConv`, once, before use.
+
+    In-memory only. `methods/flag/dga.py` on disk is never modified, and
+    `fetch_methods.sh --verify` still reports the clone as pristine.
+    """
+    global _DGA_PATCHED
+    if _DGA_PATCHED:
+        return
+
+    _ensure_upstream_importable()
+    import torch_scatter
+
+    dga = importlib.import_module("dga")
+
+    def aggregate(self, inputs, index, ptr=None, dim_size=None):
+        # The only change from upstream: dim_size is declared, so PyG supplies
+        # the true node count, and forwarded, so empty groups become zero rows
+        # instead of being dropped entirely.
+        return torch_scatter.scatter_mean(inputs, index, dim=0, dim_size=dim_size)
+
+    aggregate.__doc__ = (
+        "FLAG-bench Level-3 repair of upstream's dropped dim_size. "
+        "See flagbench.adapters.backbone._repair_dga_aggregate."
+    )
+    dga.IntraConv.aggregate = aggregate
+    _DGA_PATCHED = True
+
+
 class BaseBackbone(ABC, torch.nn.Module):
     """Common interface. Deliberately small -- every extra method is a chance to
     accidentally change a baseline's behaviour."""
@@ -138,6 +230,11 @@ class FlagBundledBackbone(BaseBackbone):
             )
 
         _ensure_upstream_importable()
+        if model_key == "dga_gnn":
+            # Must precede construction: PyG caches aggregate's signature in
+            # MessagePassing.__init__.
+            _patch_dga_class()
+
         module_name, class_name = self.spec.module.split(":")
         cls = getattr(importlib.import_module(module_name), class_name)
 
@@ -147,6 +244,9 @@ class FlagBundledBackbone(BaseBackbone):
             self.net = cls(in_dim, hidden_dim, out_dim, dropout)
         else:
             self.net = cls(in_dim, hidden_dim, out_dim)
+
+        if model_key == "dga_gnn":
+            _repair_dga_aggregate(self.net)
 
         self.to(device)
 

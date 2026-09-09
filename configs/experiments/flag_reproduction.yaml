@@ -1,0 +1,57 @@
+# Reproduce FLAG's Table 4 as closely as the released artefacts allow.
+#
+# NOT a claim of reproduction. The paper's downsampling seed is unpublished, so
+# our benchmark is a different draw; the sampler is reimplemented; and the paper
+# states no split or threshold policy. See research/reproduction_status.md §6.
+
+name: flag_reproduction
+description: "FLAG Table 4: 7 backbones x 4 variants on Reddit and Instagram"
+
+datasets: [reddit, instagram]
+models: [gcn, gat, geniepath, care_gnn, bwgnn, dga_gnn, pmp]
+variants: [baseline, text, flag, flag_finetuned]
+
+# The paper's protocol: 25 runs = 5 seeds x 5 initialisations.
+runs:
+  seeds: 5
+  inits: 5
+
+training:
+  epochs: 5
+  lr: 0.01                  # paper AND code
+  hidden_dim: 32            # code; paper says 64. dga_gnn/pmp CRASH at any other value
+  dropout: 0.5
+  weight_decay: 0.0
+  accumulation_steps: 10    # paper AND code
+  optimizer: adam
+  early_stopping: true      # paper says used; upstream never implements it
+  patience: 10
+  selection_metric: f1_macro
+  threshold_policy: argmax  # what the released code does; see below
+
+sampling:
+  hops: 2
+  top_k: 10
+  similarity_threshold: 0.0
+  # Strategy is per-variant, not global: SS is a FLAG contribution, so
+  # baseline/+text use plain 2-hop and only the FLAG variants get SS.
+
+llm:
+  model: google/gemma-2-9b-it
+  dtype: float16
+  max_new_tokens: 550
+  truncate_chars: 1200
+  text_encoder: all-MiniLM-L6-v2
+  # GPU-ONLY (decision D-003). flag/flag_finetuned will be REFUSED on CPU.
+
+metrics: [f1_macro, auc, ks, ece, precision_fraud, recall_fraud, f1_fraud]
+
+notes:
+  threshold_policy: >
+    argmax reproduces the released code. validation_swept reproduces BWGNN's
+    setup, which the paper says it follows. They differ by 2-4 F1 points, and
+    the paper states neither. Every result row records which was used.
+  hidden_dim: >
+    32 is the code default and the only value at which dga_gnn and pmp run --
+    upstream binds x32 behind `if len(x[0]) == 32`. The paper says 64, and the
+    paper's own t-SNE section says the embeddings are 32-dimensional.
