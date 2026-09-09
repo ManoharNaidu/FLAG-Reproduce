@@ -46,21 +46,53 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s",
                     datefmt="%H:%M:%S")
 
 
-def load_inputs(dataset: str, model: str):
-    graph_path = ROOT / "data" / "benchmark" / f"flag_{dataset}" / "graph.pt"
-    if not graph_path.exists():
-        raise FileNotFoundError(
-            f"{graph_path} missing. Run:\n"
-            f"  python -m scripts.preprocess.build_benchmark --dataset {dataset}"
-        )
-    payload = torch.load(graph_path, map_location="cpu")
+def load_inputs(dataset: str, model: str, source: str = "benchmark"):
+    """Graph + LM embeddings for the 1:10 benchmark or the raw GLBench graph.
+
+    `source="original"` exists to test whether a paper claim measured on the
+    full graph survives our downsampling. See research/figure3a_reproduction.md.
+    """
+    if source == "benchmark":
+        graph_path = ROOT / "data" / "benchmark" / f"flag_{dataset}" / "graph.pt"
+        if not graph_path.exists():
+            raise FileNotFoundError(
+                f"{graph_path} missing. Run:\n"
+                f"  python -m scripts.preprocess.build_benchmark --dataset {dataset}"
+            )
+        payload = torch.load(graph_path, map_location="cpu")
+        text_kind = "raw"
+    else:
+        from flagbench.datasets import glbench
+
+        sig = glbench.SIGNATURES[dataset]
+        graph_path = ROOT / "data" / "raw" / dataset / sig.filename
+        if not graph_path.exists():
+            raise FileNotFoundError(
+                f"{graph_path} missing. Run:\n"
+                f"  python -m scripts.download.glbench --dataset {dataset}"
+            )
+        data = glbench.load_raw(graph_path)
+        num_nodes = int(data.y.shape[0])
+        payload = {
+            "x": data.x,
+            "edge_index": data.edge_index,
+            "y": data.y.long().flatten(),
+            "test_mask": getattr(data, "test_mask", None),
+        }
+        if payload["test_mask"] is None:
+            payload["test_mask"] = torch.ones(num_nodes, dtype=torch.bool)
+        text_kind = "raw_original"
 
     safe_model = model.replace("/", "_")
-    emb_path = ROOT / "cache" / "embeddings" / f"{dataset}__{safe_model}__raw.pt"
+    emb_path = (
+        ROOT / "cache" / "embeddings" / f"{dataset}__{safe_model}__{text_kind}.pt"
+    )
     if not emb_path.exists():
+        suffix = "" if source == "benchmark" else f" --source {source}"
         raise FileNotFoundError(
             f"{emb_path} missing. Run:\n"
-            f"  python -m scripts.preprocess.encode_text --dataset {dataset}"
+            f"  python -m scripts.preprocess.encode_text "
+            f"--dataset {dataset}{suffix}"
         )
     embeddings = torch.load(emb_path, map_location="cpu")
 
@@ -73,10 +105,18 @@ def load_inputs(dataset: str, model: str):
     return payload, embeddings
 
 
+# NOTE on FS. The paper's FS uses *shallow* features and identifies them as
+# word2vec. Our FS uses the graph's stored `x`, which we measured to be
+# 4096-dimensional -- Llama-2's hidden size, not word2vec (see
+# research/dataset_notes.md section 7). So our FS is "similarity on the stored
+# node features", NOT the paper's shallow-feature baseline. GLBench ships no
+# word2vec features, so the paper's exact FS is not reproducible from this data.
+# Labelled accordingly rather than borrowing the paper's name for a different
+# thing.
 STRATEGY_LABELS = {
     "none": "NS  (no sampling)",
     "random": "RS  (random)",
-    "feature": "FS  (shallow-feature similarity)",
+    "feature": "FS' (stored 4096-d feature sim; NOT word2vec)",
     "semantic_nothreshold": "SS* (semantic, no threshold)",
     "semantic": "SS  (semantic + threshold)  <- proposed",
 }
@@ -84,7 +124,7 @@ STRATEGY_LABELS = {
 
 def compare_strategies(dataset: str, args) -> dict:
     """Reproduce the Figure 3(a) homophily comparison."""
-    payload, embeddings = load_inputs(dataset, args.model)
+    payload, embeddings = load_inputs(dataset, args.model, args.source)
     y = payload["y"]
     adjacency = semantic.build_adjacency(
         payload["edge_index"], int(y.shape[0]), drop_self_loops=True
@@ -96,7 +136,8 @@ def compare_strategies(dataset: str, args) -> dict:
     center_list = centers.tolist()
 
     print(f"\n{'=' * 74}")
-    print(f"{dataset.upper()} -- Figure 3(a) reproduction: subgraph homophily")
+    print(f"{dataset.upper()} [{args.source}] -- Figure 3(a) reproduction: "
+          f"subgraph homophily")
     print(f"{'=' * 74}")
     print(f"  centres: {len(center_list):,} test nodes")
     print(f"  hops={args.hops}  top_k={args.top_k}  "
@@ -147,6 +188,7 @@ def compare_strategies(dataset: str, args) -> dict:
 
     return {
         "dataset": dataset,
+        "source": args.source,
         "num_centers": len(center_list),
         "hops": args.hops,
         "top_k": args.top_k,
@@ -163,7 +205,7 @@ def compare_strategies(dataset: str, args) -> dict:
 
 
 def build_cache(dataset: str, args) -> dict:
-    payload, embeddings = load_inputs(dataset, args.model)
+    payload, embeddings = load_inputs(dataset, args.model, args.source)
     y = payload["y"]
     num_nodes = int(y.shape[0])
     adjacency = semantic.build_adjacency(
@@ -252,6 +294,9 @@ def main(argv=None) -> int:
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--compare-strategies", action="store_true",
                         help="reproduce the paper's Figure 3(a) homophily study")
+    parser.add_argument("--source", default="benchmark",
+                        choices=["benchmark", "original"],
+                        help="benchmark = the 1:10 graph; original = raw GLBench")
     parser.add_argument("--max-centers", type=int, default=2000,
                         help="cap centres in --compare-strategies (0 = all)")
     args = parser.parse_args(argv)
@@ -270,7 +315,8 @@ def main(argv=None) -> int:
             failed.append(dataset)
 
     if args.compare_strategies and out_records:
-        dest = ROOT / "results" / "tables" / "figure3a_homophily.json"
+        dest = (ROOT / "results" / "tables"
+                / f"figure3a_homophily__{args.source}.json")
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(
             json.dumps(out_records, indent=2) + "\n", encoding="utf-8"

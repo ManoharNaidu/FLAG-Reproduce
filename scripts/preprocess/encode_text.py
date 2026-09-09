@@ -44,6 +44,28 @@ def cache_path(dataset: str, model: str, text_kind: str) -> pathlib.Path:
     return ROOT / "cache" / "embeddings" / f"{dataset}__{safe_model}__{text_kind}.pt"
 
 
+def load_texts(dataset: str, source: str):
+    """Texts for either the constructed benchmark or the original raw graph.
+
+    The `original` source exists to test whether a paper claim measured on the
+    full graph survives our 1:10 downsampling -- see
+    research/figure3a_reproduction.md.
+    """
+    if source == "benchmark":
+        path = ROOT / "data" / "benchmark" / f"flag_{dataset}" / "graph.pt"
+        if not path.exists():
+            return None, path
+        return torch.load(path, map_location="cpu")["raw_texts"], path
+
+    from flagbench.datasets import glbench
+
+    sig = glbench.SIGNATURES[dataset]
+    path = ROOT / "data" / "raw" / dataset / sig.filename
+    if not path.exists():
+        return None, path
+    return glbench.load_raw(path).raw_texts, path
+
+
 def texts_fingerprint(texts: list[str]) -> str:
     """Hash the exact text corpus, so a cache entry can never be reused across a
     different benchmark build (a different downsampling seed changes the node
@@ -57,17 +79,15 @@ def texts_fingerprint(texts: list[str]) -> str:
 
 
 def encode(dataset: str, args) -> dict | None:
-    graph_path = ROOT / "data" / "benchmark" / f"flag_{dataset}" / "graph.pt"
-    print(f"\n{'=' * 74}\n{dataset.upper()}\n{'=' * 74}")
-    if not graph_path.exists():
+    banner = "=" * 74
+    print(f"\n{banner}\n{dataset.upper()} [{args.source}]\n{banner}")
+    texts, graph_path = load_texts(dataset, args.source)
+    if texts is None:
         print(f"  MISSING {graph_path}")
-        print("  Run: python -m scripts.preprocess.build_benchmark --dataset all")
         return None
-
-    payload = torch.load(graph_path, map_location="cpu")
-    texts = payload["raw_texts"]
     fingerprint = texts_fingerprint(texts)
-    out = cache_path(dataset, args.model, "raw")
+    text_kind = "raw" if args.source == "benchmark" else "raw_original"
+    out = cache_path(dataset, args.model, text_kind)
 
     if out.exists() and not args.force:
         meta_path = out.with_suffix(".json")
@@ -112,7 +132,7 @@ def encode(dataset: str, args) -> dict | None:
 
     meta = {
         "dataset": dataset,
-        "text_kind": "raw",
+        "text_kind": text_kind,
         "model": args.model,
         "dim": int(embeddings.shape[1]),
         "num_texts": len(texts),
@@ -152,6 +172,10 @@ def main(argv=None) -> int:
                         help="cpu | cuda | cuda:N | auto (default: FLAG_DEVICE or cpu)")
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--source", default="benchmark", choices=["benchmark", "original"],
+        help="benchmark = the 1:10 graph; original = the raw GLBench graph",
+    )
     args = parser.parse_args(argv)
 
     datasets = ["instagram", "reddit"] if args.dataset == "all" else [args.dataset]

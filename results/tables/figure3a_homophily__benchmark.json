@@ -1,0 +1,328 @@
+{
+  "instagram": {
+    "dataset": "instagram",
+    "source": "benchmark",
+    "num_centers": 2000,
+    "hops": 2,
+    "top_k": 10,
+    "threshold": 0.0,
+    "strategies": {
+      "none": {
+        "homophily": 0.8659007597088668,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 1394,
+            "mean": 135.202,
+            "median": 60
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 23162,
+            "mean": 1505.84
+          },
+          "isolated_centers": 373
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "none",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "none_h2_k10_t0_perhop"
+        }
+      },
+      "random": {
+        "homophily": 0.8581672484652555,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 104,
+            "mean": 40.157,
+            "median": 33
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 1118,
+            "mean": 232.612
+          },
+          "isolated_centers": 373
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "random",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "random_h2_k10_t0_perhop_s0"
+        }
+      },
+      "feature": {
+        "homophily": 0.8599232981783317,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 100,
+            "mean": 33.547,
+            "median": 25
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 1146,
+            "mean": 177.31
+          },
+          "isolated_centers": 450
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "feature",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "feature_h2_k10_t0_perhop"
+        }
+      },
+      "semantic_nothreshold": {
+        "homophily": 0.8606107250379157,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 100,
+            "mean": 37.925,
+            "median": 33
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 922,
+            "mean": 220.885
+          },
+          "isolated_centers": 373
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "semantic_nothreshold",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "semantic_nothreshold_h2_k10_t0_perhop"
+        }
+      },
+      "semantic": {
+        "homophily": 0.8606107001626179,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 100,
+            "mean": 37.9,
+            "median": 33
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 922,
+            "mean": 220.763
+          },
+          "isolated_centers": 375
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "semantic",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "semantic_h2_k10_t0_perhop"
+        }
+      }
+    },
+    "ss_advantage": {
+      "none": -0.005290059546248949,
+      "random": 0.0024434516973623754,
+      "feature": 0.0006874019842861845,
+      "semantic_nothreshold": -2.487529782158049e-08
+    },
+    "figure_3a_claim_supported": false,
+    "note": "Homophily is FLAG Eq. 5 over sampled subgraphs of test nodes. Sampler REIMPLEMENTED from Eq. 3-4; no upstream source exists. Benchmark built with our downsampling seed, not the authors'."
+  },
+  "reddit": {
+    "dataset": "reddit",
+    "source": "benchmark",
+    "num_centers": 2000,
+    "hops": 2,
+    "top_k": 10,
+    "threshold": 0.0,
+    "strategies": {
+      "none": {
+        "homophily": 0.6620490272842258,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 235,
+            "mean": 13.326,
+            "median": 7
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 1128,
+            "mean": 33.206
+          },
+          "isolated_centers": 330
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "none",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "none_h2_k10_t0_perhop"
+        }
+      },
+      "random": {
+        "homophily": 0.7014408482620035,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 75,
+            "mean": 10.729,
+            "median": 7
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 316,
+            "mean": 23.389
+          },
+          "isolated_centers": 330
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "random",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "random_h2_k10_t0_perhop_s0"
+        }
+      },
+      "feature": {
+        "homophily": 0.6962782549245823,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 77,
+            "mean": 10.723,
+            "median": 7
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 314,
+            "mean": 23.403
+          },
+          "isolated_centers": 330
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "feature",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "feature_h2_k10_t0_perhop"
+        }
+      },
+      "semantic_nothreshold": {
+        "homophily": 0.6944004791033922,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 84,
+            "mean": 10.73,
+            "median": 7
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 342,
+            "mean": 23.377
+          },
+          "isolated_centers": 330
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "semantic_nothreshold",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "semantic_nothreshold_h2_k10_t0_perhop"
+        }
+      },
+      "semantic": {
+        "homophily": 0.6952531333267542,
+        "stats": {
+          "num_subgraphs": 2000,
+          "nodes_per_subgraph": {
+            "min": 1,
+            "max": 84,
+            "mean": 9.399,
+            "median": 6
+          },
+          "edges_per_subgraph": {
+            "min": 0,
+            "max": 294,
+            "mean": 20.266
+          },
+          "isolated_centers": 398
+        },
+        "config": {
+          "hops": 2,
+          "top_k": 10,
+          "similarity_threshold": 0.0,
+          "strategy": "semantic",
+          "per_hop": true,
+          "threshold_first": true,
+          "seed": 0,
+          "include_center": true,
+          "cache_key": "semantic_h2_k10_t0_perhop"
+        }
+      }
+    },
+    "ss_advantage": {
+      "none": 0.033204106042528436,
+      "random": -0.006187714935249278,
+      "feature": -0.0010251215978280825,
+      "semantic_nothreshold": 0.0008526542233620038
+    },
+    "figure_3a_claim_supported": false,
+    "note": "Homophily is FLAG Eq. 5 over sampled subgraphs of test nodes. Sampler REIMPLEMENTED from Eq. 3-4; no upstream source exists. Benchmark built with our downsampling seed, not the authors'."
+  }
+}
