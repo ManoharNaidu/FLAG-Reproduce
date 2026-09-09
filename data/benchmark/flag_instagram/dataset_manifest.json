@@ -1,0 +1,107 @@
+{
+  "dataset_name": "instagram",
+  "stage": "benchmark",
+  "preprocessing_version": "benchmark-v1",
+  "config": {
+    "minority_class": 1,
+    "imbalance_ratio": 10.0,
+    "downsample_seed": 0,
+    "split_ratios": [
+      0.1,
+      0.1,
+      0.8
+    ],
+    "split_seed": 0,
+    "stratified": true,
+    "drop_self_loops": true,
+    "preprocessing_version": "benchmark-v1"
+  },
+  "original": {
+    "num_nodes": 11339,
+    "num_edges": 155349,
+    "label_distribution": {
+      "0": 7224,
+      "1": 4115
+    },
+    "feature_shape": [
+      11339,
+      4096
+    ]
+  },
+  "downsampling": {
+    "minority_class": 1,
+    "original_minority": 4115,
+    "original_majority": 7224,
+    "original_ratio_majority_to_minority": 1.7555,
+    "target_minority": 722,
+    "kept_minority": 722,
+    "kept_majority": 7224,
+    "achieved_ratio_majority_to_minority": 10.0055,
+    "requested_ratio": 10.0,
+    "downsample_seed": 0,
+    "minority_discarded": 3393,
+    "minority_discarded_fraction": 0.8245,
+    "note": ""
+  },
+  "edges": {
+    "edges_in_original": 155349,
+    "edges_after_induction": 84004,
+    "self_loops_found": 7946,
+    "self_loops_dropped": true,
+    "edges_final": 76058
+  },
+  "constructed": {
+    "num_nodes": 7946,
+    "num_edges": 76058,
+    "label_distribution": {
+      "0": 7224,
+      "1": 722
+    },
+    "feature_shape": [
+      7946,
+      4096
+    ],
+    "isolated_nodes": 1424,
+    "splits": {
+      "train": {
+        "n": 794,
+        "per_class": {
+          "0": 722,
+          "1": 72
+        }
+      },
+      "val": {
+        "n": 794,
+        "per_class": {
+          "0": 722,
+          "1": 72
+        }
+      },
+      "test": {
+        "n": 6358,
+        "per_class": {
+          "0": 5780,
+          "1": 578
+        }
+      }
+    }
+  },
+  "splits": {
+    "split_ratios": [
+      0.1,
+      0.1,
+      0.8
+    ],
+    "split_seed": 0,
+    "stratified": true,
+    "split_source": "10/10/80 inherited from GraphAdapter/GLBench; the FLAG paper states no split ratio (decision S-003)"
+  },
+  "provenance": "REIMPLEMENTED from the FLAG paper section 4.1.1. The official repository ships no construction code and the paper's RNG seed is unpublished, so exact agreement with Table 4 is not achievable. See research/reproduction_status.md section 6.",
+  "source": {
+    "raw_file": "data/raw/instagram/instagram.pt",
+    "raw_sha256": "a42cff537fdb42b1b761187bfef83a6c6a1ed9a7019540360efdead79f1cfeb2"
+  },
+  "built_at": "2026-09-09T05:03:49+00:00",
+  "output_file": "data/benchmark/flag_instagram/graph.pt",
+  "output_sha256": "fa7cbbf35dca07cd7e7afa9b59900fa261e9f5d64c2453eae672d79e2515cff8"
+}

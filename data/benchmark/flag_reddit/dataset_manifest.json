@@ -1,0 +1,107 @@
+{
+  "dataset_name": "reddit",
+  "stage": "benchmark",
+  "preprocessing_version": "benchmark-v1",
+  "config": {
+    "minority_class": 1,
+    "imbalance_ratio": 10.0,
+    "downsample_seed": 0,
+    "split_ratios": [
+      0.1,
+      0.1,
+      0.8
+    ],
+    "split_seed": 0,
+    "stratified": true,
+    "drop_self_loops": true,
+    "preprocessing_version": "benchmark-v1"
+  },
+  "original": {
+    "num_nodes": 33434,
+    "num_edges": 302876,
+    "label_distribution": {
+      "0": 16717,
+      "1": 16717
+    },
+    "feature_shape": [
+      33434,
+      4096
+    ]
+  },
+  "downsampling": {
+    "minority_class": 1,
+    "original_minority": 16717,
+    "original_majority": 16717,
+    "original_ratio_majority_to_minority": 1.0,
+    "target_minority": 1672,
+    "kept_minority": 1672,
+    "kept_majority": 16717,
+    "achieved_ratio_majority_to_minority": 9.9982,
+    "requested_ratio": 10.0,
+    "downsample_seed": 0,
+    "minority_discarded": 15045,
+    "minority_discarded_fraction": 0.9,
+    "note": ""
+  },
+  "edges": {
+    "edges_in_original": 302876,
+    "edges_after_induction": 61844,
+    "self_loops_found": 19020,
+    "self_loops_dropped": true,
+    "edges_final": 42824
+  },
+  "constructed": {
+    "num_nodes": 18389,
+    "num_edges": 42824,
+    "label_distribution": {
+      "0": 16717,
+      "1": 1672
+    },
+    "feature_shape": [
+      18389,
+      4096
+    ],
+    "isolated_nodes": 3108,
+    "splits": {
+      "train": {
+        "n": 1839,
+        "per_class": {
+          "0": 1672,
+          "1": 167
+        }
+      },
+      "val": {
+        "n": 1839,
+        "per_class": {
+          "0": 1672,
+          "1": 167
+        }
+      },
+      "test": {
+        "n": 14711,
+        "per_class": {
+          "0": 13373,
+          "1": 1338
+        }
+      }
+    }
+  },
+  "splits": {
+    "split_ratios": [
+      0.1,
+      0.1,
+      0.8
+    ],
+    "split_seed": 0,
+    "stratified": true,
+    "split_source": "10/10/80 inherited from GraphAdapter/GLBench; the FLAG paper states no split ratio (decision S-003)"
+  },
+  "provenance": "REIMPLEMENTED from the FLAG paper section 4.1.1. The official repository ships no construction code and the paper's RNG seed is unpublished, so exact agreement with Table 4 is not achievable. See research/reproduction_status.md section 6.",
+  "source": {
+    "raw_file": "data/raw/reddit/reddit.pt",
+    "raw_sha256": "b655cc08693b59ff45cfa89ca06ee7c7c5c91c63716af583198ae047d3d02be3"
+  },
+  "built_at": "2026-09-09T05:03:51+00:00",
+  "output_file": "data/benchmark/flag_reddit/graph.pt",
+  "output_sha256": "df3ae0eca55cdcf3cc3e91a9cf3365d5f2261b437a72dea6cf7322fa29901a0b"
+}
