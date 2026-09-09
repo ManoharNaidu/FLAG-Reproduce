@@ -47,15 +47,28 @@ degree > 10, so top-10 selection is a no-op for 98.8% of them and every strategy
 picks the same neighbours; and at 1:10 a randomly wired graph already scores
 0.835 homophily, leaving almost no headroom.
 
-**Table 4, GCN rows** — 1 run each, `threshold_policy=argmax` (what the released
-code does). Comparison tool: `python -m analysis.compare_reported`.
+**Table 4, all 28 baseline/+text cells** — 1 run each,
+`threshold_policy=argmax` (what the released code does), `impl_source=flag_bundled`.
+Full tables: `results/tables/comparison_vs_reported_*.md`.
 
-| dataset | variant | ours F1 | paper F1 | ours AUC | paper AUC | F1 status |
-|---|---:|---:|---:|---:|---:|---|
-| reddit | baseline | 49.58 | 45.46 | 58.51 | 50.32 | DEVIATION |
-| reddit | text | 48.32 | 45.84 | 59.69 | 57.82 | DEVIATION |
-| instagram | baseline | 51.91 | 47.88 | 53.58 | 52.61 | DEVIATION |
-| instagram | text | 47.62 | 47.29 | 60.34 | 55.74 | **MATCH** |
+| metric | MATCH (±1pp) | CLOSE (±2pp) | DEVIATION |
+|---|---:|---:|---:|
+| F1-macro | **14** | 3 | 11 |
+| AUC | 7 | 4 | **17** |
+
+Three patterns, none of them flattering to a naive reading:
+
+1. **The F1 MATCHes are mostly two degenerate classifiers agreeing.** Instagram
+   is 11/14 MATCH or CLOSE largely because both our models and the paper's
+   collapse to the majority class. `research/degenerate_baselines.md`.
+2. **Our `+text` AUC is systematically higher** — every one of the 14 `+text`
+   cells is above the paper's, by +1.7 to +9.0 points. Consistent across all
+   seven backbones, so it is a protocol difference, not a model difference.
+   Prime suspects: our split, our downsampling draw, and the reimplemented
+   sampler.
+3. **Our baselines are stronger on Reddit** (GCN +8.19 AUC, GeniePath +7.17,
+   PMP +6.74, BWGNN +6.92) but **not on Instagram**, where four of seven are
+   within 1pp or below. Whatever differs is dataset-specific.
 
 Our baselines are systematically stronger than the paper's, most sharply on
 Reddit AUC (+8.19) where the paper's baseline sits essentially at chance (50.32)
@@ -78,8 +91,8 @@ Cells show which variants have been RUN, not whether they reproduce the paper.
 
 | Dataset | GCN | GAT | GeniePath | CARE-GNN | BWGNN | DGA-GNN | PMP | FLAG | FLAG* |
 |---|---|---|---|---|---|---|---|---|---|
-| Reddit | b, t | - | - | - | - | - | - | **BLOCKED** | **BLOCKED** |
-| Instagram | b, t | - | - | - | - | - | - | **BLOCKED** | **BLOCKED** |
+| Reddit | b, t | b, t | b, t | b, t | b, t | b, t | b, t | **BLOCKED** | **BLOCKED** |
+| Instagram | b, t | b, t | b, t | b, t | b, t | b, t | b, t | **BLOCKED** | **BLOCKED** |
 | YelpChi | - | - | - | - | - | - | - | **N/A** | **N/A** |
 | Amazon | - | - | - | - | - | - | - | **N/A** | **N/A** |
 | T-Finance | - | - | - | - | - | - | - | **N/A** | **N/A** |

@@ -169,6 +169,9 @@ def run_single(
         dataset=dataset, model=model, variant=variant,
         impl_source=model_spec.impl_source.value,
         model_fidelity=model_spec.fidelity,
+        fidelity_class=(
+            model_spec.fidelity_class.value if model_spec.fidelity_class else "unknown"
+        ),
         seed=seed, initialization=init,
         framework=f"torch {torch.__version__}",
         llm_finetuned=False,

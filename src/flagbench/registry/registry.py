@@ -27,13 +27,39 @@ from enum import Enum
 
 
 class ImplSource(str, Enum):
-    """Provenance of an implementation. Stamped into every result row."""
+    """WHERE an implementation came from. Stamped into every result row.
+
+    This is provenance, NOT a quality judgement -- keep the two separate. An
+    earlier version used APPROXIMATION here, which silently excluded CARE-GNN,
+    BWGNN and DGA-GNN from the comparison against the paper: they ARE the
+    lineage that produced Table 4, however unfaithful they are to their own
+    published algorithms. How faithful a model is lives in `Fidelity`.
+    """
 
     OFFICIAL = "official"
-    ADAPTED = "adapted"
+    """The baseline's own authors' code."""
+
     FLAG_BUNDLED = "flag_bundled"
+    """FLAG's own rewrite in methods/flag/. This is what produced Table 4."""
+
     REIMPLEMENTED = "reimplemented"
+    """Written here from the paper's equations."""
+
+    UNKNOWN = "unknown"
+
+
+class Fidelity(str, Enum):
+    """HOW CLOSE an implementation is to the algorithm it is named after.
+
+    Orthogonal to ImplSource. A flag_bundled model can be FAITHFUL (GCN) or an
+    APPROXIMATION (CARE-GNN); an official one is FAITHFUL by definition.
+    """
+
+    FAITHFUL = "faithful"
+    ADAPTED = "adapted"
     APPROXIMATION = "approximation"
+    """Missing components that define the published algorithm. Must never be
+    reported under the bare model name without qualification."""
     UNKNOWN = "unknown"
 
 
@@ -64,7 +90,9 @@ class ModelSpec:
     module: str
     """Import path of the class, e.g. 'models:GCN' inside methods/flag."""
     fidelity: str
-    """Honest assessment vs the published algorithm. Never 'official' unless it is."""
+    """Honest prose assessment vs the published algorithm."""
+    fidelity_class: "Fidelity" = None  # type: ignore[assignment]
+    """Machine-readable counterpart of `fidelity`. Set in __post_init__ if omitted."""
     capabilities: Capabilities = field(default_factory=Capabilities)
     hidden_dim_locked: int | None = None
     """Some bundled backbones only work at one hidden size (DGA, PMP bind `x32`
@@ -78,6 +106,10 @@ class ModelSpec:
             "model": self.key,
             "model_display_name": self.display_name,
             "impl_source": self.impl_source.value,
+            "fidelity_class": (
+                self.fidelity_class.value if self.fidelity_class
+                else Fidelity.UNKNOWN.value
+            ),
             "model_fidelity": self.fidelity,
             "model_has_skip": self.has_skip,
         }
@@ -141,13 +173,13 @@ class DatasetSpec:
 # ---------------------------------------------------------------------------
 MODEL_REGISTRY: dict[str, ModelSpec] = {
     "gcn": ModelSpec(
-        key="gcn", display_name="GCN", impl_source=ImplSource.FLAG_BUNDLED,
+        key="gcn", fidelity_class=Fidelity.FAITHFUL, display_name="GCN", impl_source=ImplSource.FLAG_BUNDLED,
         module="models:GCN",
         fidelity="faithful - two GCNConv layers plus the Eq. 6 skip",
         has_skip=True,
     ),
     "gat": ModelSpec(
-        key="gat", display_name="GAT (FLAG's variant)",
+        key="gat", fidelity_class=Fidelity.ADAPTED, display_name="GAT (FLAG's variant)",
         impl_source=ImplSource.FLAG_BUNDLED, module="models:GAT",
         fidelity=(
             "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the "
@@ -157,7 +189,7 @@ MODEL_REGISTRY: dict[str, ModelSpec] = {
         notes="initial_x is computed and discarded; no skip despite Eq. 6",
     ),
     "geniepath": ModelSpec(
-        key="geniepath", display_name="GeniePath",
+        key="geniepath", fidelity_class=Fidelity.ADAPTED, display_name="GeniePath",
         impl_source=ImplSource.FLAG_BUNDLED, module="geniepath:GeniePathLazy",
         fidelity=(
             "closest to faithful - Breadth(GAT)+Depth(LSTM) preserved; matches "
@@ -168,8 +200,8 @@ MODEL_REGISTRY: dict[str, ModelSpec] = {
               "paper's 'two layers, hidden 64'",
     ),
     "care_gnn": ModelSpec(
-        key="care_gnn", display_name="CARE-GNN (FLAG's variant)",
-        impl_source=ImplSource.APPROXIMATION, module="caregnn:CAREGNN",
+        key="care_gnn", fidelity_class=Fidelity.APPROXIMATION, display_name="CARE-GNN (FLAG's variant)",
+        impl_source=ImplSource.FLAG_BUNDLED, module="caregnn:CAREGNN",
         fidelity=(
             "NOT CARE-GNN - no RL neighbour filtering, no label-aware "
             "similarity, no multi-relation aggregation. A similarity-gated "
@@ -178,8 +210,8 @@ MODEL_REGISTRY: dict[str, ModelSpec] = {
         has_skip=False,
     ),
     "bwgnn": ModelSpec(
-        key="bwgnn", display_name="BWGNN (FLAG's variant)",
-        impl_source=ImplSource.APPROXIMATION, module="bwgnn:BWGNN",
+        key="bwgnn", fidelity_class=Fidelity.APPROXIMATION, display_name="BWGNN (FLAG's variant)",
+        impl_source=ImplSource.FLAG_BUNDLED, module="bwgnn:BWGNN",
         fidelity=(
             "beta-wavelet basis NOT applied - the polynomial is evaluated over "
             "raw adjacency A, not the normalised Laplacian, so it is not a "
@@ -188,8 +220,8 @@ MODEL_REGISTRY: dict[str, ModelSpec] = {
         has_skip=True,
     ),
     "dga_gnn": ModelSpec(
-        key="dga_gnn", display_name="DGA-GNN (FLAG's variant)",
-        impl_source=ImplSource.APPROXIMATION, module="dga:DGA",
+        key="dga_gnn", fidelity_class=Fidelity.APPROXIMATION, display_name="DGA-GNN (FLAG's variant)",
+        impl_source=ImplSource.FLAG_BUNDLED, module="dga:DGA",
         fidelity=(
             "NOT DGA-GNN - no decision-tree dynamic grouping, no bidirectional "
             "grouped aggregation. GraphSAGE-mean."
@@ -198,7 +230,7 @@ MODEL_REGISTRY: dict[str, ModelSpec] = {
         notes="raises UnboundLocalError at any hidden size but 32",
     ),
     "pmp": ModelSpec(
-        key="pmp", display_name="PMP (FLAG's variant)",
+        key="pmp", fidelity_class=Fidelity.ADAPTED, display_name="PMP (FLAG's variant)",
         impl_source=ImplSource.FLAG_BUNDLED, module="pmp:LASAGE_S",
         fidelity=(
             "partial - fraud/benign partition present, but applied to the "

@@ -62,7 +62,8 @@ class RunResult:
     dataset: str = ""
     model: str = ""
     variant: str = ""
-    impl_source: str = ""          # REQUIRED. flag_bundled | official | ...
+    impl_source: str = ""          # REQUIRED. WHERE the code came from.
+    fidelity_class: str = ""       # HOW CLOSE it is to the published algorithm.
     model_fidelity: str = ""
     seed: int = 0
     initialization: int = 0

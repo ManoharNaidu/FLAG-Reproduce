@@ -73,13 +73,29 @@ def load_ours(metric: str) -> dict:
         return {}
     column = f"test_{metric}"
     groups: dict[tuple, list[dict]] = {}
+    excluded: dict[str, int] = {}
     with OURS.open(encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             # Only the lineage the paper's numbers came from.
             if row.get("impl_source") != "flag_bundled":
+                if row.get("status") == "completed":
+                    key = f"{row.get('model')}({row.get('impl_source')})"
+                    excluded[key] = excluded.get(key, 0) + 1
                 continue
             key = (row["dataset"], row["model"], row["variant"])
             groups.setdefault(key, []).append(row)
+
+    if excluded:
+        # An earlier bug used impl_source for a fidelity judgement, which
+        # silently hid CARE-GNN, BWGNN and DGA-GNN from this comparison.
+        # Excluded rows are now reported, never dropped in silence.
+        print(
+            f"NOTE: {sum(excluded.values())} completed run(s) excluded from "
+            f"this comparison because their impl_source is not 'flag_bundled' "
+            f"(the lineage that produced Table 4): "
+            f"{dict(excluded)}",
+            file=sys.stderr,
+        )
 
     out = {}
     for key, rows in groups.items():
