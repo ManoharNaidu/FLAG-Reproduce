@@ -4,15 +4,18 @@ A reproducible research benchmark for **FLAG: Fraud Detection with LLM-enhanced
 Graph Neural Network** (KDD 2025), plus the seven GNN baselines it compares
 against, on a shared dataset/split/metric protocol.
 
-> ## Status: RESEARCH AUDIT COMPLETE — NO EXPERIMENTS RUN YET
+> ## Status: pipeline runs end to end; baseline experiments in progress
 >
-> Phases 0-3 of 46 are done: the paper is extracted, the official code is audited
-> with **36/36 findings backed by passing tests**, all repositories are pinned to
-> commit SHAs, dataset provenance is traced to primary sources, and a verified
-> CPU environment exists.
+> The research audit is complete (**36/36 findings backed by passing tests**),
+> both datasets are downloaded and verified, and the pipeline produces real
+> numbers on CPU for the `baseline` and `+text` variants.
 >
-> **No training run has happened. No metric has been produced. Nothing is
-> reproduced.** The ledger is [`research/reproduction_status.md`](research/reproduction_status.md).
+> **`flag` and `flag_finetuned` have never been run** — they need
+> `gemma-2-9b-it` on a GPU. No placeholder numbers exist for them.
+>
+> **Nothing is claimed as "reproduced".** The paper's downsampling seed is
+> unpublished, so exact agreement with Table 4 is not achievable in principle.
+> The ledger is [`research/reproduction_status.md`](research/reproduction_status.md).
 
 ---
 
@@ -63,7 +66,19 @@ These are the load-bearing findings. Each is backed by a test in
    Both sides of every disagreement are recorded and exposed as configuration.
    Nothing is silently chosen: [`research/paper_notes.md`](research/paper_notes.md).
 
-6. **A torch build on this machine returns silently wrong numbers.**
+6. **`dga.py` cannot aggregate sparse subgraphs.** Its `aggregate` override
+   omits `dim_size`, so PyG cannot pass the node count and the result is
+   truncated whenever a node has no incoming edge. Latent upstream, fatal here:
+   20% of Reddit benchmark nodes are isolated after downsampling. Fixed at
+   Level 3 in the adapter, with a test proving it changes nothing upstream could
+   already compute. **Found by running the code, not reading it.**
+
+7. **Several of the paper's baseline cells are the trivial classifier.**
+   45.46 appears in four Reddit cells with std 0.01; the AUCs in those rows are
+   at chance. Those numbers measure a class ratio, not a model
+   ([`degenerate_baselines.md`](research/degenerate_baselines.md)).
+
+8. **A torch build on this machine returns silently wrong numbers.**
    `torch==2.4.0+cpu` produced both crashes and an incorrect scatter result at 2
    threads. Pinned to `2.3.1+cpu` after bisection:
    [`research/compatibility_notes.md`](research/compatibility_notes.md).
@@ -144,14 +159,31 @@ Gemma-2-9B fine-tuning on CPU is practical.
 
 ## 7. Quick start
 
-Nothing is runnable end-to-end yet. What works today:
-
 ```bash
-bash scripts/setup/fetch_methods.sh --verify           # check pins
-python -m scripts.preprocess.extract_prompts           # 8 prompts, verbatim + hashed
-python -m scripts.analyze.build_reported_results       # 199 reference rows
-.venv-cpu/Scripts/python tests/integration/test_flag_upstream_claims.py
+# one-time setup
+python -m venv .venv-cpu                                  # NOT --system-site-packages
+.venv-cpu/Scripts/python -m pip install -r environment/cpu.lock.txt
+.venv-cpu/Scripts/python -m pip install -e .
+bash scripts/setup/fetch_methods.sh                       # upstream at pinned SHAs
+
+# data pipeline (CPU, ~40 min, mostly the 734 MB download)
+python -m scripts.download.glbench            --dataset all
+python -m scripts.preprocess.build_benchmark  --dataset all
+python -m scripts.preprocess.encode_text      --dataset all
+python -m scripts.preprocess.sample_subgraphs --dataset all
+python -m scripts.preprocess.sample_subgraphs --dataset all --strategy none
+
+# experiments
+python -m scripts.train.run --dataset reddit --model gcn --variant baseline
+python -m scripts.train.run --dataset reddit,instagram --models all        --variants baseline,text --threshold-policy argmax
+python -m analysis.compare_reported --metric f1_macro
+
+# verify the environment at any time
+python -m scripts.smoke_test
 ```
+
+`--dry-run` validates the whole experiment matrix without training and prints
+every refused combination with its reason.
 
 ## 8-10. FLAG reproduction, baselines, fine-tuning
 
@@ -163,9 +195,45 @@ bundled baselines are not their published algorithms. Sequencing:
 
 ## 11. Results
 
-None. [`research/reported_results.csv`](research/reported_results.csv) holds the
-**paper's** 199 numbers as reference targets only. They are never used as expected
-outputs, and no result file is ever hand-edited toward them.
+Live tables: [`results/tables/`](results/tables/). Reference targets:
+[`research/reported_results.csv`](research/reported_results.csv) — 199 rows from
+the paper, used for comparison only. No result is ever adjusted toward them.
+
+**Figure 3(a)** (semantic sampling raises subgraph homophily) — the one paper
+claim testable without a GPU:
+
+| graph | verdict |
+|---|---|
+| original GLBench Instagram | **SUPPORTED** — SS > SS\* > RS ≈ FS' > NS, the paper's ordering |
+| our 1:10 benchmark | **NOT SUPPORTED** — and diagnosed |
+
+After downsampling only 1.2% of Reddit nodes have degree > 10, so top-10
+selection is a no-op for 98.8% of them and every strategy picks the same
+neighbours. Full analysis: [`research/figure3a_reproduction.md`](research/figure3a_reproduction.md).
+
+**Table 4 rows** (1 run each, `argmax` threshold, `impl_source=flag_bundled`):
+
+| dataset | model | variant | ours F1 | paper | ours AUC | paper |
+|---|---|---|---:|---:|---:|---:|
+| reddit | gcn | baseline | 49.58 | 45.46 | 58.51 | 50.32 |
+| reddit | gcn | text | 48.32 | 45.84 | 59.69 | 57.82 |
+| reddit | gat | baseline | 47.62 | 46.66 | 52.18 | 52.66 |
+| reddit | gat | text | 47.62 | 48.26 | 64.13 | 59.32 |
+| reddit | care_gnn | baseline | 47.62 | 45.46 | 52.14 | 51.35 |
+| reddit | care_gnn | text | 47.62 | 47.66 | 62.35 | 56.72 |
+| reddit | bwgnn | baseline | 52.81 | 45.47 | 60.74 | 53.82 |
+| reddit | bwgnn | text | 53.41 | 48.76 | 66.52 | 57.56 |
+| instagram | gcn | baseline | 51.91 | 47.88 | 53.58 | 52.61 |
+| instagram | gcn | text | 47.62 | 47.29 | 60.34 | 55.74 |
+
+Two things to read carefully before drawing conclusions:
+
+- **47.62 is the trivial classifier** on a 10:1 split, not a model score. The
+  paper's repeated 45.46 (four Reddit cells, std 0.01) and 47.29 (five Instagram
+  cells) are almost certainly the same thing on their split.
+  [`research/degenerate_baselines.md`](research/degenerate_baselines.md).
+- **The threshold policy is worth 2–4 F1 points** and the paper states none.
+  Every result row records which was used.
 
 ## 12. Known limitations
 
