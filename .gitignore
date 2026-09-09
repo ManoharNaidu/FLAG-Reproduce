@@ -1,0 +1,131 @@
+# ---------------------------------------------------------------------------
+# Third-party source. NOT committed.
+# Four of the imported repositories ship no LICENSE (FLAG, BWGNN, DGA-GNN, PMP),
+# so this project must not re-host their code. Reconstruct with:
+#     bash scripts/setup/fetch_methods.sh
+# Provenance is pinned in research/repository_provenance.md.
+# ---------------------------------------------------------------------------
+methods/**
+!methods/README.md
+
+# ---------------------------------------------------------------------------
+# Data. Never committed - large, and subject to upstream terms
+# (Reddit content terms; the Instagram influencer dataset is research-use-only).
+# Manifests and checksums ARE committed so builds stay traceable.
+# ---------------------------------------------------------------------------
+data/**
+!data/**/
+!data/**/dataset_manifest.json
+!data/**/*.sha256
+!data/**/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Generated artefacts
+# ---------------------------------------------------------------------------
+cache/**
+!cache/**/
+!cache/**/.gitkeep
+checkpoints/**
+!checkpoints/**/
+!checkpoints/**/.gitkeep
+logs/**
+!logs/**/
+!logs/**/.gitkeep
+
+# Results: keep aggregated tables and figures, drop per-run raw dumps.
+results/raw/
+!results/**/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Environments
+# ---------------------------------------------------------------------------
+.venv*/
+venv/
+env/
+ENV/
+conda-meta/
+
+# ---------------------------------------------------------------------------
+# Secrets. NEVER commit real tokens - HuggingFace tokens are needed for the
+# gated google/gemma-2-9b-it checkpoint. Use .env, which is ignored.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.*
+**/hf_token*
+**/*credentials*
+
+# ---------------------------------------------------------------------------
+# Model weights and large binaries
+# ---------------------------------------------------------------------------
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.h5
+*.onnx
+*.npy
+*.npz
+*.7z
+*.zip
+*.tar.gz
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.ipynb_checkpoints/
+.hypothesis/
+
+# ---------------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------------
+# Experiment trackers
+# ---------------------------------------------------------------------------
+wandb/
+mlruns/
+lightning_logs/
+outputs/
+.hydra/
+
+# ---------------------------------------------------------------------------
+# Scratch
+# ---------------------------------------------------------------------------
+scratch/
+tmp/
+*.tmp
+*.log
+!logs/**/README.md

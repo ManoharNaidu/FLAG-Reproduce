@@ -1,0 +1,64 @@
+{
+  "source_repo": "https://github.com/BUPT-GAMMA/FLAG",
+  "source_commit": "cb83944ed8a8a9b070a3f5a167d363973369fc80",
+  "prompt_version": "flag-official-v1",
+  "extraction": "ast.literal_eval of module-level assignments",
+  "prompts": {
+    "reddit/system_instruction": {
+      "source_file": "chat.py",
+      "source_symbol": "system_instruction",
+      "path": "prompts/reddit/system_instruction.txt",
+      "chars": 55,
+      "sha256": "988eb666cc706eb34f48b4a6d4e1d65abfa8c25f907340c7f2ec62c8d0e81062"
+    },
+    "reddit/global": {
+      "source_file": "chat.py",
+      "source_symbol": "global_prompt",
+      "path": "prompts/reddit/global.txt",
+      "chars": 145,
+      "sha256": "0c2fedb4653817d7a185e0d46c56bba3917bb167b7b5f06f58c91201b07b963f"
+    },
+    "reddit/discriminative": {
+      "source_file": "chat.py",
+      "source_symbol": "unique_prompt",
+      "path": "prompts/reddit/discriminative.txt",
+      "chars": 653,
+      "sha256": "c885a86996d0526ccd0c78abb37d7f3055f590aba7412114ccc8bd75c461f794"
+    },
+    "reddit/residual": {
+      "source_file": "chat.py",
+      "source_symbol": "common_prompt",
+      "path": "prompts/reddit/residual.txt",
+      "chars": 772,
+      "sha256": "b49f2407ed8649524635b020a6a930761fd0ce1d5fd152b1aab325f2b5888732"
+    },
+    "instagram/system_instruction": {
+      "source_file": "chat1.py",
+      "source_symbol": "system_instruction",
+      "path": "prompts/instagram/system_instruction.txt",
+      "chars": 55,
+      "sha256": "988eb666cc706eb34f48b4a6d4e1d65abfa8c25f907340c7f2ec62c8d0e81062"
+    },
+    "instagram/global": {
+      "source_file": "chat1.py",
+      "source_symbol": "global_prompt",
+      "path": "prompts/instagram/global.txt",
+      "chars": 167,
+      "sha256": "94018113134a545504adc4851afc1d13a29450c20b23a337c3fcbc5a45ee6482"
+    },
+    "instagram/discriminative": {
+      "source_file": "chat1.py",
+      "source_symbol": "unique_prompt",
+      "path": "prompts/instagram/discriminative.txt",
+      "chars": 706,
+      "sha256": "64c25d6ca7b2a341be0f9734076b8cb9be44acaa5b427ad7bd7068937605a0fa"
+    },
+    "instagram/residual": {
+      "source_file": "chat1.py",
+      "source_symbol": "common_prompt",
+      "path": "prompts/instagram/residual.txt",
+      "chars": 815,
+      "sha256": "da8340dc466353c712bbdc8947b3a8f6596d9588003d99e8c7765bf563b73483"
+    }
+  }
+}

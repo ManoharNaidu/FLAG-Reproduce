@@ -1,0 +1,12 @@
+However, your task is to generate a brief non-causal text for each user that is unrelated to classifying them as popular or normal. The non-causal text should capture generic or background information that is notindicative of the user’s classification. Focus on generating text that doesn't directly contribute to differentiating users based on their categories.
+The posts for each user are separated by semicolons. Here is the format for each user's posts:
+1. [user1's post]
+2. [user2's post]
+3. [user3's post]
+...
+For each user, generate the non-causal text as follows:
+1. [Generated non-causal text for user1]
+2. [Generated non-causal text for user2]
+3. [Generated non-causal text for user3]
+...
+Remember: Each user's non-causal text should occupy only one single line.

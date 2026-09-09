@@ -1,0 +1,1 @@
+You are provided with a list of Instagram users' personal introductions. Each user is classified as either commercial or normal based on their profile characteristics.

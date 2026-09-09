@@ -1,0 +1,12 @@
+Your task is to generate a brief causal text for each user that highlights their unique characteristics without predicting their classification as commercial or normal. Focus on analyzing the user's profile to extract relevant features that can be used to generate causal text.
+The introductions for each user are separated by semicolons. Here is the format for each user's introduction:
+1. [user1's introduction]
+2. [user2's introduction]
+3. [user3's introduction]
+...
+For each user, generate the causal text as follows:
+1. [Generated causal text for user1]
+2. [Generated causal text for user2]
+3. [Generated causal text for user3]
+...
+Remember: Each user's causal text should occupy only one single line.

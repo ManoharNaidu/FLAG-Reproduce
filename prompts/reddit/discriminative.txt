@@ -1,0 +1,12 @@
+Your task is to generate a brief causal text for each user that directly relates to classifying them as either popular or normal. Ensure that the generated text is specific to the user and reflects features that help distinguish them between these two categories.
+The posts for each user are separated by semicolons. Here is the format for each user's posts:
+1. [user1's post]
+2. [user2's post]
+3. [user3's post]
+...
+For each user, generate the causal text as follows:
+1. [Generated causal text for user1]
+2. [Generated causal text for user2]
+3. [Generated causal text for user3]
+...
+Remember: Each user's causal text should occupy only one single line.

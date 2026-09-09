@@ -1,0 +1,200 @@
+source_table,dataset,model,variant,ablation_ss,ablation_llm,ablation_sg,metric,mean,std,unit,n_runs,paper,doi,verification_status,notes
+Table 4,reddit,gcn,baseline,,,,f1_macro,45.46,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,baseline,,,,auc,50.32,0.26,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,baseline,,,,f1_macro,47.88,0.96,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,baseline,,,,auc,52.61,1.80,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,text,,,,f1_macro,45.84,0.36,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,text,,,,auc,57.82,1.94,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,text,,,,f1_macro,47.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,text,,,,auc,55.74,0.73,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,flag,,,,f1_macro,48.19,1.02,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,flag,,,,auc,60.18,0.79,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,flag,,,,f1_macro,48.05,0.69,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,flag,,,,auc,56.31,0.83,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,flag_finetuned,,,,f1_macro,48.72,1.59,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gcn,flag_finetuned,,,,auc,60.88,0.68,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,flag_finetuned,,,,f1_macro,49.79,1.08,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gcn,flag_finetuned,,,,auc,55.45,1.21,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,baseline,,,,f1_macro,46.66,0.96,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,baseline,,,,auc,52.66,2.25,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,baseline,,,,f1_macro,49.21,1.38,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,baseline,,,,auc,51.53,1.12,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,text,,,,f1_macro,48.26,2.23,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,text,,,,auc,59.32,0.29,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,text,,,,f1_macro,48.31,0.98,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,text,,,,auc,54.69,0.76,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,flag,,,,f1_macro,49.70,1.76,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,flag,,,,auc,60.61,1.20,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,flag,,,,f1_macro,49.13,1.23,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,flag,,,,auc,54.97,0.75,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,flag_finetuned,,,,f1_macro,50.20,2.33,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,gat,flag_finetuned,,,,auc,60.57,1.03,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,flag_finetuned,,,,f1_macro,50.65,1.61,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,gat,flag_finetuned,,,,auc,55.98,1.67,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,baseline,,,,f1_macro,45.46,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,baseline,,,,auc,52.18,1.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,baseline,,,,f1_macro,47.31,0.05,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,baseline,,,,auc,51.22,3.16,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,text,,,,f1_macro,46.84,1.89,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,text,,,,auc,56.91,1.85,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,text,,,,f1_macro,47.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,text,,,,auc,52.45,2.31,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,flag,,,,f1_macro,48.30,2.24,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,flag,,,,auc,59.43,0.55,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,flag,,,,f1_macro,48.41,1.51,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,flag,,,,auc,55.59,0.85,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,flag_finetuned,,,,f1_macro,48.69,2.97,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,geniepath,flag_finetuned,,,,auc,59.74,1.68,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,flag_finetuned,,,,f1_macro,48.28,1.25,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,geniepath,flag_finetuned,,,,auc,56.24,2.10,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,baseline,,,,f1_macro,45.46,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,baseline,,,,auc,51.35,1.62,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,baseline,,,,f1_macro,47.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,baseline,,,,auc,52.07,1.95,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,text,,,,f1_macro,47.66,1.59,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,text,,,,auc,56.72,1.38,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,text,,,,f1_macro,48.05,1.07,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,text,,,,auc,54.92,0.38,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,flag,,,,f1_macro,50.78,0.95,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,flag,,,,auc,58.43,0.65,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,flag,,,,f1_macro,49.64,1.74,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,flag,,,,auc,55.79,0.58,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,flag_finetuned,,,,f1_macro,51.95,2.21,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,care_gnn,flag_finetuned,,,,auc,58.74,1.40,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,flag_finetuned,,,,f1_macro,50.24,0.46,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,care_gnn,flag_finetuned,,,,auc,56.40,1.29,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,baseline,,,,f1_macro,45.47,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,baseline,,,,auc,53.82,2.49,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,baseline,,,,f1_macro,47.28,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,baseline,,,,auc,51.52,2.43,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,text,,,,f1_macro,48.76,1.54,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,text,,,,auc,57.56,1.53,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,text,,,,f1_macro,47.61,0.72,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,text,,,,auc,54.10,0.71,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,flag,,,,f1_macro,50.93,2.16,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,flag,,,,auc,58.89,2.50,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,flag,,,,f1_macro,48.55,0.32,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,flag,,,,auc,56.33,0.72,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,flag_finetuned,,,,f1_macro,51.91,2.38,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,bwgnn,flag_finetuned,,,,auc,59.20,1.09,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,flag_finetuned,,,,f1_macro,49.35,1.45,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,bwgnn,flag_finetuned,,,,auc,57.19,0.28,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,baseline,,,,f1_macro,45.46,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,baseline,,,,auc,50.10,0.53,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,baseline,,,,f1_macro,47.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,baseline,,,,auc,50.86,0.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,text,,,,f1_macro,45.49,0.11,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,text,,,,auc,59.59,1.60,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,text,,,,f1_macro,47.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,text,,,,auc,56.28,1.07,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,flag,,,,f1_macro,48.77,2.18,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,flag,,,,auc,61.05,0.71,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,flag,,,,f1_macro,48.53,0.42,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,flag,,,,auc,56.73,0.66,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,flag_finetuned,,,,f1_macro,49.50,0.83,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,dga_gnn,flag_finetuned,,,,auc,61.61,0.78,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,flag_finetuned,,,,f1_macro,48.95,0.68,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,dga_gnn,flag_finetuned,,,,auc,57.20,1.03,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,baseline,,,,f1_macro,46.31,1.04,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,baseline,,,,auc,50.16,0.12,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,baseline,,,,f1_macro,47.50,1.56,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,baseline,,,,auc,50.63,0.52,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,text,,,,f1_macro,47.21,1.18,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,text,,,,auc,59.79,0.43,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,text,,,,f1_macro,48.29,0.01,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,text,,,,auc,56.05,1.27,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,flag,,,,f1_macro,48.91,1.30,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,flag,,,,auc,61.32,0.66,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,flag,,,,f1_macro,48.48,0.82,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,flag,,,,auc,57.10,0.62,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,flag_finetuned,,,,f1_macro,50.14,1.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,reddit,pmp,flag_finetuned,,,,auc,61.80,0.99,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,flag_finetuned,,,,f1_macro,49.76,1.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 4,instagram,pmp,flag_finetuned,,,,auc,57.67,1.09,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,
+Table 3,huabei_industrial,gcn,text,,,,ks,76.42,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,gcn,text,,,,f1_macro,22.76,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,gcn,text,,,,auc,94.80,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,gat,text,,,,ks,76.59,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,gat,text,,,,f1_macro,22.89,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,gat,text,,,,auc,94.87,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,geniepath,text,,,,ks,76.91,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,geniepath,text,,,,f1_macro,23.28,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,geniepath,text,,,,auc,94.97,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,care_gnn,text,,,,ks,76.92,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,care_gnn,text,,,,f1_macro,23.28,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,care_gnn,text,,,,auc,94.98,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,bwgnn,text,,,,ks,76.85,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,bwgnn,text,,,,f1_macro,23.12,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,bwgnn,text,,,,auc,94.93,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,dga_gnn,text,,,,ks,76.84,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,dga_gnn,text,,,,f1_macro,23.15,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,dga_gnn,text,,,,auc,94.92,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,pmp,text,,,,ks,76.96,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,pmp,text,,,,f1_macro,23.32,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,pmp,text,,,,auc,95.02,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag,flag,,,,ks,77.78,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag,flag,,,,f1_macro,24.48,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag,flag,,,,auc,95.41,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag_star,flag_finetuned,,,,ks,77.86,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag_star,flag_finetuned,,,,f1_macro,24.72,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 3,huabei_industrial,flag_star,flag_finetuned,,,,auc,95.49,,percent,1,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,"proprietary Alipay dataset (13M nodes / 120M edges); NOT REPRODUCIBLE outside Alipay; single run, no std. Baselines carry a dagger = trained on raw-text embeddings. FLAG backbone fixed to GeniePath."
+Table 5,reddit,gcn,ablation,0,0,1,f1_macro,47.92,2.77,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gcn,ablation,0,0,1,auc,59.60,1.56,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,0,0,1,f1_macro,47.84,0.79,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,0,0,1,auc,55.52,0.46,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gcn,ablation,1,0,1,f1_macro,48.11,0.66,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gcn,ablation,1,0,1,auc,60.07,0.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,1,0,1,f1_macro,47.97,0.53,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,1,0,1,auc,55.85,0.38,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gcn,ablation,1,1,0,f1_macro,48.19,0.51,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gcn,ablation,1,1,0,auc,59.81,2.11,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,1,1,0,f1_macro,47.99,0.31,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gcn,ablation,1,1,0,auc,56.03,0.65,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,0,0,1,f1_macro,49.03,2.69,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,0,0,1,auc,59.96,0.41,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,0,0,1,f1_macro,48.76,1.83,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,0,0,1,auc,54.20,1.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,1,0,1,f1_macro,49.16,0.63,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,1,0,1,auc,59.80,1.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,1,0,1,f1_macro,48.79,0.98,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,1,0,1,auc,54.79,0.25,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,1,1,0,f1_macro,49.73,1.10,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,gat,ablation,1,1,0,auc,60.27,1.02,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,1,1,0,f1_macro,49.28,2.02,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,gat,ablation,1,1,0,auc,54.27,1.02,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,0,0,1,f1_macro,47.47,2.14,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,0,0,1,auc,58.35,0.26,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,0,0,1,f1_macro,47.34,0.79,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,0,0,1,auc,54.38,0.61,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,1,0,1,f1_macro,48.38,2.52,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,1,0,1,auc,58.31,0.36,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,1,0,1,f1_macro,47.54,0.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,1,0,1,auc,55.24,1.94,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,1,1,0,f1_macro,48.13,1.74,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,geniepath,ablation,1,1,0,auc,59.24,2.99,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,1,1,0,f1_macro,47.88,0.96,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,geniepath,ablation,1,1,0,auc,55.61,1.80,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,0,0,1,f1_macro,50.19,1.10,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,0,0,1,auc,57.39,0.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,0,0,1,f1_macro,48.47,1.04,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,0,0,1,auc,55.45,0.64,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,1,0,1,f1_macro,50.48,2.29,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,1,0,1,auc,57.94,0.60,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,1,0,1,f1_macro,48.70,0.42,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,1,0,1,auc,55.47,0.65,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,1,1,0,f1_macro,50.50,1.30,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,care_gnn,ablation,1,1,0,auc,57.90,0.54,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,1,1,0,f1_macro,48.50,1.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,care_gnn,ablation,1,1,0,auc,55.83,0.48,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,0,0,1,f1_macro,49.23,2.05,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,0,0,1,auc,58.46,2.36,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,0,0,1,f1_macro,48.28,0.24,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,0,0,1,auc,55.54,0.25,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,1,0,1,f1_macro,50.19,2.00,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,1,0,1,auc,58.76,1.82,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,1,0,1,f1_macro,47.64,0.79,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,1,0,1,auc,56.86,0.41,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,1,1,0,f1_macro,50.19,2.89,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,reddit,bwgnn,ablation,1,1,0,auc,58.63,1.76,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,1,1,0,f1_macro,48.29,0.81,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.
+Table 5,instagram,bwgnn,ablation,1,1,0,auc,56.27,2.15,percent,25,FLAG (KDD 2025),10.1145/3711896.3737220,TRANSCRIBED,ablation LLM is NOT fine-tuned; non-LLM rows use raw text encoding as node features. The full SS+LLM+SG row is Table 4's '+FLAG'. DGA-GNN and PMP are absent from Table 5 in the paper.

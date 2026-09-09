@@ -1,0 +1,1 @@
+You are provided with a list of Reddit users' posts. Each user is classified as either popular or normal based on their interactions and content.
