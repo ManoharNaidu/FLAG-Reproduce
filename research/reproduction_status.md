@@ -2,26 +2,70 @@
 
 The ledger. Nothing is marked reproduced until it has actually run and been verified.
 
-**Last updated:** 2026-09-09 — end of Phase 0-3 (research and audit).
+**Last updated:** 2026-09-09 — pipeline running end to end; first experiments done.
 
 ---
 
 ## 1. Headline
 
-**No experiment has been run. No metric has been produced. Nothing is reproduced.**
+**The pipeline runs end to end on CPU, and the first real experiments have been
+executed.** GCN produces genuine numbers on both Reddit and Instagram for the
+`baseline` and `+text` variants, and one paper claim (Figure 3(a)) has been
+tested directly.
 
-What exists so far is an audit: the paper obtained and extracted, the official
-code read and its claims made executable, every repository pinned to a SHA,
-dataset provenance traced to primary sources, and a working CPU environment
-established. That is Phase 0-3 of 46.
+Still true, and important:
+
+- **`flag` and `flag_finetuned` have never been run.** They need
+  `gemma-2-9b-it` on a GPU (decision D-003) and this machine has none. No
+  placeholder numbers exist for them.
+- **No result should be read as "reproduced".** Our benchmark uses our own
+  downsampling seed, our own splits, and a reimplemented sampler, so exact
+  agreement with Table 4 is not achievable in principle. See section 6.
 
 | Status | Meaning |
 |---|---|
 | `NOT_STARTED` | Not attempted yet |
 | `AUDITED` | Source understood; findings test-backed; not executed |
 | `BLOCKED` | Attempted; cannot proceed; reason recorded |
-| `PARTIAL` | Runs, but with documented deviations |
+| `PARTIAL` | Runs, with documented deviations |
 | `REPRODUCED` | Ran, verified, compared against the paper |
+
+---
+
+## 1.1 What has actually been run
+
+**Figure 3(a)** — semantic sampling raises subgraph homophily.
+Full write-up: `research/figure3a_reproduction.md`.
+
+| graph | verdict |
+|---|---|
+| original GLBench Instagram | **SUPPORTED** — SS > SS\* > RS ≈ FS' > NS, the paper's ordering |
+| our 1:10 benchmark (both datasets) | **NOT SUPPORTED** — diagnosed, see below |
+
+Diagnosed, not hand-waved: after downsampling only 1.2% of Reddit nodes have
+degree > 10, so top-10 selection is a no-op for 98.8% of them and every strategy
+picks the same neighbours; and at 1:10 a randomly wired graph already scores
+0.835 homophily, leaving almost no headroom.
+
+**Table 4, GCN rows** — 1 run each, `threshold_policy=argmax` (what the released
+code does). Comparison tool: `python -m analysis.compare_reported`.
+
+| dataset | variant | ours F1 | paper F1 | ours AUC | paper AUC | F1 status |
+|---|---:|---:|---:|---:|---:|---|
+| reddit | baseline | 49.58 | 45.46 | 58.51 | 50.32 | DEVIATION |
+| reddit | text | 48.32 | 45.84 | 59.69 | 57.82 | DEVIATION |
+| instagram | baseline | 51.91 | 47.88 | 53.58 | 52.61 | DEVIATION |
+| instagram | text | 47.62 | 47.29 | 60.34 | 55.74 | **MATCH** |
+
+Our baselines are systematically stronger than the paper's, most sharply on
+Reddit AUC (+8.19) where the paper's baseline sits essentially at chance (50.32)
+while ours reaches 58.51. This is consistent with the unresolved question about
+what the paper's "shallow embeddings" are: the stored features we use are 4096-d
+and Llama-2-derived (`dataset_notes.md` section 7), not shallow.
+
+The decision-threshold policy alone moves F1 by 2-4 points (reddit/+text: 48.32
+under `argmax`, 52.75 under `validation_swept`). The paper states no policy, so
+every result row records which one produced it.
 
 ---
 
@@ -29,10 +73,13 @@ established. That is Phase 0-3 of 46.
 
 Legend: `-` = not started. **No cell is ticked.**
 
+Cells show which variants have been RUN, not whether they reproduce the paper.
+`b` = baseline, `t` = +text. A cell is only marked when a run actually completed.
+
 | Dataset | GCN | GAT | GeniePath | CARE-GNN | BWGNN | DGA-GNN | PMP | FLAG | FLAG* |
 |---|---|---|---|---|---|---|---|---|---|
-| Reddit | - | - | - | - | - | - | - | - | - |
-| Instagram | - | - | - | - | - | - | - | - | - |
+| Reddit | b, t | - | - | - | - | - | - | **BLOCKED** | **BLOCKED** |
+| Instagram | b, t | - | - | - | - | - | - | **BLOCKED** | **BLOCKED** |
 | YelpChi | - | - | - | - | - | - | - | **N/A** | **N/A** |
 | Amazon | - | - | - | - | - | - | - | **N/A** | **N/A** |
 | T-Finance | - | - | - | - | - | - | - | **N/A** | **N/A** |
@@ -62,16 +109,18 @@ Legend: `-` = not started. **No cell is ticked.**
 | Reference results transcribed | **DONE** | 199 rows, all `TRANSCRIBED` (not yet re-checked) |
 | CPU environment | **DONE** | torch 2.3.1+cpu pinned after finding a **numerically wrong** torch build |
 | All 7 backbones forward+backward on CPU | **DONE** | verified at `hidden=32` |
-| Dataset download | `NOT_STARTED` | GLBench Google Drive; 734 MB total |
-| Semantic similarity sampler | `NOT_STARTED` | **No upstream source exists** — must be built from Eq. 3-4 |
-| 1:10 benchmark construction | `NOT_STARTED` | No upstream source |
-| Train/val/test splitting | `NOT_STARTED` | Ratios not in the paper; 10/10/80 inherited from GLBench |
-| Internal data model + adapters | `NOT_STARTED` | |
-| Backbone adapters | `NOT_STARTED` | |
-| Metrics module | `NOT_STARTED` | AUC, F1-macro, KS, ECE, per-class |
-| Training loop + early stopping | `NOT_STARTED` | Not implemented upstream either |
-| Result storage / aggregation | `NOT_STARTED` | |
-| Config system | `NOT_STARTED` | |
+| Dataset download | **DONE** | both verified against GLBench's published signature; sha256 recorded |
+| Semantic similarity sampler | **DONE** | REIMPLEMENTED from Eq. 3-4 (no upstream source); 25 unit tests; reproduces Figure 3(a) on the original graph |
+| 1:10 benchmark construction | **DONE** | REIMPLEMENTED; 20 unit tests; seeds + before/after counts in every manifest |
+| Train/val/test splitting | **DONE** | stratified 10/10/80, inherited from GraphAdapter/GLBench and labelled as such |
+| Internal data model | **DONE** | `BenchmarkGraph` + `Subgraph`; `original_node_ids` preserves provenance through re-indexing |
+| Backbone adapters | **DONE** | all 7 wrapped without altering their mathematics; upstream constraints surfaced, not smoothed |
+| Metrics module | **DONE** | AUC, F1-macro, KS, ECE, per-class; 30 tests; test-set tuning prevented by the API |
+| Training loop + early stopping | **DONE** | subgraph loop, accumulation over 10, real early stopping (upstream parses `--patience` and never reads it) |
+| Result storage / aggregation | **DONE** | one JSON per run; `impl_source` required; failures recorded, not dropped |
+| Config system | `PARTIAL` | full CLI surface; YAML experiment configs still to come |
+| Model/variant/dataset registry | **DONE** | refuses 133 of 224 combinations with reasons (Phase 24/41) |
+| Reported-result comparison | **DONE** | `python -m analysis.compare_reported` (Phase 25) |
 | LLM enhancement pipeline | `BLOCKED` | needs a GPU — see 5.1 |
 | LoRA fine-tuning | `BLOCKED` | needs a GPU **and** an unresolved research question — see 4.1 |
 | GPU support | **UNTESTED** | no GPU on this machine; will never be claimed as working |
