@@ -1,0 +1,74 @@
+{
+  "dataset_name": "reddit",
+  "stage": "raw",
+  "source": "GLBench",
+  "source_repo": "https://github.com/NineAbyss/GLBench",
+  "source_paper": "https://arxiv.org/abs/2407.07457",
+  "source_url": "https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj",
+  "origin_paper": "Huang et al., Can GNN be Good Adapter for LLMs?, WWW 2024 (arXiv:2402.12984)",
+  "upstream_raw_data": "ConvoKit Subreddit Corpus (Cornell)",
+  "cited_by": "FLAG (KDD 2025, DOI 10.1145/3711896.3737220) reference [25]",
+  "license": "GLBench packaging is MIT; upstream platform terms still apply",
+  "download_date": "2026-09-09T04:55:41+00:00",
+  "file": "reddit.pt",
+  "file_size_bytes": 579344790,
+  "sha256": "b655cc08693b59ff45cfa89ca06ee7c7c5c91c63716af583198ae047d3d02be3",
+  "published_signature": {
+    "name": "reddit",
+    "filename": "reddit.pt",
+    "num_nodes": 33434,
+    "num_edges": 198448,
+    "num_classes": 2,
+    "approx_size_mb": 552.5,
+    "label_names": [
+      "normal",
+      "popular"
+    ],
+    "minority_class_name": "popular",
+    "text_description": "content of the user's last three posts, ';'-separated",
+    "edge_description": "reply between users"
+  },
+  "observed": {
+    "num_nodes": 33434,
+    "num_edges_stored": 302876,
+    "num_self_loops": 34404,
+    "num_self_loops_pre_existing": 970,
+    "num_edges_excluding_self_loops": 268472,
+    "num_edges_undirected": 134236,
+    "edge_index_is_symmetric": true,
+    "published_edge_count": 198448,
+    "symmetrisation_expansion": 1.3529,
+    "num_classes": 2,
+    "label_distribution": {
+      "0": 16717,
+      "1": 16717
+    },
+    "label_names_in_file": [
+      "Normal Users",
+      "Popular Users"
+    ],
+    "feature_shape": [
+      33434,
+      4096
+    ],
+    "feature_dtype": "torch.float32",
+    "text_len_min": 9,
+    "text_len_max": 21035,
+    "text_len_mean": 766.9,
+    "has_train_mask": true,
+    "has_val_mask": true,
+    "has_test_mask": true,
+    "baseline_feature_provenance": {
+      "observed_dim": 4096,
+      "assessment": "LIKELY_LLM_EMBEDDING",
+      "note": "4096 matches Llama-2-7B's hidden size and the input dim hardcoded in FLAG's test.py. GraphAdapter generates its sentence embeddings with Llama 2. If so, the paper's 'baseline / shallow embeddings' are NOT shallow, and the baseline-vs-+text comparison does not mean what the labels suggest. See research/dataset_notes.md section 7."
+    }
+  },
+  "preprocessing_version": "raw-v1",
+  "notes": [
+    "data/raw is written once and never modified.",
+    "Label semantics: minority (fraud) class is 'popular'.",
+    "Edges represent: reply between users.",
+    "Node text is: content of the user's last three posts, ';'-separated."
+  ]
+}

@@ -99,6 +99,80 @@ edge counts, which cross-validates the chain.
 prompt templates and Tables 3-5 are results. So FLAG's post-downsampling node and
 edge counts are **UNKNOWN** and must be regenerated, not looked up.
 
+### 4.1 Measured stored structure (from the actual downloads)
+
+Both files were downloaded and measured on 2026-09-09.
+
+| | Reddit | Instagram |
+|---|---|---|
+| sha256 | `b655cc08693b59ff...d3d02be3` | `a42cff537fdb42b1...9f1cfeb2` |
+| file size | 552.5 MB | 181.3 MB |
+| **nodes** | **33,434** (published 33,434) | **11,339** (published 11,339) |
+| `edge_index` stored | 302,876 | 155,349 |
+| self-loops | 34,404 (= 33,434 + **970 pre-existing**) | 11,339 (= num_nodes exactly) |
+| non-self-loop, directed | 268,472 | 144,010 |
+| symmetric | yes | yes |
+| **undirected edges** | **134,236** | **72,005** |
+| published "#Edges" | 198,448 | 144,010 |
+| expansion vs published | **x1.353** | x1.000 |
+| `x` | (33434, **4096**) float32 | (11339, **4096**) float32 |
+| `label_name` | `['Normal Users', 'Popular Users']` | `['Normal Users', 'Commercial Users']` |
+| class counts | **16,717 / 16,717** (exactly 1:1) | 7,224 / 4,115 (1.76:1) |
+| text chars min/mean/max | 9 / 767 / 21,035 | 0 / 110 / 523 |
+
+### The two datasets relate to their published edge count differently
+
+This tripped up an initial, too-strict verification and is worth stating plainly.
+
+GraphAdapter applies `to_undirected` then `add_self_loops`. Symmetrising an edge
+list of length *P* yields between *P* directed edges (if every edge was already
+reciprocal) and *2P* (if none were). Measured:
+
+- **Instagram**: 144,010 -> 144,010, expansion **x1.000**. The original list was
+  already fully reciprocal, so the published figure equals the stored directed count.
+- **Reddit**: 198,448 -> 268,472, expansion **x1.353**. Solving
+  `2R + S = 198,448` and `2R + 2S = 268,472` gives **R = 64,212** reciprocal pairs
+  and **S = 70,024** one-directional edges in the original list.
+
+So the published "#Edges" is the **original edge-list length**, not a fixed
+function of the stored graph. `verify()` therefore checks the
+convention-independent property — stored count within `[P, 2P]`, plus actual
+symmetry and at least one self-loop per node — rather than an exact equality.
+
+### Consequences for downstream code
+
+1. **Self-loops must be excluded** from degree, homophily and neighbour-sampling
+   computations. Otherwise every node gains a spurious same-label neighbour and
+   homophily is inflated — which would corrupt both FLAG's semantic sampling and
+   the paper's Figure-5 homophily analysis. Reddit additionally has **970
+   pre-existing self-loops** beyond the one-per-node that `add_self_loops` adds.
+2. **State the convention** whenever an edge count is reported: stored-directed,
+   loop-free-directed, or undirected. They differ by more than a factor of two.
+3. **Reddit is exactly 50/50** (16,717 / 16,717), consistent with GraphAdapter
+   defining `popular` as the top 50% by score. Instagram is **not** balanced
+   (1.76:1), so the paper's "approximately equal number of nodes in each class"
+   is accurate for Reddit and loose for Instagram.
+4. Reddit's longest node text is **21,035 characters**, while FLAG truncates each
+   node to **1,200 characters** before prompting. Truncation is therefore active
+   for a substantial fraction of Reddit nodes, and is a real (documented) part of
+   the method rather than an edge case.
+
+### 4.2 Fields actually present
+
+Beyond the documented ones, the shipped `Data` also carries GLBench's few-shot
+splits:
+
+```
+x, y, edge_index, raw_texts, label_name,
+train_mask, val_mask, test_mask,
+one_shot_train,   one_shot_val,   one_shot_test,
+three_shot_train, three_shot_val, three_shot_test,
+five_shot_train,  five_shot_val,  five_shot_test
+```
+
+FLAG uses none of the few-shot splits. Recorded so they are not mistaken for the
+standard split.
+
 ---
 
 ## 5. Label semantics
@@ -110,11 +184,29 @@ edge counts are **UNKNOWN** and must be regenerated, not looked up.
 | Text | content of the user's **last three posts** (`;`-separated) | user's **personal introduction** |
 | Labels | `popular` vs `normal` | `commercial` vs `normal` |
 | Minority ("fraud") class | **popular** | **commercial** |
-| Original balance | approximately 50/50 | approximately 50/50 |
+| Original balance | see below | **7,224 / 4,115** (1.76 : 1) |
 
 GraphAdapter defines Reddit's `popular` as **the top 50% by score**.
 **Confidence: VERIFIED** for the definition; the exact scoring window and
 subreddit selection are **UNCERTAIN** (GraphAdapter describes it in one sentence).
+
+**Measured class distribution, and a caveat about the paper's wording.** The FLAG
+paper says both datasets *"originally contain an approximately equal number of
+nodes in each class."* For Instagram the measured split is:
+
+```
+label_name = ['Normal Users', 'Commercial Users']
+y == 0 (Normal)      7,224   63.7%
+y == 1 (Commercial)  4,115   36.3%      -> 1.76 : 1, not 1 : 1
+```
+
+So the minority class index is **1**, and "approximately equal" is a loose
+description of a 1.76:1 split. This is not a discrepancy that changes the method,
+but it does change the arithmetic of the 1:10 construction: starting from 4,115
+commercial and 7,224 normal nodes, a 1:10 ratio against the **untouched majority**
+implies keeping about **722** commercial nodes, i.e. discarding ~82% of the
+minority class. Our benchmark builder records the exact before/after counts in the
+manifest rather than assuming a balanced start.
 
 The `;` separators in the FLAG paper's Appendix-C worked example confirm the
 three most-recent posts are concatenated into a single node text.
@@ -179,39 +271,51 @@ as *inherited from GraphAdapter/GLBench*, never as *stated by FLAG*.
 
 ---
 
-## 7. `data.x` — the "baseline" features. OPEN QUESTION.
+## 7. `data.x` — the "baseline" features. **RESOLVED: 4096-d, not shallow.**
 
-The FLAG paper says the `baseline` variant uses **"shallow embeddings"**, and
-elsewhere identifies shallow features as **word2vec**.
+**Status: RESOLVED by direct inspection on 2026-09-09.**
 
-But `methods/flag/test.py:201` constructs the baseline model with an input
-dimension of **4096**:
+The FLAG paper describes the `baseline` variant as using **"shallow embeddings"**,
+and elsewhere identifies shallow features as **word2vec**. The released code
+builds the baseline model with an input dimension of **4096**
+(`methods/flag/test.py:201`, comment `# 4096 384`).
 
-```python
-gnn_model = GeniePathLazy(4096, 2, 'cuda').cuda()   # comment above reads: # 4096 384
+Downloading and inspecting the actual GLBench file settles it:
+
+```
+data/raw/instagram/instagram.pt
+  x  -> torch.Size([11339, 4096])  torch.float32
 ```
 
-4096 is not a word2vec dimensionality (typically 300). It **is** the hidden size
-of Llama-2-7B, and GraphAdapter's preprocessing produces
-`token_embedding/{dataset}/sentence_embeddings.npy` **via Llama 2**.
+**The stored node features are 4096-dimensional.** That is not a word2vec
+dimensionality (typically 100-300). It is exactly **Llama-2-7B's hidden size**,
+and GraphAdapter — the origin of these datasets — generates its node embeddings
+with **Llama 2** (`token_embedding/{dataset}/sentence_embeddings.npy`, produced by
+`preprocess.py`).
 
-So there is an unresolved tension:
+### What this means
 
-| Reading | Implication |
-|---|---|
-| `data.x` is GLBench's stored `x`, which is Llama-2-derived (4096-d) | the paper's "baseline" is not a *shallow* baseline at all |
-| `data.x` is genuinely shallow and happens to be 4096-d | contradicts word2vec |
+The paper's `baseline` row is **not a shallow-feature baseline**. It is a GNN over
+**LLM-derived node embeddings**. Consequently:
 
-**Status: UNKNOWN — resolvable by inspection.** Downloading `instagram.pt`
-(the smaller file) and reading `data.x.shape` settles it. Until then no claim is
-made either way, and `scripts/download/prepare_instagram.py` records the observed
-shape into the dataset manifest so the answer is captured automatically.
+- `baseline` vs `+text` is **not** "shallow features vs text features". Both are
+  text-derived; they differ in *which* encoder produced them — Llama-2 (4096-d)
+  versus Sentence-BERT `all-MiniLM-L6-v2` (384-d).
+- This makes the very low `baseline` scores in Table 4 more surprising, not less
+  (e.g. Reddit GCN baseline F1-macro 45.46 with AUC 50.32 — essentially chance),
+  and it is worth checking whether the baseline is under-trained rather than
+  under-informed.
+- Any write-up of ours must describe the `baseline` variant accurately. We label
+  it `baseline (GLBench stored features, 4096-d, Llama-2-derived)` rather than
+  repeating "shallow embeddings".
 
-This matters: if the baseline features are LLM embeddings, the `baseline` vs
-`+text` comparison in Table 4 means something different from what the labels
-suggest.
-
----
+**Caveat, stated precisely.** We have verified the *dimensionality* (4096) and the
+*origin pipeline* (GraphAdapter uses Llama 2). We have **not** verified that these
+specific stored vectors are that exact Llama-2 output rather than some other
+4096-d representation. That would need a byte-level comparison against
+GraphAdapter's `sentence_embeddings.npy`. So: `LIKELY_LLM_EMBEDDING`, not
+`CONFIRMED`. The classification is recorded automatically in every dataset
+manifest by `flagbench.datasets.glbench._classify_features`.
 
 ## 8. Datasets with NO native text (Phase 9 integrity rule)
 

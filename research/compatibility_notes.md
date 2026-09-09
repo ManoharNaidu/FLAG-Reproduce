@@ -25,7 +25,7 @@ Everything below was established by running code, not by reading changelogs.
 2. **`torch_geometric>=2.4` crashes on this machine** (2.4.0, 2.5.3 and 2.6.1 all
    fail in `SAGEConv`). `2.3.1` is clean. **Pinned: `torch_geometric==2.3.1`.**
 3. **The prebuilt `torch_scatter` wheel destabilises PyG.** Replaced with a
-   native-torch shim (`src/compat/torch_scatter.py`), equivalence-tested.
+   native-torch shim (`src/flagbench/compat/torch_scatter.py`), equivalence-tested.
 4. **The pre-existing global Python environment is internally inconsistent** and
    cannot run this project. Isolated venv required.
 
@@ -162,8 +162,8 @@ Uninstalling it and letting PyG fall back to `torch.Tensor.scatter_reduce_`
 removes that failure mode.
 
 Since `dga.py` imports it directly, the module name still has to resolve. Rather
-than edit upstream source, `src/compat/torch_scatter.py` provides a pure-PyTorch
-implementation and `src/compat/` is prepended to `sys.path`.
+than edit upstream source, `src/flagbench/compat/torch_scatter.py` provides a pure-PyTorch
+implementation and `src/flagbench/compat/` is prepended to `sys.path`.
 
 - **Classification: LEVEL 2** (Phase 36) — environment/dependency fix, no change
   to algorithm behaviour. `dga.py` is byte-identical to upstream.

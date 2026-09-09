@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flagbench"
+version = "0.1.0"
+description = "Reproduction benchmark for FLAG (KDD 2025) and its GNN fraud-detection baselines"
+readme = "README.md"
+requires-python = ">=3.10"
+
+# Dependencies are intentionally NOT pinned here. The authoritative, verified
+# environment is environment/cpu.lock.txt -- some pins there exist because looser
+# ones are actively broken on the reference machine (torch 2.4.0+cpu returns
+# silently wrong numbers; torch_geometric >= 2.4 crashes in SAGEConv). See
+# research/compatibility_notes.md before relaxing anything.
+dependencies = [
+    "torch",
+    "torch_geometric",
+    "numpy<2",
+    "scipy",
+    "scikit-learn",
+    "sympy",
+    "pandas",
+    "matplotlib",
+    "pyyaml",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# LLM stages are GPU-only by decision D-003; the maintainer rents GPUs on vast.ai.
+llm = ["transformers>=4.42", "sentence-transformers", "peft", "accelerate"]
+download = ["gdown"]
+dev = ["pytest"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ---------------------------------------------------------------------------
+# Why src/flagbench/ rather than the brief's flat src/{utils,datasets,...}
+#
+# We put methods/flag/ on sys.path to import the upstream FLAG modules for the
+# audit tests. Upstream ships a top-level `utils.py` and `models.py`. A flat
+# src/utils/ package would collide with those names, and which one won would
+# depend on sys.path ordering -- a silent, and very hard to debug, failure.
+#
+# Namespacing under `flagbench` removes the collision entirely. The subpackage
+# layout the brief asked for is preserved verbatim inside it.
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "gpu: requires CUDA. SKIPPED when unavailable -- a skip is never a pass.",
+    "slow: long-running",
+    "network: needs network access",
+    "llm: needs the real LLM checkpoint (GPU-only, see decision D-003)",
+]

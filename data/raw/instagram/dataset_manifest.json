@@ -1,0 +1,74 @@
+{
+  "dataset_name": "instagram",
+  "stage": "raw",
+  "source": "GLBench",
+  "source_repo": "https://github.com/NineAbyss/GLBench",
+  "source_paper": "https://arxiv.org/abs/2407.07457",
+  "source_url": "https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj",
+  "origin_paper": "Huang et al., Can GNN be Good Adapter for LLMs?, WWW 2024 (arXiv:2402.12984)",
+  "upstream_raw_data": "Kim et al. WWW'20 influencer dataset + Instagram public API",
+  "cited_by": "FLAG (KDD 2025, DOI 10.1145/3711896.3737220) reference [25]",
+  "license": "GLBench packaging is MIT; upstream platform terms still apply",
+  "download_date": "2026-09-09T04:55:40+00:00",
+  "file": "instagram.pt",
+  "file_size_bytes": 190084239,
+  "sha256": "a42cff537fdb42b1b761187bfef83a6c6a1ed9a7019540360efdead79f1cfeb2",
+  "published_signature": {
+    "name": "instagram",
+    "filename": "instagram.pt",
+    "num_nodes": 11339,
+    "num_edges": 144010,
+    "num_classes": 2,
+    "approx_size_mb": 181.3,
+    "label_names": [
+      "normal",
+      "commercial"
+    ],
+    "minority_class_name": "commercial",
+    "text_description": "the user's personal introduction",
+    "edge_description": "following relationship"
+  },
+  "observed": {
+    "num_nodes": 11339,
+    "num_edges_stored": 155349,
+    "num_self_loops": 11339,
+    "num_self_loops_pre_existing": 0,
+    "num_edges_excluding_self_loops": 144010,
+    "num_edges_undirected": 72005,
+    "edge_index_is_symmetric": true,
+    "published_edge_count": 144010,
+    "symmetrisation_expansion": 1.0,
+    "num_classes": 2,
+    "label_distribution": {
+      "0": 7224,
+      "1": 4115
+    },
+    "label_names_in_file": [
+      "Normal Users",
+      "Commercial Users"
+    ],
+    "feature_shape": [
+      11339,
+      4096
+    ],
+    "feature_dtype": "torch.float32",
+    "text_len_min": 0,
+    "text_len_max": 523,
+    "text_len_mean": 110.0,
+    "has_train_mask": true,
+    "has_val_mask": true,
+    "has_test_mask": true,
+    "baseline_feature_provenance": {
+      "observed_dim": 4096,
+      "assessment": "LIKELY_LLM_EMBEDDING",
+      "note": "4096 matches Llama-2-7B's hidden size and the input dim hardcoded in FLAG's test.py. GraphAdapter generates its sentence embeddings with Llama 2. If so, the paper's 'baseline / shallow embeddings' are NOT shallow, and the baseline-vs-+text comparison does not mean what the labels suggest. See research/dataset_notes.md section 7."
+    }
+  },
+  "preprocessing_version": "raw-v1",
+  "notes": [
+    "data/raw is written once and never modified.",
+    "Label semantics: minority (fraud) class is 'commercial'.",
+    "Edges represent: following relationship.",
+    "Node text is: the user's personal introduction."
+  ]
+}

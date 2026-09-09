@@ -13,7 +13,7 @@ import sys
 import torch
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "src" / "compat"))
+sys.path.insert(0, str(ROOT / "src" / "flagbench" / "compat"))
 
 import torch_scatter  # noqa: E402  -- resolves to the shim
 

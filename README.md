@@ -129,7 +129,7 @@ Verify:
 |---|---|---|
 | `torch` | `2.3.1+cpu` | `2.4.0+cpu` crashes **and returns wrong numbers** here |
 | `torch_geometric` | `2.3.1` | `>=2.4` crashes in `SAGEConv`, which FLAG's GAT needs |
-| `torch_scatter` | **not installed** | the wheel destabilises PyG; replaced by an equivalence-tested shim in `src/compat/` |
+| `torch_scatter` | **not installed** | the wheel destabilises PyG; replaced by an equivalence-tested shim in `src/flagbench/compat/` |
 | `transformers` | `4.44.2` | `>=4.42` required for Gemma-2 |
 
 ## 6. GPU setup

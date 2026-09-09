@@ -26,9 +26,9 @@ EXPECTED_COMMIT = "cb83944ed8a8a9b070a3f5a167d363973369fc80"
 # (models/geniepath/bwgnn/caregnn/dga/pmp) are import-safe: they only define
 # classes. The driver scripts (test.py/train.py/chat.py/encode.py) are NOT
 # import-safe (module-scope torch.load and .cuda()), so we inspect those by AST.
-# src/compat/ shadows the crashing torch_scatter wheel with a native-torch shim
+# src/flagbench/compat/ shadows the crashing torch_scatter wheel with a native-torch shim
 # (see research/compatibility_notes.md). It must precede methods/flag on the path.
-sys.path.insert(0, str(ROOT / "src" / "compat"))
+sys.path.insert(0, str(ROOT / "src" / "flagbench" / "compat"))
 sys.path.insert(1, str(FLAG))
 
 import models as flag_models  # noqa: E402

@@ -14,7 +14,7 @@ preserves provenance without re-hosting anyone's code. See
 `research/repository_provenance.md` section 11.
 
 **Nothing in this directory may be edited.** Adaptations live in `src/adapters/`;
-environment-level shims live in `src/compat/`. `fetch_methods.sh --verify` warns
+environment-level shims live in `src/flagbench/compat/`. `fetch_methods.sh --verify` warns
 if a clone is dirty. Keeping upstream pristine is what lets
 `tests/integration/test_flag_upstream_claims.py` tell us when an audit finding has
 gone stale.

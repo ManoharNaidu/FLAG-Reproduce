@@ -196,7 +196,7 @@ document the degeneration. Escalated in `reproduction_status.md`.
 | `research/implementation_matrix.md` | this file |
 | `prompts/` + `manifest.json` | **done** — 8 prompts, verbatim, hashed |
 | `tests/integration/test_flag_upstream_claims.py` | **done** — audit claims executable |
-| `src/compat/torch_scatter.py` + tests | **done** — environment fix, equivalence-tested |
+| `src/flagbench/compat/torch_scatter.py` + tests | **done** — environment fix, equivalence-tested |
 | CPU environment | **done** — `.venv-cpu`, every backbone forward+backward verified |
 
 ### Not started (correctly — Phase 43 sequencing)

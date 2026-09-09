@@ -56,11 +56,11 @@ full bisection is in `compatibility_notes.md` section 5.
 
 ### Level 2 — environment fix, no source change
 
-`src/compat/torch_scatter.py` provides a pure-PyTorch `scatter_mean` and is placed
+`src/flagbench/compat/torch_scatter.py` provides a pure-PyTorch `scatter_mean` and is placed
 on `PYTHONPATH`. `dga.py` remains byte-identical to upstream.
 
 ```
-$ PYTHONPATH=src/compat python test.py
+$ PYTHONPATH=src/flagbench/compat python test.py
 Traceback (most recent call last):
   File ".../methods/flag/test.py", line 18, in <module>
     from utils import FocalLoss, visualization, ECELoss
