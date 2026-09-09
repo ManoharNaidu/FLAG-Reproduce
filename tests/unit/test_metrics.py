@@ -12,6 +12,8 @@ import numpy as np
 
 from flagbench.metrics.classification import (
     BWGNN_THRESHOLD_GRID,
+    degenerate_f1_macro,
+    implied_majority_ratio,
     MetricError,
     aggregate,
     auc,
@@ -301,6 +303,42 @@ def test_format_mean_std_matches_the_papers_presentation():
     assert format_mean_std(0.4819, 0.0102) == "48.19±1.02"
     assert format_mean_std(0.6018, 0.0079) == "60.18±0.79"
     assert format_mean_std(float("nan"), 0.0) == "n/a"
+
+
+# ----------------------------------------------- degenerate-classifier maths
+def test_degenerate_f1_macro_matches_a_measured_all_majority_prediction():
+    """The closed form must agree with actually scoring the trivial classifier."""
+    y = np.array([0] * 1000 + [1] * 100)          # exactly 10:1
+    measured = threshold_metrics(y, np.zeros(len(y)), 0.5)["f1_macro"]
+    closed_form = degenerate_f1_macro(1000 / 1100)
+    assert abs(measured - closed_form) < 1e-12
+    assert abs(measured - 0.47619) < 1e-4
+
+
+def test_degenerate_flag_is_set_for_single_valued_predictions():
+    y = np.array([0] * 10 + [1])
+    assert threshold_metrics(y, np.zeros(11), 0.5)["is_degenerate"] is True
+    assert threshold_metrics(y, np.ones(11), 0.5)["is_degenerate"] is True
+    mixed = np.array([0.1] * 5 + [0.9] * 6)
+    assert threshold_metrics(y, mixed, 0.5)["is_degenerate"] is False
+
+
+def test_implied_ratio_inverts_the_closed_form():
+    for ratio in (5.0, 8.73, 10.0, 20.0):
+        p0 = ratio / (1 + ratio)
+        f1 = degenerate_f1_macro(p0)
+        assert abs(implied_majority_ratio(f1) - ratio) < 1e-6
+
+
+def test_implied_ratio_of_the_papers_reddit_baseline():
+    """45.46 appears in 4 Reddit baseline cells with std 0.01.
+
+    Documented in research/degenerate_baselines.md. If those cells are the
+    trivial classifier, the implied test ratio is ~5:1, not the stated ~10:1.
+    """
+    assert abs(implied_majority_ratio(0.4546) - 5.01) < 0.02
+    assert abs(implied_majority_ratio(0.4729) - 8.73) < 0.02
+    assert abs(implied_majority_ratio(0.4762) - 10.00) < 0.02
 
 
 def _main() -> int:

@@ -142,7 +142,44 @@ def threshold_metrics(y_true, scores, threshold: float) -> dict:
         "support_fraud": int(support[1]),
         "support_normal": int(support[0]),
         "predicted_fraud_count": int(predicted.sum()),
+        "is_degenerate": bool(predicted.sum() == 0 or predicted.sum() == len(predicted)),
     }
+
+
+def degenerate_f1_macro(majority_fraction: float) -> float:
+    """F1-macro of the all-majority-class predictor.
+
+    Predicting one class everywhere gives, for the majority class,
+    precision = p0 and recall = 1, so F1_maj = 2*p0/(1+p0); the minority class
+    scores 0. Hence
+
+        F1-macro = p0 / (1 + p0)
+
+    This matters for reading the FLAG paper. Several of its Table 4 baseline
+    cells report the SAME value to two decimals across four or five different
+    models with a standard deviation of 0.01 -- the signature of a degenerate
+    classifier, not of models coincidentally agreeing. Such a cell measures the
+    test-set class ratio, not the model.
+
+    >>> round(degenerate_f1_macro(10/11), 4)     # a 10:1 split
+    0.4762
+    """
+    return majority_fraction / (1.0 + majority_fraction)
+
+
+def implied_majority_ratio(f1_macro: float) -> float:
+    """Invert `degenerate_f1_macro`: the majority:minority ratio a degenerate
+    F1-macro implies.
+
+    Useful for interpreting a published number when the split is not stated.
+
+    >>> round(implied_majority_ratio(0.4762), 2)
+    10.0
+    """
+    p0 = f1_macro / (1.0 - f1_macro)
+    if not 0.0 < p0 < 1.0:
+        return float("nan")
+    return p0 / (1.0 - p0)
 
 
 def fit_threshold(
