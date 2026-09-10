@@ -5,7 +5,6 @@
 #     bash scripts/setup/fetch_methods.sh
 # Provenance is pinned in research/repository_provenance.md.
 # ---------------------------------------------------------------------------
-methods/**
 !methods/README.md
 
 # ---------------------------------------------------------------------------

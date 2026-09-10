@@ -10,36 +10,65 @@ The reported column is a **reference target**. No result here has been adjusted 
 | Dataset | Model | Variant | Reported | Ours | Abs | Rel | Runs | Status |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | instagram | bwgnn | baseline | 51.52±2.43 | 51.13±0.00 | -0.39 | -0.7% | 1 | MATCH |
+| instagram | bwgnn | flag | 56.33±0.72 | - |  |  | 0 | UNAVAILABLE |
+| instagram | bwgnn | flag_finetuned | 57.19±0.28 | - |  |  | 0 | UNAVAILABLE |
 | instagram | bwgnn | text | 54.10±0.71 | 57.70±0.00 | +3.60 | +6.6% | 1 | DEVIATION |
 | instagram | care_gnn | baseline | 52.07±1.95 | 49.99±0.00 | -2.08 | -4.0% | 1 | DEVIATION |
+| instagram | care_gnn | flag | 55.79±0.58 | - |  |  | 0 | UNAVAILABLE |
+| instagram | care_gnn | flag_finetuned | 56.40±1.29 | - |  |  | 0 | UNAVAILABLE |
 | instagram | care_gnn | text | 54.92±0.38 | 60.92±0.00 | +6.00 | +10.9% | 1 | DEVIATION |
 | instagram | dga_gnn | baseline | 50.86±0.48 | 51.14±0.00 | +0.28 | +0.6% | 1 | MATCH |
+| instagram | dga_gnn | flag | 56.73±0.66 | - |  |  | 0 | UNAVAILABLE |
+| instagram | dga_gnn | flag_finetuned | 57.20±1.03 | - |  |  | 0 | UNAVAILABLE |
 | instagram | dga_gnn | text | 56.28±1.07 | 61.05±0.00 | +4.77 | +8.5% | 1 | DEVIATION |
 | instagram | gat | baseline | 51.53±1.12 | 49.68±0.00 | -1.85 | -3.6% | 1 | CLOSE |
+| instagram | gat | flag | 54.97±0.75 | - |  |  | 0 | UNAVAILABLE |
+| instagram | gat | flag_finetuned | 55.98±1.67 | - |  |  | 0 | UNAVAILABLE |
 | instagram | gat | text | 54.69±0.76 | 62.13±0.00 | +7.44 | +13.6% | 1 | DEVIATION |
 | instagram | gcn | baseline | 52.61±1.80 | 53.58±0.00 | +0.97 | +1.8% | 1 | MATCH |
+| instagram | gcn | flag | 56.31±0.83 | - |  |  | 0 | UNAVAILABLE |
+| instagram | gcn | flag_finetuned | 55.45±1.21 | - |  |  | 0 | UNAVAILABLE |
 | instagram | gcn | text | 55.74±0.73 | 60.34±0.00 | +4.60 | +8.3% | 1 | DEVIATION |
 | instagram | geniepath | baseline | 51.22±3.16 | 49.43±0.00 | -1.79 | -3.5% | 1 | CLOSE |
+| instagram | geniepath | flag | 55.59±0.85 | - |  |  | 0 | UNAVAILABLE |
+| instagram | geniepath | flag_finetuned | 56.24±2.10 | - |  |  | 0 | UNAVAILABLE |
 | instagram | geniepath | text | 52.45±2.31 | 58.89±0.00 | +6.44 | +12.3% | 1 | DEVIATION |
 | instagram | pmp | baseline | 50.63±0.52 | 49.75±0.00 | -0.88 | -1.7% | 1 | MATCH |
+| instagram | pmp | flag | 57.10±0.62 | - |  |  | 0 | UNAVAILABLE |
+| instagram | pmp | flag_finetuned | 57.67±1.09 | - |  |  | 0 | UNAVAILABLE |
 | instagram | pmp | text | 56.05±1.27 | 59.69±0.00 | +3.64 | +6.5% | 1 | DEVIATION |
 | reddit | bwgnn | baseline | 53.82±2.49 | 60.74±0.00 | +6.92 | +12.9% | 1 | DEVIATION |
+| reddit | bwgnn | flag | 58.89±2.50 | - |  |  | 0 | UNAVAILABLE |
+| reddit | bwgnn | flag_finetuned | 59.20±1.09 | - |  |  | 0 | UNAVAILABLE |
 | reddit | bwgnn | text | 57.56±1.53 | 66.52±0.00 | +8.96 | +15.6% | 1 | DEVIATION |
 | reddit | care_gnn | baseline | 51.35±1.62 | 52.14±0.00 | +0.79 | +1.5% | 1 | MATCH |
+| reddit | care_gnn | flag | 58.43±0.65 | - |  |  | 0 | UNAVAILABLE |
+| reddit | care_gnn | flag_finetuned | 58.74±1.40 | - |  |  | 0 | UNAVAILABLE |
 | reddit | care_gnn | text | 56.72±1.38 | 62.35±0.00 | +5.63 | +9.9% | 1 | DEVIATION |
 | reddit | dga_gnn | baseline | 50.10±0.53 | 50.36±0.00 | +0.26 | +0.5% | 1 | MATCH |
+| reddit | dga_gnn | flag | 61.05±0.71 | - |  |  | 0 | UNAVAILABLE |
+| reddit | dga_gnn | flag_finetuned | 61.61±0.78 | - |  |  | 0 | UNAVAILABLE |
 | reddit | dga_gnn | text | 59.59±1.60 | 61.28±0.00 | +1.69 | +2.8% | 1 | CLOSE |
 | reddit | gat | baseline | 52.66±2.25 | 52.18±0.00 | -0.48 | -0.9% | 1 | MATCH |
+| reddit | gat | flag | 60.61±1.20 | - |  |  | 0 | UNAVAILABLE |
+| reddit | gat | flag_finetuned | 60.57±1.03 | - |  |  | 0 | UNAVAILABLE |
 | reddit | gat | text | 59.32±0.29 | 64.13±0.00 | +4.81 | +8.1% | 1 | DEVIATION |
 | reddit | gcn | baseline | 50.32±0.26 | 58.51±0.00 | +8.19 | +16.3% | 1 | DEVIATION |
+| reddit | gcn | flag | 60.18±0.79 | - |  |  | 0 | UNAVAILABLE |
+| reddit | gcn | flag_finetuned | 60.88±0.68 | - |  |  | 0 | UNAVAILABLE |
 | reddit | gcn | text | 57.82±1.94 | 59.69±0.00 | +1.87 | +3.2% | 1 | CLOSE |
 | reddit | geniepath | baseline | 52.18±1.48 | 59.35±0.00 | +7.17 | +13.7% | 1 | DEVIATION |
+| reddit | geniepath | flag | 59.43±0.55 | - |  |  | 0 | UNAVAILABLE |
+| reddit | geniepath | flag_finetuned | 59.74±1.68 | - |  |  | 0 | UNAVAILABLE |
 | reddit | geniepath | text | 56.91±1.85 | 59.67±0.00 | +2.76 | +4.9% | 1 | DEVIATION |
 | reddit | pmp | baseline | 50.16±0.12 | 56.90±0.00 | +6.74 | +13.4% | 1 | DEVIATION |
+| reddit | pmp | flag | 61.32±0.66 | - |  |  | 0 | UNAVAILABLE |
+| reddit | pmp | flag_finetuned | 61.80±0.99 | - |  |  | 0 | UNAVAILABLE |
 | reddit | pmp | text | 59.79±0.43 | 63.20±0.00 | +3.41 | +5.7% | 1 | DEVIATION |
 
 ## Summary
 
+- UNAVAILABLE: 28
 - DEVIATION: 17
 - MATCH: 7
 - CLOSE: 4
