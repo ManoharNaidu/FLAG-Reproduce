@@ -128,3 +128,6 @@ tmp/
 *.tmp
 *.log
 !logs/**/README.md
+
+
+prompts by gpt/
