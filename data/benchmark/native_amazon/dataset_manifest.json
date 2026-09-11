@@ -1,0 +1,45 @@
+{
+  "dataset_name": "amazon",
+  "stage": "native_benchmark",
+  "source": "CARE-GNN official release",
+  "source_repo": "https://github.com/YingtongDou/CARE-GNN",
+  "source_paper": "Dou et al., Enhancing Graph Neural Network-based Fraud Detectors against Camouflaged Fraudsters, CIKM 2020 (arXiv:2008.08692)",
+  "raw_file": "data\\raw\\amazon\\Amazon.mat",
+  "raw_file_sha256": "4b7e3f9cccc62b736792707393ccd74332a1a0592dba128ac6b2989bf1ee9d63",
+  "flag_variant_status": "BLOCKED by design: has_native_text=False in flagbench.registry.DATASET_REGISTRY (registry.py:294-303). This payload supports baseline / native-GNN variants only, never `flag` or `+text`.",
+  "downsampling": "NONE. This dataset is natively imbalanced already; FLAG's 1:10 construction (flagbench.datasets.benchmark) was not applied -- doing so would invent a non-standard variant, not reproduce one.",
+  "split_protocol": {
+    "train_test": "Exact reproduction of methods/care_gnn/train.py:50-61: stratified train_test_split(test_size=0.60, random_state=2). Amazon additionally excludes node indices [0, 3305) as unlabeled, per CARE-GNN's own comment.",
+    "val": "NOT part of the official CARE-GNN protocol. Carved out of the official train split via stratified train_test_split(test_size=0.25, random_state=0) for early stopping / model selection. If exact CARE-GNN train-set size is required, merge train_mask and val_mask back together."
+  },
+  "graph_structure": "Three relation-specific edge_index tensors plus one 'homo' (union) edge_index, matching CARE-GNN's own four adjacency views. No relation was collapsed or invented.",
+  "observed": {
+    "num_nodes": 11944,
+    "num_features": 25,
+    "num_edges_homo": 8796784,
+    "homo_is_symmetric": true,
+    "num_edges_per_relation": {
+      "upu": 351216,
+      "usu": 7132958,
+      "uvu": 2073474
+    },
+    "relation_is_symmetric": {
+      "upu": true,
+      "usu": true,
+      "uvu": true
+    },
+    "num_unlabeled_excluded": 3305,
+    "label_distribution_all": {
+      "0": 11123,
+      "1": 821
+    },
+    "label_distribution_labeled_only": {
+      "0": 7818,
+      "1": 821
+    },
+    "num_train": 2591,
+    "num_val": 864,
+    "num_test": 5184
+  },
+  "preprocessing_version": "native-benchmark-v1"
+}
