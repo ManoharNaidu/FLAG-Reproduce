@@ -9,7 +9,7 @@
   "upstream_raw_data": "ConvoKit Subreddit Corpus (Cornell)",
   "cited_by": "FLAG (KDD 2025, DOI 10.1145/3711896.3737220) reference [25]",
   "license": "GLBench packaging is MIT; upstream platform terms still apply",
-  "download_date": "2026-09-09T04:55:41+00:00",
+  "download_date": "2026-09-11T03:30:02+00:00",
   "file": "reddit.pt",
   "file_size_bytes": 579344790,
   "sha256": "b655cc08693b59ff45cfa89ca06ee7c7c5c91c63716af583198ae047d3d02be3",

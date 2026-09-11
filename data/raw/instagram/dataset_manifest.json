@@ -9,7 +9,7 @@
   "upstream_raw_data": "Kim et al. WWW'20 influencer dataset + Instagram public API",
   "cited_by": "FLAG (KDD 2025, DOI 10.1145/3711896.3737220) reference [25]",
   "license": "GLBench packaging is MIT; upstream platform terms still apply",
-  "download_date": "2026-09-09T04:55:40+00:00",
+  "download_date": "2026-09-11T03:30:01+00:00",
   "file": "instagram.pt",
   "file_size_bytes": 190084239,
   "sha256": "a42cff537fdb42b1b761187bfef83a6c6a1ed9a7019540360efdead79f1cfeb2",
