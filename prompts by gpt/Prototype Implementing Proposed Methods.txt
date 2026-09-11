@@ -1,0 +1,1885 @@
+You are working inside an existing research repository containing an already-created FLAG implementation.
+
+Your task is to build a PROFESSIONAL, NON-DESTRUCTIVE DEMONSTRATION / PROTOTYPE LAYER around the existing FLAG implementation.
+
+This is NOT a request to rewrite FLAG.
+
+This is NOT a request to alter the existing FLAG implementation.
+
+This is NOT a request to replace the existing architecture.
+
+Your job is to create a separate demo/prototype system that:
+
+1. Reuses the existing FLAG implementation wherever useful.
+2. Demonstrates our project's proposed three-module research pipeline.
+3. Makes the output of each module become the input to the next module.
+4. Produces visible intermediate artifacts so the entire process can be demonstrated step-by-step.
+5. Allows us to run the demo on a small subset of data first.
+6. Eventually allows the same architecture to scale to actual experiments.
+7. Keeps all existing FLAG code untouched.
+
+============================================================
+0. PROJECT CONTEXT
+==================
+
+Read the project initiation report provided by the user before making architectural decisions.
+
+The project is:
+
+"Large Language Models for Graph-Based Fraud Detection"
+
+The project's research direction investigates whether FLAG's semantic-similarity neighbour filtering can be combined with DGP's hierarchical summarization and extended using similarity-weighted metapath pruning.
+
+The proposed framework consists of:
+
+MODULE 1:
+Semantic-Similarity Neighbour Filtering
+
+MODULE 2:
+Hierarchical / Selective Summarization
+
+MODULE 3:
+Metapath-Based Neighbourhood Pruning
+
+The project asks questions around:
+
+RQ1:
+How can semantic similarity-based neighbour filtering be combined with hierarchical summarization to improve fraud detection in static financial graphs affected by heterophily?
+
+RQ2:
+Does pre-filtering neighbours by semantic similarity before summarization improve detection and provide a better accuracy-to-token trade-off?
+
+RQ3:
+Can semantic similarity be used as a weighting mechanism in metapath-based neighbourhood pruning?
+
+The report describes the three modules as sequential/interacting components.
+
+Therefore, the demo must make that sequential relationship visible.
+
+============================================================
+
+1. ABSOLUTE RULE — DO NOT MODIFY EXISTING FLAG
+   ============================================================
+
+This is the most important constraint.
+
+DO NOT change, rewrite, refactor, rename, delete, move, or overwrite existing FLAG source code.
+
+Treat the existing FLAG implementation as READ-ONLY.
+
+Before starting:
+
+1. Inspect the repository.
+2. Identify exactly where the existing FLAG implementation lives.
+3. Identify its entry points.
+4. Identify its model classes.
+5. Identify its dataset loaders.
+6. Identify its sampling code.
+7. Identify its text/embedding code.
+8. Identify its inference/evaluation code.
+9. Identify whether it already exposes reusable functions/classes.
+
+Then create a report:
+
+demo/docs/existing_flag_audit.md
+
+containing:
+
+* Existing FLAG location
+* Important modules
+* Important classes/functions
+* Existing configuration
+* Existing dependencies
+* Existing dataset assumptions
+* Existing inference flow
+* Existing semantic similarity implementation
+* Existing GNN implementation
+* Existing outputs
+* Safe reusable interfaces
+* Components that should NOT be imported directly
+* Any limitations discovered
+
+DO NOT modify anything during this audit.
+
+============================================================
+2. CREATE A COMPLETELY SEPARATE DEMO AREA
+=========================================
+
+Create a dedicated directory such as:
+
+demo/
+
+Do NOT put prototype code directly into the existing FLAG implementation.
+
+Recommended structure:
+
+demo/
+├── README.md
+│
+├── configs/
+│   ├── demo.yaml
+│   ├── reddit_demo.yaml
+│   └── synthetic_demo.yaml
+│
+├── data/
+│   ├── input/
+│   ├── working/
+│   └── outputs/
+│
+├── pipeline/
+│   ├── **init**.py
+│   ├── orchestrator.py
+│   ├── contracts.py
+│   ├── context.py
+│   └── registry.py
+│
+├── modules/
+│   ├── module1_semantic_filtering/
+│   │   ├── **init**.py
+│   │   ├── runner.py
+│   │   ├── filtering.py
+│   │   └── README.md
+│   │
+│   ├── module2_summarization/
+│   │   ├── **init**.py
+│   │   ├── runner.py
+│   │   ├── summarizer.py
+│   │   └── README.md
+│   │
+│   └── module3_metapath_pruning/
+│       ├── **init**.py
+│       ├── runner.py
+│       ├── pruning.py
+│       └── README.md
+│
+├── adapters/
+│   ├── flag_adapter.py
+│   ├── dataset_adapter.py
+│   ├── embedding_adapter.py
+│   └── llm_adapter.py
+│
+├── visualization/
+│   ├── graph_visualizer.py
+│   ├── similarity_visualizer.py
+│   └── result_visualizer.py
+│
+├── artifacts/
+│   ├── schemas/
+│   └── examples/
+│
+├── results/
+│   ├── module1/
+│   ├── module2/
+│   ├── module3/
+│   ├── end_to_end/
+│   └── figures/
+│
+├── logs/
+│
+├── tests/
+│
+├── scripts/
+│   ├── run_demo.py
+│   ├── run_module1.py
+│   ├── run_module2.py
+│   ├── run_module3.py
+│   └── inspect_artifacts.py
+│
+└── docs/
+├── architecture.md
+├── existing_flag_audit.md
+├── demo_flow.md
+├── artifact_contracts.md
+├── limitations.md
+└── results.md
+
+You may improve the structure if there is a strong engineering reason, but preserve the fundamental separation.
+
+============================================================
+3. THE DEMO MUST BE DATA-FLOW ORIENTED
+======================================
+
+Do not make three independent scripts that merely demonstrate three ideas.
+
+The core requirement is:
+
+OUTPUT OF MODULE 1
+↓
+INPUT TO MODULE 2
+↓
+OUTPUT OF MODULE 2
+↓
+INPUT TO MODULE 3
+↓
+OUTPUT OF MODULE 3
+↓
+INPUT TO MODEL / EVALUATOR
+↓
+RESULTS
+
+The user must be able to inspect every intermediate output.
+
+The demo should behave like an actual pipeline.
+
+For example:
+
+Input:
+target node v
+
+Module 1:
+find neighbors → compute semantic similarity → filter neighbors
+
+Output:
+filtered neighborhood
+
+Module 2:
+take EXACTLY that filtered neighborhood → determine which nodes receive fine-grained text and which receive summaries
+
+Output:
+selective/hierarchical textual context
+
+Module 3:
+take EXACTLY the surviving graph/context from Module 2 → construct metapaths → assign semantic weights → prune/down-weight paths
+
+Output:
+final graph/context representation
+
+Then:
+
+FLAG / GNN:
+consume the resulting representation
+
+Output:
+prediction + metrics + diagnostics
+
+============================================================
+4. CREATE AN EXPLICIT PIPELINE CONTEXT
+======================================
+
+Create a pipeline context object.
+
+For example:
+
+DemoContext
+
+containing:
+
+dataset
+target_node
+original_graph
+original_text
+original_features
+
+module1_output
+module2_output
+module3_output
+
+final_features
+final_graph
+
+predictions
+metrics
+
+metadata
+timings
+token_usage
+
+Every module should receive a context and return an updated context or a clearly typed output.
+
+Do NOT rely on hidden global variables.
+
+============================================================
+5. USE ARTIFACT CONTRACTS
+=========================
+
+Every component must have an explicit input/output contract.
+
+Create:
+
+demo/pipeline/contracts.py
+
+Define structured objects such as:
+
+NodeInput
+GraphInput
+SemanticSimilarityResult
+FilteredNeighborhood
+SummaryResult
+MetapathResult
+FinalModelInput
+PredictionResult
+
+Use dataclasses or Pydantic if appropriate.
+
+Each artifact must contain enough information to understand how it was produced.
+
+For example:
+
+SemanticSimilarityResult:
+
+{
+"target_node": "...",
+"neighbors": [...],
+"similarities": [...],
+"threshold": 0.0,
+"top_k": 10,
+"selected_neighbors": [...],
+"discarded_neighbors": [...],
+"embedding_model": "...",
+"timestamp": "...",
+"source": "FLAG-compatible semantic similarity"
+}
+
+Do NOT pass anonymous tensors between modules without metadata.
+
+============================================================
+6. MODULE 1 — SEMANTIC SIMILARITY FILTERING
+===========================================
+
+Implement Module 1 as a DEMO ADAPTER around the existing FLAG concepts.
+
+Do not rewrite FLAG's implementation if a reusable implementation already exists.
+
+Preferred strategy:
+
+Existing FLAG implementation
+↓
+FLAG adapter
+↓
+Module 1
+
+The module should:
+
+1. Select a target node.
+2. Obtain its text.
+3. Obtain neighbor nodes.
+4. Obtain neighbor text.
+5. Obtain embeddings.
+6. Compute semantic similarity.
+7. Rank neighbors.
+8. Apply top-K.
+9. Apply similarity threshold if configured.
+10. Produce a structured filtered-neighborhood artifact.
+
+Make the following configurable:
+
+top_k
+threshold
+embedding_model
+hop_count
+
+Start with the FLAG experimental defaults where applicable.
+
+Do not invent alternative values without labeling them as demo settings.
+
+============================================================
+7. MODULE 1 OUTPUT MUST BE VISIBLE
+==================================
+
+After Module 1, save files such as:
+
+demo/results/module1/<experiment_id>/
+
+```
+target_node.json
+candidate_neighbors.json
+similarity_scores.csv
+selected_neighbors.json
+discarded_neighbors.json
+graph_before.png
+graph_after.png
+module1_summary.json
+```
+
+Also print a concise terminal visualization such as:
+
+MODULE 1 — SEMANTIC FILTERING
+
+Target node:
+1042
+
+Original neighbors:
+27
+
+Top-K:
+10
+
+Threshold:
+0.00
+
+Selected:
+10
+
+Removed:
+17
+
+Top similarities:
+node_812  0.91
+node_993  0.87
+node_221  0.84
+...
+
+Do not invent values.
+Use actual values from the demonstration data.
+
+============================================================
+8. MODULE 2 — SELECTIVE / HIERARCHICAL SUMMARIZATION
+====================================================
+
+Module 2 MUST consume Module 1's output.
+
+Never rerun neighbor selection independently.
+
+Input:
+
+Module 1 filtered neighborhood
+
+Output:
+
+A structured textual context.
+
+The demo should represent the project's proposed idea:
+
+HIGH-SIMILARITY NEIGHBOURS
+↓
+retain richer / fine-grained text
+
+LOWER-SIMILARITY SURVIVING NEIGHBOURS
+↓
+summarize / compress
+
+TARGET NODE
+↓
+retain detailed text
+
+The precise summarization strategy must be configurable.
+
+Do NOT claim this reproduces DGP exactly unless the implementation actually does.
+
+This is a project demo inspired by/adapting the project's stated DGP direction.
+
+Clearly label:
+
+"DEMO ADAPTATION"
+
+rather than:
+
+"Official DGP implementation"
+
+unless an official DGP implementation is actually being reused.
+
+============================================================
+9. MODULE 2 OUTPUT
+==================
+
+Store:
+
+demo/results/module2/<experiment_id>/
+
+```
+input_from_module1.json
+node_text_assignments.json
+retained_text.json
+summaries.json
+combined_context.json
+token_estimate.json
+module2_summary.json
+```
+
+The combined context should explicitly indicate:
+
+target
+neighbor
+similarity
+granularity
+text source
+summary status
+
+For example:
+
+{
+"node": "812",
+"similarity": 0.91,
+"granularity": "fine",
+"text": "..."
+}
+
+and:
+
+{
+"node": "557",
+"similarity": 0.43,
+"granularity": "summary",
+"text": "..."
+}
+
+Do not fabricate summaries merely for appearance.
+
+If an LLM is unavailable, create a deterministic demo summarizer and label it clearly:
+
+summarizer_backend: deterministic_demo
+
+============================================================
+10. TOKEN ACCOUNTING
+====================
+
+Because the project's RQ2 explicitly investigates accuracy-to-token trade-offs, Module 2 must track token usage or a clearly documented token estimate.
+
+Record:
+
+target_tokens
+neighbor_tokens_before
+neighbor_tokens_after
+total_tokens_before
+total_tokens_after
+compression_ratio
+estimated_cost if the provider exposes it
+
+If actual tokenizer information is unavailable:
+
+use a deterministic approximate token estimator and explicitly label it:
+
+token_estimation_method: approximate
+
+Never report estimated token counts as actual API usage.
+
+============================================================
+11. MODULE 3 — SEMANTIC-WEIGHTED METAPATH PRUNING
+=================================================
+
+Module 3 MUST consume the outputs of Module 1 and Module 2.
+
+Do not recompute semantic similarity separately unless explicitly necessary.
+
+Reuse Module 1's semantic scores.
+
+The project's proposed idea is:
+
+For a path:
+
+P = (v0, v1, ..., vL)
+
+and semantic similarities:
+
+s(v_i, v_{i+1})
+
+compute:
+
+w(P) = product of semantic similarities
+
+Use this as a continuous path influence / pruning weight.
+
+IMPORTANT:
+
+This is the project's proposed extension.
+
+Do NOT claim that FLAG itself implements this mechanism.
+
+Do NOT claim that the project's proposed implementation is an official method.
+
+Label it explicitly as:
+
+PROJECT PROPOSED MODULE 3
+
+or:
+
+DEMO — SEMANTIC-WEIGHTED METAPATH PRUNING
+
+============================================================
+12. MODULE 3 OUTPUT
+===================
+
+Save:
+
+demo/results/module3/<experiment_id>/
+
+```
+input_from_module1.json
+input_from_module2.json
+candidate_metapaths.json
+path_weights.csv
+retained_paths.json
+pruned_paths.json
+final_graph.json
+module3_summary.json
+```
+
+For every path show:
+
+path
+hop_count
+edge_similarities
+raw_weight
+normalised_weight
+decision
+
+Example:
+
+Path:
+A → B → C
+
+Similarity:
+0.91 × 0.84
+
+Weight:
+0.7644
+
+Decision:
+retain
+
+Another:
+
+A → D → F
+
+Similarity:
+0.31 × 0.52
+
+Weight:
+0.1612
+
+Decision:
+down-weight
+
+Do not fabricate numbers.
+
+============================================================
+13. DYNAMIC CONNECTION BETWEEN MODULES
+======================================
+
+The system must demonstrate actual dependency.
+
+Implement something similar to:
+
+context = load_demo_input()
+
+context = module1.run(context)
+
+save_artifact(context.module1_output)
+
+context = module2.run(context)
+
+save_artifact(context.module2_output)
+
+context = module3.run(context)
+
+save_artifact(context.module3_output)
+
+context = run_model(context)
+
+save_results(context)
+
+The important property is:
+
+Module 2 receives Module 1's actual output.
+
+Module 3 receives Module 2's actual output.
+
+The final model receives Module 3's actual output.
+
+Do not merely display these modules sequentially while independently recomputing everything.
+
+============================================================
+14. MODEL INTEGRATION
+=====================
+
+After Module 3, provide an adapter layer for the existing FLAG model.
+
+Example:
+
+DemoFLAGAdapter
+
+The adapter should inspect the existing FLAG implementation and determine the safest non-invasive way to provide the demo's resulting features/graph/context to FLAG.
+
+Preferred hierarchy:
+
+1. Call existing public API.
+2. Import existing model class.
+3. Use existing inference function.
+4. Use existing preprocessing function.
+5. Only if necessary, create a thin adapter around lower-level existing functions.
+
+Do NOT copy large parts of FLAG into demo/.
+
+Do NOT duplicate the FLAG model implementation.
+
+Do NOT modify the original FLAG files.
+
+If the original FLAG implementation is not designed to accept Module 3's output directly:
+
+create a translation layer.
+
+For example:
+
+ProjectModule3Output
+↓
+FLAGInputAdapter
+↓
+existing FLAG interface
+
+The original FLAG code remains untouched.
+
+============================================================
+15. DEMO MODES
+==============
+
+Implement at least four modes.
+
+MODE A — MODULE 1 ONLY
+
+Input:
+sample graph/text
+
+Output:
+semantic filtering
+
+Command:
+
+python -m demo.scripts.run_module1
+
+MODE B — MODULE 1 → MODULE 2
+
+Command:
+
+python -m demo.scripts.run_module2
+
+The script must use Module 1's generated artifact.
+
+MODE C — MODULE 1 → MODULE 2 → MODULE 3
+
+Command:
+
+python -m demo.scripts.run_module3
+
+MODE D — FULL END-TO-END
+
+Command:
+
+python -m demo.scripts.run_demo
+
+Pipeline:
+
+DATA
+↓
+MODULE 1
+↓
+MODULE 2
+↓
+MODULE 3
+↓
+FLAG/GNN
+↓
+RESULTS
+
+============================================================
+16. DEMO SHOULD BE SMALL AND FAST
+=================================
+
+Do NOT start by running the entire Reddit/Instagram dataset.
+
+Create a small demo configuration.
+
+For example:
+
+dataset:
+name: reddit
+max_nodes: configurable
+target_node: configurable
+
+sampling:
+hops: 2
+top_k: 5 or 10
+threshold: 0.0
+
+The demo must complete quickly enough for a team presentation.
+
+However:
+
+DO NOT permanently change the production/research configuration.
+
+Use:
+
+demo/configs/
+
+only.
+
+============================================================
+17. SUPPORT A SYNTHETIC DEMO DATASET
+====================================
+
+Create a tiny synthetic graph for deterministic testing.
+
+Example:
+
+nodes:
+A
+B
+C
+D
+E
+F
+
+with associated sample text.
+
+This lets us demonstrate:
+
+* semantic similarity
+* filtering
+* summarization
+* metapath construction
+* path weighting
+
+without requiring:
+
+* a large dataset
+* internet access
+* an LLM API
+* a GPU
+
+The synthetic demo must be clearly labelled:
+
+SYNTHETIC DEMONSTRATION ONLY
+
+It must never be mixed with actual research results.
+
+============================================================
+18. REAL DATA DEMO
+==================
+
+Once the synthetic demo works, add a small real-data demo.
+
+Preferred initial dataset:
+
+Reddit
+
+because the existing FLAG workflow supports text-rich Reddit data.
+
+Do not assume dataset availability.
+
+Inspect existing project data and FLAG's dataset handling.
+
+If the dataset is unavailable locally:
+
+do not download an arbitrary Reddit dataset.
+
+Instead provide a clear configuration/command showing where the expected data belongs.
+
+============================================================
+19. CPU-FIRST DEMO
+==================
+
+The demo MUST run on CPU.
+
+The default command must not require CUDA.
+
+For example:
+
+python -m demo.scripts.run_demo 
+--device cpu 
+--config demo/configs/synthetic_demo.yaml
+
+The demo should be fully demonstrable without:
+
+* NVIDIA GPU
+* CUDA
+* large LLM
+* API key
+
+For the real FLAG model:
+
+if the existing implementation requires GPU or a large model,
+make the dependency explicit.
+
+Do not pretend that full FLAG LLM inference is lightweight on CPU.
+
+============================================================
+20. GPU SUPPORT
+===============
+
+Also support:
+
+--device cuda:0
+
+and configuration-based device selection.
+
+Do not hard-code CUDA.
+
+If CUDA is unavailable:
+
+fall back to CPU only when explicitly configured to do so.
+
+============================================================
+21. LLM ABSTRACTION
+===================
+
+Create:
+
+demo/adapters/llm_adapter.py
+
+with an interface allowing:
+
+1. Existing FLAG/LLM implementation
+2. Local small model
+3. Deterministic demo backend
+4. Mock backend for tests
+
+Example:
+
+LLMBackend
+generate(...)
+summarize(...)
+extract(...)
+count_tokens(...)
+
+The demo should be runnable even when no external LLM API is available.
+
+============================================================
+22. EMBEDDING ABSTRACTION
+=========================
+
+Create:
+
+EmbeddingBackend
+
+allowing:
+
+* existing FLAG embedding pipeline
+* Sentence-BERT/local embedding
+* deterministic mock embeddings
+
+Again:
+
+do not modify FLAG.
+
+Use adapters.
+
+============================================================
+23. VISUAL DEMONSTRATION
+========================
+
+The demo is intended to SHOW the research idea.
+
+Therefore create visualizations for each stage.
+
+MODULE 1:
+
+Original graph
+vs
+filtered graph
+
+Highlight:
+target node
+selected neighbors
+removed neighbors
+
+MODULE 2:
+
+Show:
+
+Node
+Similarity
+Text granularity
+Token count
+
+Example visualization:
+
+Target → detailed
+Neighbor A → detailed
+Neighbor B → detailed
+Neighbor C → summary
+Neighbor D → summary
+
+MODULE 3:
+
+Show:
+
+metapath
+semantic edge weights
+final path weight
+retained/pruned status
+
+MODULE 4:
+
+Show:
+
+final graph
+prediction
+class
+confidence
+
+Use lightweight visualizations suitable for a project presentation.
+
+============================================================
+24. TERMINAL EXPERIENCE
+=======================
+
+Running:
+
+python -m demo.scripts.run_demo
+
+should produce a readable stage-by-stage output.
+
+Example:
+
+==================================================
+FLAG-EXTENSION RESEARCH DEMO
+============================
+
+Dataset:
+Reddit Demo
+
+Target:
+node_1042
+
+---
+
+## MODULE 1 — SEMANTIC FILTERING
+
+Original neighbors: 27
+Candidates: 27
+Selected: 10
+Threshold: 0.00
+
+[✓] Module 1 complete
+
+Artifact:
+results/module1/.../filtered_neighbors.json
+
+---
+
+## MODULE 2 — SELECTIVE SUMMARIZATION
+
+Input neighbors: 10
+Fine-grained: 4
+Summarized: 6
+
+Tokens before: ...
+Tokens after: ...
+Compression: ...
+
+[✓] Module 2 complete
+
+Artifact:
+results/module2/.../combined_context.json
+
+---
+
+## MODULE 3 — SEMANTIC-WEIGHTED METAPATH PRUNING
+
+Candidate paths: ...
+Retained: ...
+Down-weighted: ...
+Pruned: ...
+
+[✓] Module 3 complete
+
+Artifact:
+results/module3/.../final_graph.json
+
+---
+
+## MODEL
+
+Backend:
+Existing FLAG
+
+Prediction:
+...
+
+AUC:
+...
+
+F1:
+...
+
+==================================================
+DEMO COMPLETE
+=============
+
+Every value must come from actual execution.
+
+============================================================
+25. ARTIFACT MANIFEST
+=====================
+
+Create:
+
+run_manifest.json
+
+for every complete run.
+
+Example:
+
+{
+"run_id": "...",
+"timestamp": "...",
+"dataset": "...",
+"target_node": "...",
+"device": "cpu",
+"flag_commit": "...",
+"demo_commit": "...",
+"module1_config": "...",
+"module2_config": "...",
+"module3_config": "...",
+"artifacts": {
+"module1": "...",
+"module2": "...",
+"module3": "...",
+"prediction": "..."
+}
+}
+
+This should allow us to trace exactly how the final result was produced.
+
+============================================================
+26. RESEARCH PROVENANCE
+=======================
+
+Every output should identify its provenance.
+
+Use labels such as:
+
+OFFICIAL_FLAG
+FLAG_REUSED
+PROJECT_ADAPTER
+PROJECT_DEMO
+PROJECT_PROPOSED
+SYNTHETIC_DEMO
+APPROXIMATION
+UNKNOWN
+
+Do not blur these categories.
+
+Example:
+
+Module 1:
+FLAG_REUSED + PROJECT_ADAPTER
+
+Module 2:
+PROJECT_DEMO inspired by DGP
+
+Module 3:
+PROJECT_PROPOSED
+
+This distinction is essential for the final report.
+
+============================================================
+27. DO NOT CLAIM DGP IMPLEMENTATION WITHOUT VERIFICATION
+========================================================
+
+The project report identifies DGP as a base paper.
+
+Before using DGP code:
+
+* search for the official repository
+* verify authorship
+* inspect its license
+* inspect its implementation
+* inspect inputs/outputs
+* identify whether the implementation can actually be reused
+
+If verified:
+
+create a DGP adapter.
+
+If not verified:
+
+create a clean demo abstraction inspired by the paper, but explicitly label it:
+
+"DGP-inspired project prototype"
+
+Never label an approximation as "DGP".
+
+============================================================
+28. EXPERIMENTAL VARIANTS
+=========================
+
+The demo should eventually allow comparison between:
+
+BASELINE
+
+FLAG ONLY
+
+MODULE 1 ONLY
+
+MODULE 2 ONLY
+
+MODULE 1 → MODULE 2
+
+MODULE 1 → MODULE 3
+
+MODULE 1 → MODULE 2 → MODULE 3
+
+FLAG + MODULE 2
+
+FLAG + MODULE 2 + MODULE 3
+
+Only expose configurations that are actually meaningful.
+
+The goal is to make the incremental contribution visible.
+
+============================================================
+29. COMPARISON OUTPUT
+=====================
+
+Generate:
+
+demo/results/summary.csv
+
+with columns such as:
+
+run_id
+dataset
+configuration
+num_nodes
+num_edges
+tokens_before
+tokens_after
+compression_ratio
+num_paths
+paths_retained
+paths_pruned
+auc
+f1_macro
+runtime_seconds
+
+Also generate:
+
+demo/results/summary.json
+
+and a Markdown table:
+
+demo/results/summary.md
+
+Do not manufacture missing metrics.
+
+============================================================
+30. ERROR HANDLING
+==================
+
+The pipeline should fail gracefully.
+
+If Module 1 fails:
+
+DO NOT run Module 2.
+
+If Module 2 fails:
+
+DO NOT run Module 3.
+
+If Module 3 fails:
+
+DO NOT run the final model.
+
+Instead display:
+
+PIPELINE STOPPED
+
+Stage:
+MODULE 2
+
+Reason:
+...
+
+Output artifacts from earlier stages should remain available.
+
+This makes debugging and demonstrations much easier.
+
+============================================================
+31. RESUMABLE PIPELINE
+======================
+
+The pipeline should be resumable.
+
+Example:
+
+python -m demo.scripts.run_demo --stage module1
+
+then:
+
+python -m demo.scripts.run_demo --stage module2 
+--input <module1 artifact>
+
+then:
+
+python -m demo.scripts.run_demo --stage module3 
+--input <module2 artifact>
+
+Ideally the system can automatically detect previous artifacts.
+
+============================================================
+32. MAKE EVERYTHING CONFIGURABLE
+================================
+
+Do not hard-code:
+
+* target node
+* dataset
+* top-K
+* threshold
+* number of hops
+* summary ratio
+* pruning threshold
+* device
+* embedding model
+* LLM
+* output location
+
+Use YAML.
+
+Example:
+
+demo/configs/demo.yaml
+
+pipeline:
+modules:
+- module1
+- module2
+- module3
+- model
+
+dataset:
+name: synthetic
+
+hardware:
+device: cpu
+
+module1:
+top_k: 10
+threshold: 0.0
+hops: 2
+
+module2:
+enabled: true
+fine_neighbor_ratio: 0.4
+
+module3:
+enabled: true
+weighting: product
+
+model:
+backend: existing_flag
+
+============================================================
+33. UNIT TESTS
+==============
+
+Create tests for:
+
+Module 1:
+
+* similarity calculation
+* ranking
+* top-K
+* threshold
+
+Module 2:
+
+* receives Module 1 output
+* granularity assignment
+* token accounting
+* artifact creation
+
+Module 3:
+
+* metapath generation
+* semantic path weighting
+* pruning
+* normalization
+
+Pipeline:
+
+* Module 2 cannot run without Module 1 output
+* Module 3 cannot run without Module 2 output
+* final model cannot run without Module 3 output
+
+Most tests should use the synthetic dataset.
+
+============================================================
+34. INTEGRATION TEST
+====================
+
+Create:
+
+python -m demo.scripts.run_smoke_test
+
+It should run:
+
+Synthetic Input
+↓
+Module 1
+↓
+Module 2
+↓
+Module 3
+↓
+Mock/Existing Model Adapter
+↓
+Result
+
+The smoke test must work on CPU.
+
+============================================================
+35. DEMO DOCUMENTATION
+======================
+
+Write:
+
+demo/README.md
+
+Explain in plain language:
+
+What this demo is
+What this demo is NOT
+How it reuses FLAG
+How Module 1 works
+How Module 2 works
+How Module 3 works
+How data flows between them
+How to run CPU mode
+How to run GPU mode
+How to run synthetic mode
+How to run Reddit demo mode
+Where outputs are stored
+How to inspect intermediate artifacts
+What is official
+What is adapted
+What is our project's proposed contribution
+
+============================================================
+36. ARCHITECTURE DOCUMENT
+=========================
+
+Create:
+
+demo/docs/architecture.md
+
+Include an ASCII architecture diagram:
+
+```
+                INPUT GRAPH
+                    |
+                    v
+         +-----------------------+
+         | MODULE 1              |
+         | Semantic Filtering    |
+         | FLAG-derived          |
+         +-----------------------+
+                    |
+                    | filtered graph
+                    v
+         +-----------------------+
+         | MODULE 2              |
+         | Selective /           |
+         | Hierarchical          |
+         | Summarization         |
+         +-----------------------+
+                    |
+                    | summarized context
+                    v
+         +-----------------------+
+         | MODULE 3              |
+         | Semantic-Weighted     |
+         | Metapath Pruning      |
+         +-----------------------+
+                    |
+                    | final graph/context
+                    v
+         +-----------------------+
+         | EXISTING FLAG / GNN   |
+         +-----------------------+
+                    |
+                    v
+                PREDICTION
+                    |
+                    v
+                 RESULTS
+```
+
+============================================================
+37. IMPORTANT: PRESERVE EXISTING RESEARCH CODE
+==============================================
+
+Before modifying ANY existing file outside demo/:
+
+STOP.
+
+Determine whether the change is absolutely necessary.
+
+Default assumption:
+
+NO modification is allowed.
+
+If integration requires a tiny change:
+
+do NOT make it directly.
+
+Instead:
+
+* create an adapter
+* monkey-patch only inside the demo if safe
+* or add a wrapper
+* or import existing functions
+
+If none of those approaches work:
+
+document the blocker in:
+
+demo/docs/limitations.md
+
+and ask the project owner before modifying existing FLAG code.
+
+============================================================
+38. GIT SAFETY
+==============
+
+Before implementation:
+
+record the current git status.
+
+Create a baseline report:
+
+demo/docs/git_baseline.txt
+
+including:
+
+git status
+git branch
+git commit
+repository structure
+
+After implementation:
+
+verify that all pre-existing FLAG files have remained unchanged.
+
+Use git diff.
+
+Produce:
+
+demo/docs/non_destructive_verification.md
+
+containing:
+
+* files changed
+* files added
+* files deleted
+* confirmation that original FLAG source files were not modified
+
+If existing FLAG files changed unexpectedly:
+
+* STOP
+* restore only changes introduced by your work if you can identify them safely
+* do not overwrite user changes
+* report the issue
+
+============================================================
+39. PROFESSIONAL LOGGING
+========================
+
+Every stage should log:
+
+run_id
+stage
+dataset
+target node
+device
+input artifact
+output artifact
+runtime
+status
+
+Use structured logs where practical.
+
+Example:
+
+demo/logs/<run_id>.jsonl
+
+============================================================
+40. DO NOT BUILD EVERYTHING AT ONCE
+===================================
+
+Implement incrementally.
+
+Stage 1:
+repository audit
+
+Stage 2:
+synthetic data
+
+Stage 3:
+pipeline contracts
+
+Stage 4:
+Module 1
+
+Stage 5:
+Module 1 visualization
+
+Stage 6:
+Module 2
+
+Stage 7:
+Module 2 visualization
+
+Stage 8:
+Module 3
+
+Stage 9:
+Module 3 visualization
+
+Stage 10:
+FLAG adapter
+
+Stage 11:
+end-to-end pipeline
+
+Stage 12:
+Reddit demo
+
+Stage 13:
+testing/documentation
+
+Do not create huge amounts of code before verifying each stage.
+
+============================================================
+41. USE SUBAGENTS WHERE HELPFUL
+===============================
+
+Use subagents for independent tasks such as:
+
+Subagent 1:
+audit existing FLAG
+
+Subagent 2:
+identify reusable FLAG interfaces
+
+Subagent 3:
+research DGP implementation/repository
+
+Subagent 4:
+inspect existing dataset loaders
+
+Subagent 5:
+design artifact contracts
+
+Subagent 6:
+review demo architecture
+
+Subagent 7:
+test CPU execution
+
+Subagent 8:
+review that no FLAG files were modified
+
+Do not let multiple agents modify the same files concurrently.
+
+Use parallel investigation, but centralized integration.
+
+============================================================
+42. REQUIRED FINAL OUTPUT
+=========================
+
+At completion, the repository should support:
+
+COMMAND 1:
+
+python -m demo.scripts.run_smoke_test
+
+Runs synthetic CPU demo.
+
+COMMAND 2:
+
+python -m demo.scripts.run_demo 
+--config demo/configs/synthetic_demo.yaml
+
+Runs:
+
+Module 1
+→ Module 2
+→ Module 3
+→ model
+
+COMMAND 3:
+
+python -m demo.scripts.run_module1 
+--config demo/configs/reddit_demo.yaml
+
+Runs only Module 1.
+
+COMMAND 4:
+
+python -m demo.scripts.run_module2 
+--input <module1 artifact>
+
+COMMAND 5:
+
+python -m demo.scripts.run_module3 
+--input <module2 artifact>
+
+Every command must produce inspectable outputs.
+
+============================================================
+43. FINAL REPORT
+================
+
+Create:
+
+demo/docs/final_demo_report.md
+
+Include:
+
+1. Existing FLAG implementation reused
+2. Existing FLAG files left unchanged
+3. Module 1 implementation
+4. Module 2 implementation
+5. Module 3 implementation
+6. Data-flow mechanism
+7. Artifact format
+8. CPU test
+9. GPU test if available
+10. Synthetic demo result
+11. Real-data demo result if available
+12. Runtime
+13. Token accounting
+14. Limitations
+15. Components that are official
+16. Components adapted from literature
+17. Components proposed by our team
+18. What remains for full-scale experiments
+
+============================================================
+44. FINAL QUALITY CHECK
+=======================
+
+Before declaring the task complete, verify:
+
+[ ] Existing FLAG source remains unchanged
+[ ] Demo lives in separate directory
+[ ] Module 1 works
+[ ] Module 1 output is saved
+[ ] Module 2 consumes Module 1 output
+[ ] Module 2 output is saved
+[ ] Module 3 consumes Module 2 output
+[ ] Module 3 output is saved
+[ ] Final model consumes Module 3 output
+[ ] Synthetic demo works
+[ ] CPU demo works
+[ ] GPU demo works if CUDA is available
+[ ] Intermediate files are human-readable
+[ ] Graph visualizations are generated
+[ ] Token accounting exists
+[ ] Provenance is recorded
+[ ] Pipeline is resumable
+[ ] Errors stop downstream execution
+[ ] Unit tests pass
+[ ] Smoke test passes
+[ ] README exists
+[ ] Architecture documentation exists
+[ ] Limitations are documented
+[ ] Git diff confirms FLAG was not modified
+
+============================================================
+45. MOST IMPORTANT CONCEPT
+==========================
+
+Do not think of this task as:
+
+"implement FLAG again."
+
+Think of it as:
+
+"Build a research demonstration/orchestration layer that wraps the existing FLAG implementation and experimentally demonstrates our proposed pipeline."
+
+The demo must visually and programmatically show:
+
+```
+         ORIGINAL DATA
+               |
+               v
+    ┌──────────────────────┐
+    │ MODULE 1             │
+    │ Semantic Filtering   │
+    │ FLAG-derived         │
+    └──────────────────────┘
+               |
+               | filtered neighbors
+               v
+    ┌──────────────────────┐
+    │ MODULE 2             │
+    │ Selective /          │
+    │ Hierarchical         │
+    │ Summarization        │
+    └──────────────────────┘
+               |
+               | summarized context
+               v
+    ┌──────────────────────┐
+    │ MODULE 3             │
+    │ Semantic-Weighted    │
+    │ Metapath Pruning     │
+    └──────────────────────┘
+               |
+               | final representation
+               v
+    ┌──────────────────────┐
+    │ EXISTING FLAG/GNN    │
+    └──────────────────────┘
+               |
+               v
+           RESULTS
+```
+
+Every arrow must represent a REAL data dependency.
+
+Every stage must have:
+
+* input
+* processing
+* output
+* saved artifact
+* metadata
+* visual/log representation
+
+Do not fake this flow by simply running independent scripts sequentially.
+
+============================================================
+46. START NOW
+=============
+
+Start by:
+
+1. Inspecting the repository.
+2. Identifying the existing FLAG implementation.
+3. Recording git status.
+4. Auditing the existing FLAG implementation.
+5. Reading the project initiation report carefully.
+6. Determining what can safely be reused.
+7. Creating only the demo/ directory initially.
+8. Implementing the synthetic end-to-end pipeline first.
+9. Verifying Module 1 → Module 2 → Module 3 data flow.
+10. Only then connecting the pipeline to the existing FLAG implementation.
+
+Do not modify existing FLAG code.
+
+Do not claim success until the pipeline has actually executed.
+
+When something is uncertain, investigate it.
+
+When something is not implemented, explicitly state:
+
+NOT IMPLEMENTED
+
+rather than producing a fake result.
+
+When something is an approximation, label it:
+
+APPROXIMATION
+
+When something is the team's proposed research idea, label it:
+
+PROJECT PROPOSED
+
+When something comes directly from existing FLAG code, label it:
+
+FLAG REUSED
+
+The goal is a clean, demonstrable, traceable research prototype that can later evolve into the full experimental implementation without destroying the existing FLAG implementation.
