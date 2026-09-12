@@ -44,14 +44,14 @@ python -m scripts.smoke_test
 
 echo "[7/14] Authenticating with Hugging Face"
 if [ -z "${HF_TOKEN:-}" ]; then
-  echo "HF_TOKEN is missing. Put it in .env or export it before running this script."
+  read -r -s -p "Paste your Hugging Face read token: " HF_TOKEN
+  echo
+fi
+if [ -z "$HF_TOKEN" ]; then
+  echo "ERROR: no Hugging Face token was provided."
   exit 1
 fi
-if command -v huggingface-cli >/dev/null 2>&1; then
-  huggingface-cli login --token "$HF_TOKEN" --add-to-git-credential
-else
-  hf auth login --token "$HF_TOKEN"
-fi
+hf auth login --token "$HF_TOKEN" --add-to-git-credential
 
 echo "[8/14] Downloading GLBench datasets"
 python -m scripts.download.glbench --dataset all
