@@ -38,6 +38,10 @@ if [ -f .env ]; then
   set +a
 fi
 
+# The benchmark and sampling caches are trusted PyG Data objects. This keeps
+# PyTorch 2.6+ from applying weights_only=True to those legacy artifacts.
+export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
+
 PYTHON="${PYTHON:-python}"
 if [ -x ".venv-gpu/bin/python" ]; then
   PYTHON=".venv-gpu/bin/python"

@@ -48,6 +48,10 @@ fi
 
 export FLAG_DEVICE="cuda:0"
 export HF_HOME="${HF_HOME:-$ROOT/.cache/huggingface}"
+# GLBench and this project's cached PyG graphs are trusted pickled Data objects.
+# PyTorch 2.6+ otherwise defaults torch.load() to weights_only=True and rejects
+# those files before preprocessing can inspect them.
+export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 if should_run 1; then
   echo "[1/15] Checking GPU"
