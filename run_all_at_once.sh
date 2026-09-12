@@ -5,6 +5,40 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
+START_STEP=1
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --from-step)
+      [ "$#" -ge 2 ] || { echo "ERROR: --from-step needs a number"; exit 2; }
+      START_STEP="$2"
+      shift 2
+      ;;
+    --from-step=*)
+      START_STEP="${1#*=}"
+      shift
+      ;;
+    -h|--help)
+      echo "Usage: $0 [--from-step N]"
+      echo "  --from-step N  resume at step N (1-15); completed earlier steps are skipped"
+      exit 0
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1"
+      echo "Usage: $0 [--from-step N]"
+      exit 2
+      ;;
+  esac
+done
+
+if ! [[ "$START_STEP" =~ ^[0-9]+$ ]] || [ "$START_STEP" -lt 1 ] || [ "$START_STEP" -gt 15 ]; then
+  echo "ERROR: --from-step must be an integer from 1 to 15"
+  exit 2
+fi
+
+should_run() {
+  [ "$START_STEP" -le "$1" ]
+}
+
 if [ -f .env ]; then
   set -a
   # shellcheck disable=SC1091
@@ -15,28 +49,41 @@ fi
 export FLAG_DEVICE="cuda:0"
 export HF_HOME="${HF_HOME:-$ROOT/.cache/huggingface}"
 
-echo "[1/15] Checking GPU"
-nvidia-smi
+if should_run 1; then
+  echo "[1/15] Checking GPU"
+  nvidia-smi
+fi
 
-echo "[2/15] Installing the pinned GPU environment"
-VENV=.venv-gpu bash scripts/setup/install_gpu.sh
+if should_run 2; then
+  echo "[2/15] Installing the pinned GPU environment"
+  VENV=.venv-gpu bash scripts/setup/install_gpu.sh
+fi
 
-echo "[3/15] Activating the GPU environment"
+if [ ! -x .venv-gpu/bin/python ]; then
+  echo "ERROR: .venv-gpu is missing. Run without --from-step first."
+  exit 1
+fi
 # shellcheck disable=SC1091
 source .venv-gpu/bin/activate
+echo "[3/15] GPU environment activated"
 
-echo "[4/15] Pinning the compatible Transformers stack"
-python -m pip install --force-reinstall --no-cache-dir \
-  "transformers==4.44.2" \
-  "sentence-transformers==3.0.1" \
-  "peft==0.12.0"
+if should_run 4; then
+  echo "[4/15] Pinning the compatible Transformers stack"
+  python -m pip install --force-reinstall --no-cache-dir \
+    "transformers==4.44.2" \
+    "sentence-transformers==3.0.1" \
+    "peft==0.12.0"
+fi
 
-echo "[5/15] Fetching pinned upstream repositories"
-bash scripts/setup/fetch_methods.sh
-bash scripts/setup/fetch_methods.sh --verify
+if should_run 5; then
+  echo "[5/15] Fetching pinned upstream repositories"
+  bash scripts/setup/fetch_methods.sh
+  bash scripts/setup/fetch_methods.sh --verify
+fi
 
-echo "[6/15] Verifying CUDA and the runtime"
-python - <<'PY'
+if should_run 6; then
+  echo "[6/15] Verifying CUDA and the runtime"
+  python - <<'PY'
 import torch
 
 assert torch.cuda.is_available(), "CUDA is unavailable"
@@ -44,60 +91,78 @@ print("torch:", torch.__version__)
 print("cuda:", torch.version.cuda)
 print("gpu:", torch.cuda.get_device_name(0))
 PY
-
-echo "[7/15] Running the smoke test"
-python -m scripts.smoke_test
-
-echo "[8/15] Authenticating with Hugging Face"
-if [ -z "${HF_TOKEN:-}" ]; then
-  read -r -s -p "Paste your Hugging Face read token: " HF_TOKEN
-  echo
 fi
-if [ -z "$HF_TOKEN" ]; then
-  echo "ERROR: no Hugging Face token was provided."
-  exit 1
+
+if should_run 7; then
+  echo "[7/15] Running the smoke test"
+  python -m scripts.smoke_test
 fi
-hf auth login --token "$HF_TOKEN" --add-to-git-credential
 
-echo "[9/15] Downloading GLBench datasets"
-python -m scripts.download.glbench --dataset all
+if should_run 8; then
+  echo "[8/15] Authenticating with Hugging Face"
+  if [ -z "${HF_TOKEN:-}" ]; then
+    read -r -s -p "Paste your Hugging Face read token: " HF_TOKEN
+    echo
+  fi
+  if [ -z "$HF_TOKEN" ]; then
+    echo "ERROR: no Hugging Face token was provided."
+    exit 1
+  fi
+  hf auth login --token "$HF_TOKEN" --add-to-git-credential
+fi
 
-echo "[10/15] Building the 1:10 benchmark datasets"
-python -m scripts.preprocess.build_benchmark --dataset all
+if should_run 9; then
+  echo "[9/15] Downloading GLBench datasets"
+  python -m scripts.download.glbench --dataset all
+fi
 
-echo "[11/15] Encoding benchmark text with Sentence-BERT on the GPU"
-python -m scripts.preprocess.encode_text \
-  --dataset all \
-  --device cuda:0 \
-  --batch-size 128
+if should_run 10; then
+  echo "[10/15] Building the 1:10 benchmark datasets"
+  python -m scripts.preprocess.build_benchmark --dataset all
+fi
 
-echo "[12/15] Building semantic FLAG subgraphs"
-python -m scripts.preprocess.sample_subgraphs --dataset all
+if should_run 11; then
+  echo "[11/15] Encoding benchmark text with Sentence-BERT on the GPU"
+  python -m scripts.preprocess.encode_text \
+    --dataset all \
+    --device cuda:0 \
+    --batch-size 128
+fi
 
-echo "[13/15] Building ordinary baseline subgraphs"
-python -m scripts.preprocess.sample_subgraphs \
-  --dataset all \
-  --strategy none
+if should_run 12; then
+  echo "[12/15] Building semantic FLAG subgraphs"
+  python -m scripts.preprocess.sample_subgraphs --dataset all
+fi
 
-echo "[14/15] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
-python -m scripts.llm.generate_text \
-  --dataset reddit \
-  --kind discriminative \
-  --device cuda:0 \
-  --dry-run
-python -m scripts.llm.generate_text \
-  --dataset reddit \
-  --kind discriminative \
-  --device cuda:0 \
-  --limit 20
+if should_run 13; then
+  echo "[13/15] Building ordinary baseline subgraphs"
+  python -m scripts.preprocess.sample_subgraphs \
+    --dataset all \
+    --strategy none
+fi
 
-echo "[15/15] Generating complete LLM caches in parallel across visible GPUs"
-NUM_GPUS="${NUM_GPUS:-$(nvidia-smi --query-gpu=index --format=csv,noheader | wc -l | tr -d ' ')}" \
-GENERATE_ARGS="${GENERATE_ARGS:---truncate-chars 300 --max-new-tokens 64 --force}" \
-  bash scripts/setup/run_multi_gpu_llm.sh
+if should_run 14; then
+  echo "[14/15] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
+  python -m scripts.llm.generate_text \
+    --dataset reddit \
+    --kind discriminative \
+    --device cuda:0 \
+    --dry-run
+  python -m scripts.llm.generate_text \
+    --dataset reddit \
+    --kind discriminative \
+    --device cuda:0 \
+    --limit 20
+fi
 
-echo "Verifying generated LLM cache checksums"
-python - <<'PY'
+if should_run 15; then
+  echo "[15/15] Generating complete LLM caches in parallel across visible GPUs"
+  NUM_GPUS="${NUM_GPUS:-$(nvidia-smi --query-gpu=index --format=csv,noheader | wc -l | tr -d ' ')}" \
+  GENERATE_ARGS="${GENERATE_ARGS:---truncate-chars 300 --max-new-tokens 64 --force}" \
+    bash scripts/setup/run_multi_gpu_llm.sh
+
+  echo "Verifying generated LLM cache checksums"
+  python - <<'PY'
 import hashlib
 import json
 from pathlib import Path
@@ -116,6 +181,7 @@ for manifest_path in manifests:
         raise SystemExit(f"Checksum mismatch: {output_path}")
     print(f"OK {output_path} | coverage={coverage:.1f}%")
 PY
+  fi
 
 echo
 echo "Completed dataset preparation and GPU LLM generation."
