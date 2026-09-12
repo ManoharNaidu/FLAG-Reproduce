@@ -25,11 +25,17 @@ echo "[3/14] Activating the GPU environment"
 # shellcheck disable=SC1091
 source .venv-gpu/bin/activate
 
-echo "[4/14] Fetching pinned upstream repositories"
+echo "[4/14] Pinning the compatible Transformers stack"
+python -m pip install --force-reinstall --no-cache-dir \
+  "transformers==4.44.2" \
+  "sentence-transformers==3.0.1" \
+  "peft==0.12.0"
+
+echo "[5/14] Fetching pinned upstream repositories"
 bash scripts/setup/fetch_methods.sh
 bash scripts/setup/fetch_methods.sh --verify
 
-echo "[5/14] Verifying CUDA and the runtime"
+echo "[6/14] Verifying CUDA and the runtime"
 python - <<'PY'
 import torch
 
@@ -39,10 +45,10 @@ print("cuda:", torch.version.cuda)
 print("gpu:", torch.cuda.get_device_name(0))
 PY
 
-echo "[6/14] Running the smoke test"
+echo "[7/14] Running the smoke test"
 python -m scripts.smoke_test
 
-echo "[7/14] Authenticating with Hugging Face"
+echo "[8/14] Authenticating with Hugging Face"
 if [ -z "${HF_TOKEN:-}" ]; then
   read -r -s -p "Paste your Hugging Face read token: " HF_TOKEN
   echo
@@ -53,27 +59,27 @@ if [ -z "$HF_TOKEN" ]; then
 fi
 hf auth login --token "$HF_TOKEN" --add-to-git-credential
 
-echo "[8/14] Downloading GLBench datasets"
+echo "[9/14] Downloading GLBench datasets"
 python -m scripts.download.glbench --dataset all
 
-echo "[9/14] Building the 1:10 benchmark datasets"
+echo "[10/14] Building the 1:10 benchmark datasets"
 python -m scripts.preprocess.build_benchmark --dataset all
 
-echo "[10/14] Encoding benchmark text with Sentence-BERT on the GPU"
+echo "[11/14] Encoding benchmark text with Sentence-BERT on the GPU"
 python -m scripts.preprocess.encode_text \
   --dataset all \
   --device cuda:0 \
   --batch-size 128
 
-echo "[11/14] Building semantic FLAG subgraphs"
+echo "[12/14] Building semantic FLAG subgraphs"
 python -m scripts.preprocess.sample_subgraphs --dataset all
 
-echo "[12/14] Building ordinary baseline subgraphs"
+echo "[13/14] Building ordinary baseline subgraphs"
 python -m scripts.preprocess.sample_subgraphs \
   --dataset all \
   --strategy none
 
-echo "[13/14] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
+echo "[14/14] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
 python -m scripts.llm.generate_text \
   --dataset reddit \
   --kind discriminative \
@@ -85,7 +91,7 @@ python -m scripts.llm.generate_text \
   --device cuda:0 \
   --limit 20
 
-echo "[14/14] Generating the complete discriminative and residual LLM cache"
+echo "[15/15] Generating the complete discriminative and residual LLM cache"
 python -m scripts.llm.generate_text \
   --dataset all \
   --kind both \

@@ -17,13 +17,15 @@
 # Usage (from repo root, on the GPU instance, after install_gpu.sh and
 # fetch_methods.sh have already been run):
 #   bash scripts/setup/run_multi_gpu_llm.sh
+#   DATASET=reddit bash scripts/setup/run_multi_gpu_llm.sh
+#   DATASET=instagram bash scripts/setup/run_multi_gpu_llm.sh
 #   NUM_GPUS=2 bash scripts/setup/run_multi_gpu_llm.sh        # override autodetect
 #   GENERATE_ARGS="--limit 20" bash scripts/setup/run_multi_gpu_llm.sh   # smoke test first
 #
-# With 4 GPUs, all four jobs run at once (wall time ~= the slowest single
-# job instead of the sum of all four). With fewer GPUs, jobs are grouped onto
-# each GPU and run sequentially within that GPU -- never more than one job per
-# GPU at a time, so this is safe with any NUM_GPUS from 1 upward.
+# With DATASET=reddit and 2 GPUs, Reddit discriminative and residual generation
+# run at the same time, one job per GPU. With 4 GPUs and DATASET=all, all four
+# dataset/kind jobs run at once. With fewer GPUs, jobs are grouped onto each
+# GPU and run sequentially within that GPU -- never more than one job per GPU.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -54,6 +56,15 @@ if [ "$NUM_GPUS" -lt 1 ]; then
   exit 1
 fi
 
+DATASET="${DATASET:-all}"
+case "$DATASET" in
+  reddit|instagram|all) ;;
+  *)
+    echo "ERROR: DATASET must be reddit, instagram, or all; got: $DATASET"
+    exit 2
+    ;;
+esac
+
 echo "=============================================================="
 echo "Multi-GPU LLM generation"
 echo "=============================================================="
@@ -61,14 +72,21 @@ nvidia-smi --query-gpu=index,name,memory.total --format=csv,noheader
 echo "  using $NUM_GPUS of the above GPU(s)"
 echo
 
-# The four independent (dataset, kind) jobs. Order doesn't matter -- they
-# share no state and are distributed round-robin across GPUs below.
-JOBS=(
-  "reddit discriminative"
-  "reddit residual"
-  "instagram discriminative"
-  "instagram residual"
-)
+# Independent (dataset, kind) jobs. DATASET=reddit or DATASET=instagram is
+# useful when exactly two GPUs should process both kinds of one dataset at once.
+if [ "$DATASET" = "all" ]; then
+  JOBS=(
+    "reddit discriminative"
+    "reddit residual"
+    "instagram discriminative"
+    "instagram residual"
+  )
+else
+  JOBS=(
+    "$DATASET discriminative"
+    "$DATASET residual"
+  )
+fi
 
 mkdir -p logs/llm
 pids=()
