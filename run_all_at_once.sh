@@ -6,6 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
 START_STEP=1
+SKIP_SMOKE=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --from-step)
@@ -17,9 +18,14 @@ while [ "$#" -gt 0 ]; do
       START_STEP="${1#*=}"
       shift
       ;;
+    --skip-smoke)
+      SKIP_SMOKE=1
+      shift
+      ;;
     -h|--help)
       echo "Usage: $0 [--from-step N]"
-      echo "  --from-step N  resume at step N (1-15); completed earlier steps are skipped"
+      echo "  --from-step N  resume at step N (1-16); completed earlier steps are skipped"
+      echo "  --skip-smoke   skip step 14 explicitly (not recommended)"
       exit 0
       ;;
     *)
@@ -30,8 +36,8 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-if ! [[ "$START_STEP" =~ ^[0-9]+$ ]] || [ "$START_STEP" -lt 1 ] || [ "$START_STEP" -gt 15 ]; then
-  echo "ERROR: --from-step must be an integer from 1 to 15"
+if ! [[ "$START_STEP" =~ ^[0-9]+$ ]] || [ "$START_STEP" -lt 1 ] || [ "$START_STEP" -gt 16 ]; then
+  echo "ERROR: --from-step must be an integer from 1 to 16"
   exit 2
 fi
 
@@ -54,12 +60,12 @@ export HF_HOME="${HF_HOME:-$ROOT/.cache/huggingface}"
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 if should_run 1; then
-  echo "[1/15] Checking GPU"
+  echo "[1/16] Checking GPU"
   nvidia-smi
 fi
 
 if should_run 2; then
-  echo "[2/15] Installing the pinned GPU environment"
+  echo "[2/16] Installing the pinned GPU environment"
   VENV=.venv-gpu bash scripts/setup/install_gpu.sh
 fi
 
@@ -69,10 +75,10 @@ if [ ! -x .venv-gpu/bin/python ]; then
 fi
 # shellcheck disable=SC1091
 source .venv-gpu/bin/activate
-echo "[3/15] GPU environment activated"
+echo "[3/16] GPU environment activated"
 
 if should_run 4; then
-  echo "[4/15] Pinning the compatible Transformers stack"
+  echo "[4/16] Pinning the compatible Transformers stack"
   python -m pip install --force-reinstall --no-cache-dir \
     "transformers==4.44.2" \
     "sentence-transformers==3.0.1" \
@@ -80,13 +86,13 @@ if should_run 4; then
 fi
 
 if should_run 5; then
-  echo "[5/15] Fetching pinned upstream repositories"
+  echo "[5/16] Fetching pinned upstream repositories"
   bash scripts/setup/fetch_methods.sh
   bash scripts/setup/fetch_methods.sh --verify
 fi
 
 if should_run 6; then
-  echo "[6/15] Verifying CUDA and the runtime"
+  echo "[6/16] Verifying CUDA and the runtime"
   python - <<'PY'
 import torch
 
@@ -97,13 +103,8 @@ print("gpu:", torch.cuda.get_device_name(0))
 PY
 fi
 
-if should_run 7; then
-  echo "[7/15] Running the smoke test"
-  python -m scripts.smoke_test
-fi
-
 if should_run 8; then
-  echo "[8/15] Authenticating with Hugging Face"
+  echo "[8/16] Authenticating with Hugging Face"
   if [ -z "${HF_TOKEN:-}" ]; then
     read -r -s -p "Paste your Hugging Face read token: " HF_TOKEN
     echo
@@ -116,17 +117,17 @@ if should_run 8; then
 fi
 
 if should_run 9; then
-  echo "[9/15] Downloading GLBench datasets"
+  echo "[9/16] Downloading GLBench datasets"
   python -m scripts.download.glbench --dataset all
 fi
 
 if should_run 10; then
-  echo "[10/15] Building the 1:10 benchmark datasets"
+  echo "[10/16] Building the 1:10 benchmark datasets"
   python -m scripts.preprocess.build_benchmark --dataset all
 fi
 
 if should_run 11; then
-  echo "[11/15] Encoding benchmark text with Sentence-BERT on the GPU"
+  echo "[11/16] Encoding benchmark text with Sentence-BERT on the GPU"
   python -m scripts.preprocess.encode_text \
     --dataset all \
     --device cuda:0 \
@@ -134,19 +135,26 @@ if should_run 11; then
 fi
 
 if should_run 12; then
-  echo "[12/15] Building semantic FLAG subgraphs"
+  echo "[12/16] Building semantic FLAG subgraphs"
   python -m scripts.preprocess.sample_subgraphs --dataset all
 fi
 
 if should_run 13; then
-  echo "[13/15] Building ordinary baseline subgraphs"
+  echo "[13/16] Building ordinary baseline subgraphs"
   python -m scripts.preprocess.sample_subgraphs \
     --dataset all \
     --strategy none
 fi
 
-if should_run 14; then
-  echo "[14/15] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
+if should_run 14 && [ "$SKIP_SMOKE" -eq 0 ]; then
+  echo "[14/16] Running the smoke test after data preparation"
+  python -m scripts.smoke_test
+elif should_run 14; then
+  echo "[14/16] Smoke test skipped by --skip-smoke"
+fi
+
+if should_run 15; then
+  echo "[15/16] Dry-running the LLM prompt and smoke-generating 20 Reddit subgraphs"
   python -m scripts.llm.generate_text \
     --dataset reddit \
     --kind discriminative \
@@ -159,8 +167,8 @@ if should_run 14; then
     --limit 20
 fi
 
-if should_run 15; then
-  echo "[15/15] Generating complete LLM caches in parallel across visible GPUs"
+if should_run 16; then
+  echo "[16/16] Generating complete LLM caches in parallel across visible GPUs"
   NUM_GPUS="${NUM_GPUS:-$(nvidia-smi --query-gpu=index --format=csv,noheader | wc -l | tr -d ' ')}" \
   GENERATE_ARGS="${GENERATE_ARGS:---truncate-chars 300 --max-new-tokens 64 --force}" \
     bash scripts/setup/run_multi_gpu_llm.sh
