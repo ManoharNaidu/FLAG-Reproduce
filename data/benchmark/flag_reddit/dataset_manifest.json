@@ -101,7 +101,7 @@
     "raw_file": "data/raw/reddit/reddit.pt",
     "raw_sha256": "b655cc08693b59ff45cfa89ca06ee7c7c5c91c63716af583198ae047d3d02be3"
   },
-  "built_at": "2026-09-11T03:39:39+00:00",
+  "built_at": "2026-09-12T15:10:48+00:00",
   "output_file": "data/benchmark/flag_reddit/graph.pt",
-  "output_sha256": "863bf81003224e43fcc90faa2c75520bd5bd7575022cbaf5d67d8d569c4d2ce5"
+  "output_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8"
 }
