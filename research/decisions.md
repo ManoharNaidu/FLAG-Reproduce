@@ -158,6 +158,69 @@ must be passed via environment, never committed. `.env` is git-ignored and
 
 ---
 
+## D-004 — Production LLM cache uses a reduced decode budget, not the paper-faithful one
+
+**Ambiguity.** `enhance.py`'s `LLMConfig` defaults to the upstream-faithful
+`max_new_tokens=550, truncate_chars=1200` (verified against `chat.py`). At those
+settings, a full-corpus generation run (measured empirically on this vast.ai
+instance, 2026-09-15, faithful pilot at `--limit 50`) costs roughly:
+
+| dataset/kind | measured rate | full-corpus estimate |
+|---|---|---|
+| reddit residual | 10.2 s/subgraph | 18,389 subgraphs -> ~52h |
+| reddit discriminative | ~similar (assumed) | ~51h |
+| instagram discriminative | 50-66 s/subgraph | 7,946 subgraphs -> ~120h |
+| instagram residual | ~similar (assumed) | ~120h |
+
+-- roughly **10-14 GPU-days across the 4 (dataset x kind) combinations**, at
+vast.ai A100 rates on the order of several hundred to ~$1,000. The maintainer
+judged that cost disproportionate to a reproduction whose own protocol (D-003)
+already tolerates partial LLM-text coverage (a subgraph whose generation fails
+the format check falls back to raw-text embeddings, never a fabricated
+substitute).
+
+### DECISION: the production `cache/llm/` corpus was generated at `max_new_tokens=64, truncate_chars=300`
+
+All four full-corpus caches actually committed to this repo used this reduced
+budget, generated in ~9-20h per combination instead of the estimate above:
+
+| dataset/kind | subgraphs | format success | **node coverage** |
+|---|---:|---:|---:|
+| reddit discriminative | 18,389 | 27.7% | 4.4% |
+| reddit residual | 18,389 | 40.9% | 12.4% |
+| instagram discriminative | 7,946 | 19.6% | 0.6% |
+| instagram residual | 7,946 | 22.1% | 0.9% |
+
+**Consequences committed to.**
+
+1. `flagbench.experiments.runner._llm_embeddings_path` looks up the LLM cache
+   using this reduced config (`PRODUCTION_LLM_CONFIG`), not `LLMConfig()`'s
+   faithful default -- otherwise it would silently miss the corpus that was
+   actually generated and refuse every `flag`/`flag_finetuned` run.
+2. With coverage this low, `+FLAG` and `+FLAG*` results are, for the large
+   majority of subgraphs, the documented raw-text fallback -- they are a much
+   weaker test of the method than Table 4's, and this must be stated
+   alongside any reported number, not left implicit in a coverage column
+   nobody reads.
+3. `RunResult.extra["feature_source"]` and the LLM cache's own
+   `.manifest.json` (`stats.node_coverage`, `stats.subgraph_success_rate`)
+   remain the source of truth per run; no result row claims full coverage.
+4. **Reversible.** Regenerating at the faithful 550/1200 budget (decision
+   D-003's original intent) only requires re-running
+   `scripts.llm.generate_text` with `--force` (the cache key does not encode
+   `--limit`, so a full run must force past any smaller cache at the same
+   key) and re-pointing `PRODUCTION_LLM_CONFIG`. Nothing about the
+   architecture changes.
+
+**Rejected.** Keeping `+FLAG`/`+FLAG*` `BLOCKED` until a faithful-budget
+corpus could be afforded was rejected: the reduced-budget corpus still
+produces genuine (if low-coverage) `+FLAG` numbers under the same
+never-substitute discipline as everything else in this project, and blocking
+indefinitely was judged worse than reporting a clearly-labelled, weaker
+result.
+
+---
+
 ## Standing decisions (not escalated — recorded for traceability)
 
 These were judgement calls made without escalation, because a defensible default

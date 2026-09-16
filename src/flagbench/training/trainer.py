@@ -35,6 +35,7 @@ from flagbench.metrics.classification import (
     fit_threshold,
     threshold_metrics,
 )
+from flagbench.training.flag_losses import non_causal_loss, orthogonal_loss
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,33 @@ class TrainConfig:
 
 
 @dataclass
+class FinetuneConfig:
+    """Decision D-001's reproduction of `+FLAG*`: extra GNN epochs under the
+    residual + orthogonality losses, with the LLM frozen (`train.py`'s LoRA
+    gradient path is severed, so that half of the loop is a documented no-op).
+
+    Defaults are `methods/flag/train.py`'s argparse defaults, since this phase
+    exists to reproduce that loop.
+    """
+
+    outer_epochs: int = 3          # train.py --outer_epochs
+    inner_epochs: int = 10         # train.py --inner_epochs
+    lr: float = 1e-4               # train.py --lr
+    weight_decay: float = 0.0      # train.py parses --weight_decay 5e-4 but
+    """never passes it to `gnn_optimizer = Adam(gnn_model.parameters(), lr=args.lr)`
+    -- a dead argument, like `--patience` in test.py. Reproduced as unused
+    rather than inventing regularisation upstream never applied."""
+    alpha: float = 0.1             # train.py --alpha, weight on non_causal_loss
+    beta: float = 0.1              # train.py --beta, weight on orthogonal_loss
+    accumulation_steps: int = 10   # train.py: accumulation_steps = 10
+    orthogonality: str = "squared_dot"   # paper Eq. 9 default; see flag_losses.py
+    selection_metric: str = "f1_macro"
+
+    def as_record(self) -> dict:
+        return {f"ft_{k}": v for k, v in self.__dict__.items()}
+
+
+@dataclass
 class EpochRecord:
     epoch: int
     train_loss: float
@@ -99,6 +127,7 @@ class SubgraphTrainer:
         device: torch.device,
         feature_fn,
         labels: torch.Tensor,
+        dual_branch: bool = False,
     ):
         """
         feature_fn(subgraph) -> Tensor [num_nodes_in_subgraph, in_dim]
@@ -106,12 +135,18 @@ class SubgraphTrainer:
             variants differ, and the ONLY place they differ -- the model, the
             loop and the metrics are identical across variants, which is what
             makes the comparison fair (Phase 11).
+
+            When `dual_branch` is True (the `flag` / `flag_finetuned`
+            variants), `feature_fn(subgraph)` instead returns a
+            `(x_raw, x_disc)` pair and `model` is a `DualBranchBackbone`
+            expecting `model(x_raw, x_disc, edge_index)`.
         """
         self.model = model
         self.config = config
         self.device = device
         self.feature_fn = feature_fn
         self.labels = labels.to(device)
+        self.dual_branch = dual_branch
 
         self.criterion = torch.nn.CrossEntropyLoss()
         if config.optimizer.lower() == "adam":
@@ -130,9 +165,15 @@ class SubgraphTrainer:
     # -------------------------------------------------------------- helpers
     def _forward_center(self, subgraph):
         """Run the model on one subgraph, return the centre node's logits."""
-        features = self.feature_fn(subgraph).to(self.device)
         edge_index = subgraph.edge_index.to(self.device)
-        _, logits = self.model(features, edge_index)
+        if self.dual_branch:
+            x_raw, x_disc = self.feature_fn(subgraph)
+            _, logits = self.model(
+                x_raw.to(self.device), x_disc.to(self.device), edge_index
+            )
+        else:
+            features = self.feature_fn(subgraph).to(self.device)
+            _, logits = self.model(features, edge_index)
         return logits[subgraph.center_position()]
 
     def _set_class_weights(self, subgraphs):
@@ -216,8 +257,15 @@ class SubgraphTrainer:
         self.model.eval()
         out = []
         for subgraph in subgraphs:
-            features = self.feature_fn(subgraph).to(self.device)
-            hidden, _ = self.model(features, subgraph.edge_index.to(self.device))
+            edge_index = subgraph.edge_index.to(self.device)
+            if self.dual_branch:
+                x_raw, x_disc = self.feature_fn(subgraph)
+                hidden, _ = self.model(
+                    x_raw.to(self.device), x_disc.to(self.device), edge_index
+                )
+            else:
+                features = self.feature_fn(subgraph).to(self.device)
+                hidden, _ = self.model(features, edge_index)
             out.append(hidden[subgraph.center_position()].cpu().numpy())
         return np.stack(out)
 
@@ -282,3 +330,129 @@ class SubgraphTrainer:
             # Always evaluate the SELECTED model, not the last one.
             self.model.load_state_dict(outcome.best_state)
         return outcome
+
+    # ------------------------------------------------------- D-001 (+FLAG*)
+    def finetune_extra(
+        self,
+        train_subgraphs,
+        val_subgraphs,
+        extra_feature_fn,
+        config: FinetuneConfig,
+        seed: int = 0,
+    ) -> tuple[TrainingOutcome, dict]:
+        """Extra GNN epochs under the three-term loss (decision D-001).
+
+        `extra_feature_fn(subgraph) -> (x_disc, x_common) | None`. Subgraphs
+        where either branch's text failed the format check (returns `None`)
+        are excluded from this phase entirely -- matching upstream `train.py`,
+        which drops (not substitutes for) a batch whose generation failed.
+
+        Continues training the model already fit by `fit()` (upstream loads a
+        pretrained `gnn.pth` before this loop), and only keeps the result if
+        it beats that starting point on `config.selection_metric` -- this
+        phase can never make the reported checkpoint worse than plain `+FLAG`.
+
+        Requires a dual-branch model built with `dual_branch=True`: the three
+        losses run the SHARED single-backbone GNN independently on each
+        branch (`self.model.backbone`), not the attention-fused forward pass,
+        exactly as `train.py:train_gnn` does.
+        """
+        if not self.dual_branch:
+            raise ValueError("finetune_extra requires a dual-branch model")
+
+        rng = np.random.default_rng(seed)
+        usable = [sg for sg in train_subgraphs if extra_feature_fn(sg) is not None]
+        stats = {
+            "train_subgraphs_total": len(train_subgraphs),
+            "train_subgraphs_usable": len(usable),
+        }
+
+        outcome = TrainingOutcome(best_epoch=0, best_val_metric=-float("inf"))
+        val_scores, val_labels = self.predict(val_subgraphs)
+        threshold, _ = fit_threshold(
+            val_labels, val_scores, policy=self.config.threshold_policy
+        )
+        val0 = evaluate(val_labels, val_scores, threshold, split="val")
+        outcome.best_val_metric = (
+            val0.threshold_metrics[config.selection_metric]
+            if config.selection_metric in val0.threshold_metrics
+            else getattr(val0, config.selection_metric)
+        )
+        outcome.best_state = copy.deepcopy(self.model.state_dict())
+
+        if not usable:
+            outcome.training_seconds = 0.0
+            return outcome, stats
+
+        shared_net = self.model.backbone
+        optimizer = torch.optim.Adam(
+            self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay,
+        )
+
+        start = time.time()
+        epoch = 0
+        for _outer in range(config.outer_epochs):
+            for _inner in range(config.inner_epochs):
+                epoch += 1
+                epoch_start = time.time()
+                self.model.train()
+
+                order = list(range(len(usable)))
+                rng.shuffle(order)
+                optimizer.zero_grad()
+                accumulated = None
+                total_loss = 0.0
+
+                for step, index in enumerate(order):
+                    subgraph = usable[index]
+                    x_disc, x_common = extra_feature_fn(subgraph)
+                    edge_index = subgraph.edge_index.to(self.device)
+                    pos = subgraph.center_position()
+                    label = self.labels[subgraph.central].reshape(1)
+
+                    disc_hidden, disc_logits = shared_net(x_disc.to(self.device), edge_index)
+                    common_hidden, common_logits = shared_net(x_common.to(self.device), edge_index)
+
+                    loss = (
+                        self.criterion(disc_logits[pos].unsqueeze(0), label)
+                        + config.alpha * non_causal_loss(common_logits[pos].unsqueeze(0))
+                        + config.beta * orthogonal_loss(
+                            disc_hidden[pos], common_hidden[pos], mode=config.orthogonality,
+                        )
+                    )
+                    accumulated = loss if accumulated is None else accumulated + loss
+                    total_loss += float(loss.detach())
+
+                    if (step + 1) % config.accumulation_steps == 0:
+                        self._step(accumulated)
+                        accumulated = None
+
+                if accumulated is not None:
+                    self._step(accumulated)
+
+                val_scores, val_labels = self.predict(val_subgraphs)
+                threshold, _ = fit_threshold(
+                    val_labels, val_scores, policy=self.config.threshold_policy
+                )
+                val = evaluate(val_labels, val_scores, threshold, split="val")
+                val_metric = (
+                    val.threshold_metrics[config.selection_metric]
+                    if config.selection_metric in val.threshold_metrics
+                    else getattr(val, config.selection_metric)
+                )
+                outcome.history.append(EpochRecord(
+                    epoch=epoch, train_loss=total_loss / max(len(order), 1),
+                    train_f1_macro=float("nan"), val_auc=val.auc,
+                    val_f1_macro=val.threshold_metrics["f1_macro"],
+                    seconds=time.time() - epoch_start,
+                ))
+                outcome.epochs_run = epoch
+
+                if val_metric > outcome.best_val_metric:
+                    outcome.best_val_metric = val_metric
+                    outcome.best_epoch = epoch
+                    outcome.best_state = copy.deepcopy(self.model.state_dict())
+
+        outcome.training_seconds = time.time() - start
+        self.model.load_state_dict(outcome.best_state)
+        return outcome, stats

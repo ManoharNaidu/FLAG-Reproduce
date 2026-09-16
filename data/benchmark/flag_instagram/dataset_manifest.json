@@ -101,7 +101,7 @@
     "raw_file": "data/raw/instagram/instagram.pt",
     "raw_sha256": "a42cff537fdb42b1b761187bfef83a6c6a1ed9a7019540360efdead79f1cfeb2"
   },
-  "built_at": "2026-09-12T15:10:46+00:00",
+  "built_at": "2026-09-14T03:02:30+00:00",
   "output_file": "data/benchmark/flag_instagram/graph.pt",
   "output_sha256": "b0d8f240a7f8c9a48e35d85144621b650f8a6a09231664d413c107eacaf49406"
 }

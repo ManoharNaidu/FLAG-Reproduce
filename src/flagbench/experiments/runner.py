@@ -26,7 +26,7 @@ from flagbench.registry.registry import (
     validate,
 )
 from flagbench.sampling.semantic import SamplingConfig, Subgraph
-from flagbench.training.trainer import SubgraphTrainer, TrainConfig
+from flagbench.training.trainer import FinetuneConfig, SubgraphTrainer, TrainConfig
 from flagbench.utils.device import resolve_device
 from flagbench.utils.seeding import RunIdentity, seed_everything
 
@@ -105,15 +105,116 @@ def make_feature_fn(variant_key: str, payload: dict, dataset: str):
         description = f"Sentence-BERT of raw node text ({features.shape[1]}d)"
     else:
         raise ExperimentNotAvailable(
-            f"variant {variant_key!r} needs LLM-generated discriminative text, "
-            f"which requires a GPU run of gemma-2-9b-it (decision D-003). "
-            f"Not available on this machine; nothing is substituted."
+            f"variant {variant_key!r} is dual-branch (feature_source="
+            f"{variant.feature_source!r}); use make_dual_feature_fn, not "
+            f"make_feature_fn."
         )
 
     def feature_fn(subgraph: Subgraph) -> torch.Tensor:
         return features[subgraph.subset]
 
     return feature_fn, int(features.shape[1]), description
+
+
+# Decision D-004: the production `cache/llm/` corpus was generated at this
+# reduced decode budget, not `LLMConfig()`'s paper-faithful default
+# (max_new_tokens=550, truncate_chars=1200) -- a faithful-budget full-corpus
+# run was estimated at ~10-14 GPU-days and judged disproportionate. Coverage
+# is correspondingly low (0.6-12.4% of nodes; see D-004 for the per-cache
+# table) and every `flag`/`flag_finetuned` result must be read with that in
+# mind. Regenerating faithfully only requires re-running
+# `scripts.llm.generate_text --force` and updating this constant.
+PRODUCTION_LLM_CONFIG = {"max_new_tokens": 64, "truncate_chars": 300}
+
+
+def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM-L6-v2",
+                          llm_model: str = "google/gemma-2-9b-it") -> tuple[str, pathlib.Path]:
+    """Locate the Sentence-BERT cache for GPU-generated LLM text.
+
+    Recomputes the exact cache key `scripts.llm.generate_text` /
+    `scripts.preprocess.encode_llm_text` would use for the CURRENT prompts,
+    sampling config and LLM decode settings (decision D-004), so this can
+    never silently pick up a cache built from a different prompt/model/decode
+    config. See decisions D-003 and D-004 in `research/decisions.md`.
+    """
+    from flagbench.llm.enhance import LLMConfig, PromptSet, cache_key as llm_cache_key
+    from flagbench.sampling.semantic import SamplingConfig
+
+    variant = get_variant("flag")
+    sampling = SamplingConfig(strategy=variant.default_sampling_strategy)
+    prompts = PromptSet.load(dataset)
+    config = LLMConfig(model_id=llm_model, **PRODUCTION_LLM_CONFIG)
+    key = llm_cache_key(dataset, sampling.cache_key(), prompts, config, kind)
+    safe_sbert = sbert_model.replace("/", "_")
+    return key, ROOT / "cache" / "embeddings" / f"{key}__{safe_sbert}.pt"
+
+
+def load_llm_embeddings(dataset: str, kind: str) -> dict[int, torch.Tensor]:
+    """`{central_node_id: Tensor[k, 384]}`, `k` in `subgraph.subset` order.
+
+    One entry per subgraph whose LLM text passed the format check (decision
+    D-003 / `flagbench.llm.enhance.parse_response`) -- a missing key means
+    that subgraph's generation failed, not that the cache is incomplete.
+    """
+    key, path = _llm_embeddings_path(dataset, kind)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} missing. Run (on a GPU, decision D-003):\n"
+            f"  python -m scripts.llm.generate_text --dataset {dataset} --kind {kind}\n"
+            f"then:\n"
+            f"  python -m scripts.preprocess.encode_llm_text --dataset {dataset} --kind {kind}\n"
+            f"(expected cache key: {key})"
+        )
+    return torch.load(path, map_location="cpu")
+
+
+def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str):
+    """Return `(feature_fn, extra_feature_fn, in_dim, description)` for a
+    dual-branch variant (`flag`, `flag_finetuned`).
+
+    `feature_fn(subgraph) -> (x_raw, x_disc)` feeds the attention-fused
+    `DualBranchBackbone` used for both training and evaluation of both
+    variants. Where a subgraph's discriminative text failed the format check,
+    `x_disc` falls back to `x_raw` -- matching upstream `test_dual.py`'s
+    `hasattr(batch, "unique_embeddings")` all-or-nothing fallback exactly.
+
+    `extra_feature_fn` is only set for `flag_finetuned`: it returns
+    `(x_disc, x_common) | None` for decision D-001's extra-epoch fine-tuning
+    phase, `None` when either branch's text is unavailable for that subgraph
+    (see `SubgraphTrainer.finetune_extra`).
+    """
+    variant = get_variant(variant_key)
+    if not variant.dual_branch:
+        raise ExperimentNotAvailable(
+            f"variant {variant_key!r} is not dual-branch; use make_feature_fn."
+        )
+
+    raw = load_text_embeddings(dataset)
+    disc = load_llm_embeddings(dataset, "discriminative")
+
+    def feature_fn(subgraph: Subgraph):
+        x_raw = raw[subgraph.subset]
+        d = disc.get(int(subgraph.central))
+        x_disc = d if d is not None and d.shape[0] == len(subgraph.subset) else x_raw
+        return x_raw, x_disc
+
+    extra_feature_fn = None
+    if variant.requires_finetuned_llm:
+        common = load_llm_embeddings(dataset, "residual")
+
+        def extra_feature_fn(subgraph: Subgraph):
+            d = disc.get(int(subgraph.central))
+            c = common.get(int(subgraph.central))
+            n = len(subgraph.subset)
+            if d is None or c is None or d.shape[0] != n or c.shape[0] != n:
+                return None
+            return d, c
+
+    description = (
+        f"dual-branch: raw text ({raw.shape[1]}d) + LLM discriminative text "
+        f"({raw.shape[1]}d), attention-fused (models.py:DualGNN)"
+    )
+    return feature_fn, extra_feature_fn, int(raw.shape[1]), description
 
 
 def run_single(
@@ -125,6 +226,7 @@ def run_single(
     device: str = "cpu",
     train_config: TrainConfig | None = None,
     sampling_config: SamplingConfig | None = None,
+    finetune_config: FinetuneConfig | None = None,
     save_checkpoint: bool = False,
     save_result: bool = True,
 ) -> RunResult:
@@ -191,9 +293,16 @@ def run_single(
         subgraphs = load_subgraphs(dataset, sampling_config)
         by_center = {sg.central: sg for sg in subgraphs}
 
-        feature_fn, in_dim, feature_desc = make_feature_fn(
-            variant, payload, dataset
-        )
+        extra_feature_fn = None
+        if variant_spec.dual_branch:
+            feature_fn, extra_feature_fn, in_dim, feature_desc = make_dual_feature_fn(
+                variant, payload, dataset
+            )
+            result.llm_model = "google/gemma-2-9b-it"
+        else:
+            feature_fn, in_dim, feature_desc = make_feature_fn(
+                variant, payload, dataset
+            )
         result.extra["feature_source"] = feature_desc
 
         def split_subgraphs(mask):
@@ -218,13 +327,35 @@ def run_single(
                 hidden_dim=train_config.hidden_dim,
                 dropout=train_config.dropout,
                 device=device_info.device,
-                dual_branch=False,
+                dual_branch=variant_spec.dual_branch,
             )
 
         trainer = SubgraphTrainer(
-            net, train_config, device_info.device, feature_fn, payload["y"]
+            net, train_config, device_info.device, feature_fn, payload["y"],
+            dual_branch=variant_spec.dual_branch,
         )
         outcome = trainer.fit(train_sg, val_sg, seed=identity.stream("batch_order"))
+
+        if variant_spec.requires_finetuned_llm:
+            # Decision D-001: `+FLAG*` = extra GNN epochs under the residual +
+            # orthogonality losses, LLM frozen. `finetune_extra` only keeps
+            # its result if it beats the plain `+FLAG` checkpoint above.
+            ft_config = finetune_config or FinetuneConfig()
+            ft_outcome, ft_stats = trainer.finetune_extra(
+                train_sg, val_sg, extra_feature_fn, ft_config,
+                seed=identity.stream("finetune"),
+            )
+            if ft_outcome.best_epoch > 0:
+                outcome = ft_outcome
+                result.hyperparameters.update(ft_config.as_record())
+            result.extra["finetune"] = {
+                **ft_stats,
+                "applied": ft_outcome.best_epoch > 0,
+                "note": (
+                    "upstream LoRA gradient path is severed; see "
+                    "research/decisions.md D-001"
+                ),
+            }
 
         val_scores, val_labels = trainer.predict(val_sg)
         infer_start = time.time()
