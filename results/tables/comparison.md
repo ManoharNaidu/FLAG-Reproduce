@@ -25,8 +25,8 @@
 | reddit | dga_gnn | flag | flag_bundled | 25 | 53.32±0.69 | 62.44±0.71 |
 | reddit | dga_gnn | flag_finetuned | flag_bundled | 25 | 53.10±0.52 | 62.07±0.98 |
 | reddit | gat | baseline | flag_bundled | 1 | 52.03±0.00 | 55.59±0.00 |
-| reddit | gat | flag | flag_bundled | 5 | 54.14±0.37 | 64.62±0.50 |
-| reddit | gat | flag_finetuned | flag_bundled | 10 | 54.17±0.68 | 64.11±0.77 |
+| reddit | gat | flag | flag_bundled | 25 | 54.37±0.55 | 64.33±0.68 |
+| reddit | gat | flag_finetuned | flag_bundled | 25 | 53.94±0.64 | 63.94±0.77 |
 | reddit | gcn | baseline | flag_bundled | 2 | 52.85±0.00 | 59.74±0.00 |
 | reddit | geniepath | baseline | flag_bundled | 1 | 51.99±0.00 | 58.06±0.00 |
 | reddit | pmp | baseline | flag_bundled | 1 | 50.24±0.00 | 51.79±0.00 |

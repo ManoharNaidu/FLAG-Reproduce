@@ -52586,6 +52586,2406 @@
     }
   },
   {
+    "experiment_id": "6d1ea254cead",
+    "timestamp": "2026-09-17T01:06:32+00:00",
+    "git_commit": "7bd10a1747ae54a4a255fc9ee870f5e39d42146c-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 1,
+    "initialization": 0,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.7001762026186861,
+    "validation_f1_macro": 0.5833834031026841,
+    "test_auc": 0.6467657262245716,
+    "test_f1_macro": 0.545764784303518,
+    "test_precision_fraud": 0.16247484909456741,
+    "test_recall_fraud": 0.2414050822122571,
+    "test_f1_fraud": 0.19422730006013228,
+    "test_accuracy": 0.8178233974576847,
+    "test_ks": 0.21878213883204195,
+    "test_ece": 0.04499077529764544,
+    "training_time": 312.53,
+    "inference_time": 169.89,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.3418,
+          "val_auc": 0.67215,
+          "val_f1_macro": 0.55892
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29551,
+          "val_auc": 0.70018,
+          "val_f1_macro": 0.58338
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28875,
+          "val_auc": 0.65818,
+          "val_f1_macro": 0.54858
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26356,
+          "val_auc": 0.66777,
+          "val_f1_macro": 0.5628
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23911,
+          "val_auc": 0.67034,
+          "val_f1_macro": 0.5696
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "d8dbe8d5b969",
+    "timestamp": "2026-09-17T01:15:10+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 1,
+    "initialization": 1,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6898439962180902,
+    "validation_f1_macro": 0.5568462545083145,
+    "test_auc": 0.6398920610287533,
+    "test_f1_macro": 0.5490878533638971,
+    "test_precision_fraud": 0.17076023391812867,
+    "test_recall_fraud": 0.21823617339312407,
+    "test_f1_fraud": 0.19160104986876642,
+    "test_accuracy": 0.8325062878118414,
+    "test_ks": 0.20731999431735426,
+    "test_ece": 0.03576792431259648,
+    "training_time": 276.69,
+    "inference_time": 193.59,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.35252,
+          "val_auc": 0.67093,
+          "val_f1_macro": 0.55273
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30913,
+          "val_auc": 0.68984,
+          "val_f1_macro": 0.55685
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28981,
+          "val_auc": 0.65166,
+          "val_f1_macro": 0.5408
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26945,
+          "val_auc": 0.64557,
+          "val_f1_macro": 0.52535
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24541,
+          "val_auc": 0.65212,
+          "val_f1_macro": 0.52521
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "0b891c939b64",
+    "timestamp": "2026-09-17T01:23:26+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 1,
+    "initialization": 2,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6859152508380368,
+    "validation_f1_macro": 0.5769316835437969,
+    "test_auc": 0.6372504802696284,
+    "test_f1_macro": 0.5469643123073428,
+    "test_precision_fraud": 0.1652452025586354,
+    "test_recall_fraud": 0.23168908819133036,
+    "test_f1_fraud": 0.19290603609209708,
+    "test_accuracy": 0.8236693630616545,
+    "test_ks": 0.21060512017107852,
+    "test_ece": 0.04848416004231136,
+    "training_time": 266.28,
+    "inference_time": 193.79,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.35174,
+          "val_auc": 0.66062,
+          "val_f1_macro": 0.55258
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.31188,
+          "val_auc": 0.68592,
+          "val_f1_macro": 0.57693
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28914,
+          "val_auc": 0.67881,
+          "val_f1_macro": 0.56004
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26313,
+          "val_auc": 0.66145,
+          "val_f1_macro": 0.55638
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24242,
+          "val_auc": 0.675,
+          "val_f1_macro": 0.55649
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "50ee43bb2e06",
+    "timestamp": "2026-09-17T01:31:28+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 1,
+    "initialization": 3,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6881715038821878,
+    "validation_f1_macro": 0.5750266297442377,
+    "test_auc": 0.6419764429521725,
+    "test_f1_macro": 0.5493856062009231,
+    "test_precision_fraud": 0.17034521788341822,
+    "test_recall_fraud": 0.2249626307922272,
+    "test_f1_fraud": 0.19388083735909822,
+    "test_accuracy": 0.8298552103867854,
+    "test_ks": 0.19689847591308235,
+    "test_ece": 0.04018755575819844,
+    "training_time": 302.65,
+    "inference_time": 192.7,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.34354,
+          "val_auc": 0.67906,
+          "val_f1_macro": 0.55592
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29982,
+          "val_auc": 0.68817,
+          "val_f1_macro": 0.57503
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28198,
+          "val_auc": 0.66689,
+          "val_f1_macro": 0.54081
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25876,
+          "val_auc": 0.61914,
+          "val_f1_macro": 0.53909
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24415,
+          "val_auc": 0.65535,
+          "val_f1_macro": 0.54749
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "ec57433dba37",
+    "timestamp": "2026-09-17T01:40:17+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 1,
+    "initialization": 4,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6941774346044753,
+    "validation_f1_macro": 0.5836954421224084,
+    "test_auc": 0.6505618319132866,
+    "test_f1_macro": 0.5493123296760234,
+    "test_precision_fraud": 0.1683116883116883,
+    "test_recall_fraud": 0.242152466367713,
+    "test_f1_fraud": 0.1985902543671468,
+    "test_accuracy": 0.8222418598327782,
+    "test_ks": 0.22098472291569354,
+    "test_ece": 0.03450322645135757,
+    "training_time": 268.55,
+    "inference_time": 186.01,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33715,
+          "val_auc": 0.66613,
+          "val_f1_macro": 0.56622
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29863,
+          "val_auc": 0.69418,
+          "val_f1_macro": 0.5837
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28709,
+          "val_auc": 0.67711,
+          "val_f1_macro": 0.56775
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25879,
+          "val_auc": 0.66962,
+          "val_f1_macro": 0.55231
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.25332,
+          "val_auc": 0.68229,
+          "val_f1_macro": 0.55793
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "430b32c614b9",
+    "timestamp": "2026-09-17T01:48:16+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 0,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.39999999999999997,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6753323496547575,
+    "validation_f1_macro": 0.5664898680810553,
+    "test_auc": 0.6452714050140295,
+    "test_f1_macro": 0.5304348940016734,
+    "test_precision_fraud": 0.17994505494505494,
+    "test_recall_fraud": 0.09790732436472346,
+    "test_f1_fraud": 0.12681510164569215,
+    "test_accuracy": 0.8773706750050982,
+    "test_ks": 0.22159546202066788,
+    "test_ece": 0.04279629328461232,
+    "training_time": 284.0,
+    "inference_time": 211.19,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33317,
+          "val_auc": 0.65448,
+          "val_f1_macro": 0.56249
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.28932,
+          "val_auc": 0.64653,
+          "val_f1_macro": 0.55759
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.29476,
+          "val_auc": 0.66706,
+          "val_f1_macro": 0.53821
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26276,
+          "val_auc": 0.67533,
+          "val_f1_macro": 0.56649
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23072,
+          "val_auc": 0.65633,
+          "val_f1_macro": 0.5519
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "5d1e723840e2",
+    "timestamp": "2026-09-17T01:57:04+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 1,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.39999999999999997,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6780362719537003,
+    "validation_f1_macro": 0.5720433993412893,
+    "test_auc": 0.6516738264202117,
+    "test_f1_macro": 0.5444852113299918,
+    "test_precision_fraud": 0.1770573566084788,
+    "test_recall_fraud": 0.1591928251121076,
+    "test_f1_fraud": 0.16765053128689492,
+    "test_accuracy": 0.8562300319488818,
+    "test_ks": 0.2302661353772974,
+    "test_ece": 0.05893167143131141,
+    "training_time": 263.43,
+    "inference_time": 190.91,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33423,
+          "val_auc": 0.65348,
+          "val_f1_macro": 0.56156
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30015,
+          "val_auc": 0.64971,
+          "val_f1_macro": 0.53622
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28195,
+          "val_auc": 0.68694,
+          "val_f1_macro": 0.55737
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26084,
+          "val_auc": 0.67804,
+          "val_f1_macro": 0.57204
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.22762,
+          "val_auc": 0.66175,
+          "val_f1_macro": 0.55898
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "1c5833efceb2",
+    "timestamp": "2026-09-17T02:05:01+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 2,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.39999999999999997,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6669161676646707,
+    "validation_f1_macro": 0.5642641446655341,
+    "test_auc": 0.6423378677135074,
+    "test_f1_macro": 0.5334347585400921,
+    "test_precision_fraud": 0.16701244813278007,
+    "test_recall_fraud": 0.1203288490284006,
+    "test_f1_fraud": 0.13987836663770634,
+    "test_accuracy": 0.8654068384202298,
+    "test_ks": 0.2093005930674628,
+    "test_ece": 0.04632101938450421,
+    "training_time": 261.46,
+    "inference_time": 187.98,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33476,
+          "val_auc": 0.62186,
+          "val_f1_macro": 0.53389
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29932,
+          "val_auc": 0.66306,
+          "val_f1_macro": 0.56285
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28544,
+          "val_auc": 0.65777,
+          "val_f1_macro": 0.53675
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26592,
+          "val_auc": 0.66692,
+          "val_f1_macro": 0.56426
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24412,
+          "val_auc": 0.66464,
+          "val_f1_macro": 0.56111
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "e7efc843c017",
+    "timestamp": "2026-09-17T02:13:02+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 3,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.1,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6955311864309659,
+    "validation_f1_macro": 0.5726974275948912,
+    "test_auc": 0.6422486432459843,
+    "test_f1_macro": 0.5434574164428111,
+    "test_precision_fraud": 0.16050744622173194,
+    "test_recall_fraud": 0.21748878923766815,
+    "test_f1_fraud": 0.18470326880355442,
+    "test_accuracy": 0.8253687716674597,
+    "test_ks": 0.2136976016530195,
+    "test_ece": 0.051827132151019424,
+    "training_time": 298.87,
+    "inference_time": 171.91,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.3259,
+          "val_auc": 0.62806,
+          "val_f1_macro": 0.54639
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30074,
+          "val_auc": 0.67326,
+          "val_f1_macro": 0.54713
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27829,
+          "val_auc": 0.69553,
+          "val_f1_macro": 0.5727
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25703,
+          "val_auc": 0.65331,
+          "val_f1_macro": 0.54871
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23035,
+          "val_auc": 0.67023,
+          "val_f1_macro": 0.5568
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "c4319e47919e",
+    "timestamp": "2026-09-17T02:21:26+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 4,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6782081769475403,
+    "validation_f1_macro": 0.5641360428543595,
+    "test_auc": 0.6434605087979852,
+    "test_f1_macro": 0.5464101992830742,
+    "test_precision_fraud": 0.16789667896678967,
+    "test_recall_fraud": 0.2040358744394619,
+    "test_f1_fraud": 0.18421052631578946,
+    "test_accuracy": 0.835633199646523,
+    "test_ks": 0.21709629100064082,
+    "test_ece": 0.03417753170276397,
+    "training_time": 263.68,
+    "inference_time": 183.7,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.32696,
+          "val_auc": 0.65291,
+          "val_f1_macro": 0.55526
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29427,
+          "val_auc": 0.65098,
+          "val_f1_macro": 0.54267
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.29912,
+          "val_auc": 0.67821,
+          "val_f1_macro": 0.56414
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26399,
+          "val_auc": 0.65973,
+          "val_f1_macro": 0.56308
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.25051,
+          "val_auc": 0.6694,
+          "val_f1_macro": 0.55805
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "f9f18efc6aa0",
+    "timestamp": "2026-09-17T02:29:25+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 0,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.35,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6903131535971122,
+    "validation_f1_macro": 0.5613490431231515,
+    "test_auc": 0.64794651830088,
+    "test_f1_macro": 0.5537938737334117,
+    "test_precision_fraud": 0.17368166424770198,
+    "test_recall_fraud": 0.26831091180866967,
+    "test_f1_fraud": 0.21086637298091043,
+    "test_accuracy": 0.8173475630480592,
+    "test_ks": 0.22766339646278783,
+    "test_ece": 0.09861604187151807,
+    "training_time": 262.08,
+    "inference_time": 218.18,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.3371,
+          "val_auc": 0.67432,
+          "val_f1_macro": 0.54682
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29663,
+          "val_auc": 0.69031,
+          "val_f1_macro": 0.56135
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27733,
+          "val_auc": 0.67442,
+          "val_f1_macro": 0.54255
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25187,
+          "val_auc": 0.64117,
+          "val_f1_macro": 0.53411
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23909,
+          "val_auc": 0.67169,
+          "val_f1_macro": 0.54953
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "8abd7986b1a0",
+    "timestamp": "2026-09-17T02:37:52+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 1,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6922614101939661,
+    "validation_f1_macro": 0.5734712574364208,
+    "test_auc": 0.6377751525534404,
+    "test_f1_macro": 0.5379433944991776,
+    "test_precision_fraud": 0.15057915057915058,
+    "test_recall_fraud": 0.23318385650224216,
+    "test_f1_fraud": 0.18299120234604105,
+    "test_accuracy": 0.8106179049690707,
+    "test_ks": 0.22707775086606133,
+    "test_ece": 0.03202503003456593,
+    "training_time": 291.51,
+    "inference_time": 194.78,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.34638,
+          "val_auc": 0.66905,
+          "val_f1_macro": 0.55787
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.2997,
+          "val_auc": 0.68616,
+          "val_f1_macro": 0.55968
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27776,
+          "val_auc": 0.69226,
+          "val_f1_macro": 0.57347
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.253,
+          "val_auc": 0.67223,
+          "val_f1_macro": 0.56434
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24036,
+          "val_auc": 0.69346,
+          "val_f1_macro": 0.57031
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "7deb4bc5ee0d",
+    "timestamp": "2026-09-17T02:46:23+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 2,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.3,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6788313325502106,
+    "validation_f1_macro": 0.5683850953327059,
+    "test_auc": 0.638898268682061,
+    "test_f1_macro": 0.544573023279713,
+    "test_precision_fraud": 0.1610738255033557,
+    "test_recall_fraud": 0.23318385650224216,
+    "test_f1_fraud": 0.19053435114503817,
+    "test_accuracy": 0.8197947114404187,
+    "test_ks": 0.22176575137396742,
+    "test_ece": 0.0771484864760842,
+    "training_time": 272.31,
+    "inference_time": 186.82,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.34453,
+          "val_auc": 0.67351,
+          "val_f1_macro": 0.55872
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.31306,
+          "val_auc": 0.67883,
+          "val_f1_macro": 0.56839
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28552,
+          "val_auc": 0.69424,
+          "val_f1_macro": 0.56337
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26061,
+          "val_auc": 0.65328,
+          "val_f1_macro": 0.52759
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24124,
+          "val_auc": 0.67213,
+          "val_f1_macro": 0.5608
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "a6649ee3b294",
+    "timestamp": "2026-09-17T02:54:32+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 3,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.3,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6766144744004814,
+    "validation_f1_macro": 0.5738368371187873,
+    "test_auc": 0.6467710075976884,
+    "test_f1_macro": 0.5447602756832688,
+    "test_precision_fraud": 0.15990453460620524,
+    "test_recall_fraud": 0.3004484304932735,
+    "test_f1_fraud": 0.2087227414330218,
+    "test_accuracy": 0.7928081027802325,
+    "test_ks": 0.23089408784650411,
+    "test_ece": 0.08521855522032037,
+    "training_time": 303.52,
+    "inference_time": 173.9,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.34243,
+          "val_auc": 0.66838,
+          "val_f1_macro": 0.5407
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29874,
+          "val_auc": 0.67661,
+          "val_f1_macro": 0.57384
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28344,
+          "val_auc": 0.68286,
+          "val_f1_macro": 0.54926
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26661,
+          "val_auc": 0.66762,
+          "val_f1_macro": 0.55923
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24926,
+          "val_auc": 0.68381,
+          "val_f1_macro": 0.55642
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "d59d7c2c469d",
+    "timestamp": "2026-09-17T03:02:59+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 4,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6982870383634645,
+    "validation_f1_macro": 0.5846319570506628,
+    "test_auc": 0.6559908319833697,
+    "test_f1_macro": 0.5509250775935133,
+    "test_precision_fraud": 0.16811708860759494,
+    "test_recall_fraud": 0.31763826606875933,
+    "test_f1_fraud": 0.21986549405069838,
+    "test_accuracy": 0.7949833457956631,
+    "test_ks": 0.22714777796146152,
+    "test_ece": 0.04592484115904847,
+    "training_time": 278.58,
+    "inference_time": 170.9,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33651,
+          "val_auc": 0.67852,
+          "val_f1_macro": 0.55033
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30166,
+          "val_auc": 0.70302,
+          "val_f1_macro": 0.58107
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28759,
+          "val_auc": 0.68352,
+          "val_f1_macro": 0.56013
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25024,
+          "val_auc": 0.65423,
+          "val_f1_macro": 0.52833
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24748,
+          "val_auc": 0.69829,
+          "val_f1_macro": 0.58463
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "21a132265d02",
+    "timestamp": "2026-09-17T03:10:54+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 0,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6880855513852677,
+    "validation_f1_macro": 0.588735089312746,
+    "test_auc": 0.6228188907059793,
+    "test_f1_macro": 0.53948582061062,
+    "test_precision_fraud": 0.15576694411414982,
+    "test_recall_fraud": 0.19581464872944693,
+    "test_f1_fraud": 0.17350993377483442,
+    "test_accuracy": 0.8303310447964108,
+    "test_ks": 0.18006771782199077,
+    "test_ece": 0.0364614750922948,
+    "training_time": 267.4,
+    "inference_time": 182.42,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33036,
+          "val_auc": 0.66257,
+          "val_f1_macro": 0.54144
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30381,
+          "val_auc": 0.68284,
+          "val_f1_macro": 0.55675
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28792,
+          "val_auc": 0.68809,
+          "val_f1_macro": 0.58874
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25332,
+          "val_auc": 0.67517,
+          "val_f1_macro": 0.56172
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.25543,
+          "val_auc": 0.69716,
+          "val_f1_macro": 0.55809
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "0dd68828bc43",
+    "timestamp": "2026-09-17T03:18:52+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 1,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6882001547144945,
+    "validation_f1_macro": 0.5706651234655242,
+    "test_auc": 0.6411315909161277,
+    "test_f1_macro": 0.5391438738668537,
+    "test_precision_fraud": 0.152191894127378,
+    "test_recall_fraud": 0.2750373692077728,
+    "test_f1_fraud": 0.1959531416400426,
+    "test_accuracy": 0.7947114404187343,
+    "test_ks": 0.2132192042574686,
+    "test_ece": 0.04467920870115108,
+    "training_time": 315.9,
+    "inference_time": 195.82,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33098,
+          "val_auc": 0.65637,
+          "val_f1_macro": 0.53081
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.3078,
+          "val_auc": 0.6731,
+          "val_f1_macro": 0.55195
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28027,
+          "val_auc": 0.65175,
+          "val_f1_macro": 0.54636
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26422,
+          "val_auc": 0.68165,
+          "val_f1_macro": 0.56448
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24692,
+          "val_auc": 0.6882,
+          "val_f1_macro": 0.57067
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "3a3cedf5bb35",
+    "timestamp": "2026-09-17T03:27:50+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 2,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.7013401426811449,
+    "validation_f1_macro": 0.5801369863013699,
+    "test_auc": 0.6446477838296538,
+    "test_f1_macro": 0.546839481671015,
+    "test_precision_fraud": 0.16264294790343076,
+    "test_recall_fraud": 0.28699551569506726,
+    "test_f1_fraud": 0.20762368207623683,
+    "test_accuracy": 0.8007613350554007,
+    "test_ks": 0.21789967447739833,
+    "test_ece": 0.04303313995648014,
+    "training_time": 273.1,
+    "inference_time": 191.49,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.34326,
+          "val_auc": 0.65436,
+          "val_f1_macro": 0.5415
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30627,
+          "val_auc": 0.68002,
+          "val_f1_macro": 0.55136
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28141,
+          "val_auc": 0.67077,
+          "val_f1_macro": 0.56538
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25757,
+          "val_auc": 0.70489,
+          "val_f1_macro": 0.57635
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.25357,
+          "val_auc": 0.70134,
+          "val_f1_macro": 0.58014
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "9064dea7a8ba",
+    "timestamp": "2026-09-17T03:36:06+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 3,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6935113027533449,
+    "validation_f1_macro": 0.5717489888466724,
+    "test_auc": 0.6408986516235277,
+    "test_f1_macro": 0.544876818341315,
+    "test_precision_fraud": 0.16226415094339622,
+    "test_recall_fraud": 0.2249626307922272,
+    "test_f1_fraud": 0.18853742561854056,
+    "test_accuracy": 0.8238732920943511,
+    "test_ks": 0.21783193877139279,
+    "test_ece": 0.04370578808982026,
+    "training_time": 287.54,
+    "inference_time": 196.8,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33014,
+          "val_auc": 0.66631,
+          "val_f1_macro": 0.54058
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30148,
+          "val_auc": 0.68799,
+          "val_f1_macro": 0.56273
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28371,
+          "val_auc": 0.65896,
+          "val_f1_macro": 0.56611
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25942,
+          "val_auc": 0.65014,
+          "val_f1_macro": 0.54393
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.26074,
+          "val_auc": 0.69351,
+          "val_f1_macro": 0.57175
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "bf85934d6646",
+    "timestamp": "2026-09-17T03:44:48+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 4,
+    "device": "cuda:1",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 4,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6804429418674612,
+    "validation_f1_macro": 0.564065148119293,
+    "test_auc": 0.6337216847144319,
+    "test_f1_macro": 0.5454885147128831,
+    "test_precision_fraud": 0.1621212121212121,
+    "test_recall_fraud": 0.2399103139013453,
+    "test_f1_fraud": 0.19349005424954793,
+    "test_accuracy": 0.8180953028346135,
+    "test_ks": 0.19549849288054133,
+    "test_ece": 0.04623492088166972,
+    "training_time": 261.44,
+    "inference_time": 182.62,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.32963,
+          "val_auc": 0.67074,
+          "val_f1_macro": 0.54201
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30446,
+          "val_auc": 0.66937,
+          "val_f1_macro": 0.54514
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28287,
+          "val_auc": 0.67,
+          "val_f1_macro": 0.5512
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.24863,
+          "val_auc": 0.68044,
+          "val_f1_macro": 0.56407
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.26485,
+          "val_auc": 0.68096,
+          "val_f1_macro": 0.55599
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
     "experiment_id": "1892490c4278",
     "timestamp": "2026-09-16T20:52:21+00:00",
     "git_commit": "153afb82bbf7dc7476a87c31f448dd461035a443-dirty",
@@ -54314,6 +56714,2532 @@
           "train_loss": 0.23797,
           "val_auc": 0.63134,
           "val_f1_macro": 0.53388
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "80be3b11af1c",
+    "timestamp": "2026-09-17T00:51:40+00:00",
+    "git_commit": "7bd10a1747ae54a4a255fc9ee870f5e39d42146c-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 0,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6703327794172421,
+    "validation_f1_macro": 0.5724311781499098,
+    "test_auc": 0.6382861323884315,
+    "test_f1_macro": 0.5382759222297958,
+    "test_precision_fraud": 0.1510136532892015,
+    "test_recall_fraud": 0.27279521674140506,
+    "test_f1_fraud": 0.19440745672436752,
+    "test_accuracy": 0.7943715586975733,
+    "test_ks": 0.21165239689949306,
+    "test_ece": 0.04495024960674145,
+    "training_time": 280.87,
+    "inference_time": 171.9,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33714,
+          "val_auc": 0.68293,
+          "val_f1_macro": 0.54139
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.2969,
+          "val_auc": 0.68923,
+          "val_f1_macro": 0.56227
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28241,
+          "val_auc": 0.67033,
+          "val_f1_macro": 0.57243
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26026,
+          "val_auc": 0.66874,
+          "val_f1_macro": 0.54148
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23543,
+          "val_auc": 0.67402,
+          "val_f1_macro": 0.54562
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "c2e6588d8515",
+    "timestamp": "2026-09-17T01:12:27+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 1,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0,
+      "ft_outer_epochs": 3,
+      "ft_inner_epochs": 10,
+      "ft_lr": 0.0001,
+      "ft_weight_decay": 0.0,
+      "ft_alpha": 0.1,
+      "ft_beta": 0.1,
+      "ft_accumulation_steps": 10,
+      "ft_orthogonality": "squared_dot",
+      "ft_selection_metric": "f1_macro"
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 30,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6719873649829526,
+    "validation_f1_macro": 0.5753027728017394,
+    "test_auc": 0.6261185752654911,
+    "test_f1_macro": 0.526402281568139,
+    "test_precision_fraud": 0.13524424707307225,
+    "test_recall_fraud": 0.25037369207772797,
+    "test_f1_fraud": 0.17562254259501967,
+    "test_accuracy": 0.7862143973897083,
+    "test_ks": 0.18894042465816666,
+    "test_ece": 0.04087153225516111,
+    "training_time": 815.8,
+    "inference_time": 165.88,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": true,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.76033,
+          "val_auc": 0.66562,
+          "val_f1_macro": 0.55423
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.25726,
+          "val_auc": 0.67324,
+          "val_f1_macro": 0.55677
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.25129,
+          "val_auc": 0.66311,
+          "val_f1_macro": 0.55205
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.238,
+          "val_auc": 0.65071,
+          "val_f1_macro": 0.55631
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.18253,
+          "val_auc": 0.67199,
+          "val_f1_macro": 0.5753
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.18963,
+          "val_auc": 0.6638,
+          "val_f1_macro": 0.56283
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.16542,
+          "val_auc": 0.66398,
+          "val_f1_macro": 0.55632
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.19003,
+          "val_auc": 0.66283,
+          "val_f1_macro": 0.54994
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.15515,
+          "val_auc": 0.66675,
+          "val_f1_macro": 0.55278
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.16773,
+          "val_auc": 0.6614,
+          "val_f1_macro": 0.54365
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.16494,
+          "val_auc": 0.6578,
+          "val_f1_macro": 0.54208
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.16314,
+          "val_auc": 0.64895,
+          "val_f1_macro": 0.53467
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.14125,
+          "val_auc": 0.64111,
+          "val_f1_macro": 0.53541
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.17771,
+          "val_auc": 0.63656,
+          "val_f1_macro": 0.52881
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.16248,
+          "val_auc": 0.62517,
+          "val_f1_macro": 0.51994
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.13002,
+          "val_auc": 0.62596,
+          "val_f1_macro": 0.52008
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.10477,
+          "val_auc": 0.6318,
+          "val_f1_macro": 0.52604
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.12017,
+          "val_auc": 0.6363,
+          "val_f1_macro": 0.53579
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.13274,
+          "val_auc": 0.63571,
+          "val_f1_macro": 0.53226
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.12619,
+          "val_auc": 0.62714,
+          "val_f1_macro": 0.52615
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.13023,
+          "val_auc": 0.62885,
+          "val_f1_macro": 0.52016
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.0994,
+          "val_auc": 0.63673,
+          "val_f1_macro": 0.52971
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.11207,
+          "val_auc": 0.62933,
+          "val_f1_macro": 0.52667
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.1049,
+          "val_auc": 0.62146,
+          "val_f1_macro": 0.52297
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.10194,
+          "val_auc": 0.627,
+          "val_f1_macro": 0.52683
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.12439,
+          "val_auc": 0.62354,
+          "val_f1_macro": 0.52397
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.1278,
+          "val_auc": 0.62977,
+          "val_f1_macro": 0.52043
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.09076,
+          "val_auc": 0.62871,
+          "val_f1_macro": 0.51616
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.08105,
+          "val_auc": 0.63792,
+          "val_f1_macro": 0.52611
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.15137,
+          "val_auc": 0.63441,
+          "val_f1_macro": 0.5311
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "c0da359e0fe6",
+    "timestamp": "2026-09-17T01:34:19+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 2,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6934146061943098,
+    "validation_f1_macro": 0.5729876160990712,
+    "test_auc": 0.6482806140521187,
+    "test_f1_macro": 0.5480157229824352,
+    "test_precision_fraud": 0.16456266907123535,
+    "test_recall_fraud": 0.27279521674140506,
+    "test_f1_fraud": 0.20528683914510687,
+    "test_accuracy": 0.8078988511997824,
+    "test_ks": 0.21919319173441076,
+    "test_ece": 0.04319033855456938,
+    "training_time": 302.4,
+    "inference_time": 226.2,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33636,
+          "val_auc": 0.67118,
+          "val_f1_macro": 0.55789
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.28417,
+          "val_auc": 0.68367,
+          "val_f1_macro": 0.55692
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.29696,
+          "val_auc": 0.69341,
+          "val_f1_macro": 0.57299
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25501,
+          "val_auc": 0.67479,
+          "val_f1_macro": 0.551
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23349,
+          "val_auc": 0.67716,
+          "val_f1_macro": 0.56976
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "088f56259c02",
+    "timestamp": "2026-09-17T01:56:41+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 3,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.7052903761854282,
+    "validation_f1_macro": 0.5841533871616982,
+    "test_auc": 0.646724453271696,
+    "test_f1_macro": 0.5341791745292875,
+    "test_precision_fraud": 0.14996829422954977,
+    "test_recall_fraud": 0.35351270553064273,
+    "test_f1_fraud": 0.21059661620658948,
+    "test_accuracy": 0.7589558833525933,
+    "test_ks": 0.2185479700134253,
+    "test_ece": 0.036613405426356285,
+    "training_time": 240.53,
+    "inference_time": 163.39,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33348,
+          "val_auc": 0.67558,
+          "val_f1_macro": 0.53612
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29998,
+          "val_auc": 0.69819,
+          "val_f1_macro": 0.56487
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27363,
+          "val_auc": 0.70529,
+          "val_f1_macro": 0.58415
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26312,
+          "val_auc": 0.68034,
+          "val_f1_macro": 0.55775
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23836,
+          "val_auc": 0.69067,
+          "val_f1_macro": 0.57041
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "ae5c1e701371",
+    "timestamp": "2026-09-17T02:17:31+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 2,
+    "initialization": 4,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6943529209523537,
+    "validation_f1_macro": 0.5730984460677931,
+    "test_auc": 0.6380949410928497,
+    "test_f1_macro": 0.5354911255189105,
+    "test_precision_fraud": 0.1479923518164436,
+    "test_recall_fraud": 0.289237668161435,
+    "test_f1_fraud": 0.19580065772830763,
+    "test_accuracy": 0.7839032016858133,
+    "test_ks": 0.20274604576049932,
+    "test_ece": 0.058294223917766015,
+    "training_time": 291.59,
+    "inference_time": 185.7,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33528,
+          "val_auc": 0.66428,
+          "val_f1_macro": 0.54911
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.2963,
+          "val_auc": 0.69435,
+          "val_f1_macro": 0.5731
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28035,
+          "val_auc": 0.70311,
+          "val_f1_macro": 0.55989
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25695,
+          "val_auc": 0.66219,
+          "val_f1_macro": 0.54985
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23137,
+          "val_auc": 0.67368,
+          "val_f1_macro": 0.56627
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "424d09e240c2",
+    "timestamp": "2026-09-17T02:39:01+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 0,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6704545454545455,
+    "validation_f1_macro": 0.5693460570224226,
+    "test_auc": 0.6411311997033042,
+    "test_f1_macro": 0.5394996383742459,
+    "test_precision_fraud": 0.15508328546812178,
+    "test_recall_fraud": 0.20179372197309417,
+    "test_f1_fraud": 0.17538161740824942,
+    "test_accuracy": 0.827408061994426,
+    "test_ks": 0.2247372922059116,
+    "test_ece": 0.025867912250896005,
+    "training_time": 292.01,
+    "inference_time": 192.52,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.32602,
+          "val_auc": 0.67595,
+          "val_f1_macro": 0.56275
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29786,
+          "val_auc": 0.67045,
+          "val_f1_macro": 0.56935
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27107,
+          "val_auc": 0.67148,
+          "val_f1_macro": 0.54722
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.24795,
+          "val_auc": 0.661,
+          "val_f1_macro": 0.53808
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.22494,
+          "val_auc": 0.64683,
+          "val_f1_macro": 0.5646
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "8acfc4d2c9ad",
+    "timestamp": "2026-09-17T03:01:01+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 1,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0,
+      "ft_outer_epochs": 3,
+      "ft_inner_epochs": 10,
+      "ft_lr": 0.0001,
+      "ft_weight_decay": 0.0,
+      "ft_alpha": 0.1,
+      "ft_beta": 0.1,
+      "ft_accumulation_steps": 10,
+      "ft_orthogonality": "squared_dot",
+      "ft_selection_metric": "f1_macro"
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 30,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6875161160931725,
+    "validation_f1_macro": 0.5841344760005103,
+    "test_auc": 0.6318075362567661,
+    "test_f1_macro": 0.5405463588532063,
+    "test_precision_fraud": 0.1549079754601227,
+    "test_recall_fraud": 0.226457399103139,
+    "test_f1_fraud": 0.18397085610200364,
+    "test_accuracy": 0.817279586703827,
+    "test_ks": 0.19554666794537373,
+    "test_ece": 0.05568704178011831,
+    "training_time": 791.29,
+    "inference_time": 161.29,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": true,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.36682,
+          "val_auc": 0.68845,
+          "val_f1_macro": 0.57707
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.22944,
+          "val_auc": 0.68752,
+          "val_f1_macro": 0.58413
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.22109,
+          "val_auc": 0.6877,
+          "val_f1_macro": 0.58012
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.21526,
+          "val_auc": 0.67683,
+          "val_f1_macro": 0.57595
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.2257,
+          "val_auc": 0.67699,
+          "val_f1_macro": 0.55793
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.18169,
+          "val_auc": 0.67957,
+          "val_f1_macro": 0.56109
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.17701,
+          "val_auc": 0.6704,
+          "val_f1_macro": 0.55322
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.1799,
+          "val_auc": 0.66296,
+          "val_f1_macro": 0.56339
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.18245,
+          "val_auc": 0.66017,
+          "val_f1_macro": 0.5389
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.15641,
+          "val_auc": 0.65181,
+          "val_f1_macro": 0.53047
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.13327,
+          "val_auc": 0.65522,
+          "val_f1_macro": 0.53537
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.15187,
+          "val_auc": 0.64715,
+          "val_f1_macro": 0.53858
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.13415,
+          "val_auc": 0.6524,
+          "val_f1_macro": 0.53122
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.13015,
+          "val_auc": 0.65296,
+          "val_f1_macro": 0.53701
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.09822,
+          "val_auc": 0.64219,
+          "val_f1_macro": 0.53073
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.15768,
+          "val_auc": 0.65113,
+          "val_f1_macro": 0.53532
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.14177,
+          "val_auc": 0.65136,
+          "val_f1_macro": 0.54022
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.1156,
+          "val_auc": 0.64953,
+          "val_f1_macro": 0.53833
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.12719,
+          "val_auc": 0.64641,
+          "val_f1_macro": 0.53361
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.12664,
+          "val_auc": 0.64314,
+          "val_f1_macro": 0.52432
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.10459,
+          "val_auc": 0.64071,
+          "val_f1_macro": 0.53843
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.10966,
+          "val_auc": 0.63096,
+          "val_f1_macro": 0.53079
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.10622,
+          "val_auc": 0.63128,
+          "val_f1_macro": 0.53008
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.08588,
+          "val_auc": 0.63229,
+          "val_f1_macro": 0.53261
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.09555,
+          "val_auc": 0.62713,
+          "val_f1_macro": 0.52704
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.08814,
+          "val_auc": 0.62834,
+          "val_f1_macro": 0.52934
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.0806,
+          "val_auc": 0.62328,
+          "val_f1_macro": 0.53589
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.08028,
+          "val_auc": 0.62137,
+          "val_f1_macro": 0.53075
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.06927,
+          "val_auc": 0.62384,
+          "val_f1_macro": 0.52334
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.07349,
+          "val_auc": 0.62589,
+          "val_f1_macro": 0.53412
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "3d5a898ca1ee",
+    "timestamp": "2026-09-17T03:22:11+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 2,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 5,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6886030570438072,
+    "validation_f1_macro": 0.5747523550671132,
+    "test_auc": 0.6310275137743241,
+    "test_f1_macro": 0.5310490615067476,
+    "test_precision_fraud": 0.140543115769414,
+    "test_recall_fraud": 0.22047832585949179,
+    "test_f1_fraud": 0.1716613325574629,
+    "test_accuracy": 0.8064713479709061,
+    "test_ks": 0.20390565645679437,
+    "test_ece": 0.050246354006574095,
+    "training_time": 303.99,
+    "inference_time": 199.8,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33155,
+          "val_auc": 0.6744,
+          "val_f1_macro": 0.55779
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30069,
+          "val_auc": 0.67227,
+          "val_f1_macro": 0.55919
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27615,
+          "val_auc": 0.67906,
+          "val_f1_macro": 0.5589
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26317,
+          "val_auc": 0.66265,
+          "val_f1_macro": 0.55341
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.24261,
+          "val_auc": 0.6886,
+          "val_f1_macro": 0.57475
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "2f09e9560d61",
+    "timestamp": "2026-09-17T03:43:27+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 3,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6934611637968082,
+    "validation_f1_macro": 0.5658784302061646,
+    "test_auc": 0.6332547722096269,
+    "test_f1_macro": 0.5377256436754857,
+    "test_precision_fraud": 0.15193468228611998,
+    "test_recall_fraud": 0.31988041853512705,
+    "test_f1_fraud": 0.20601684717208182,
+    "test_accuracy": 0.7757460403779485,
+    "test_ks": 0.1951915584767604,
+    "test_ece": 0.03996407933018326,
+    "training_time": 249.4,
+    "inference_time": 57.73,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33384,
+          "val_auc": 0.66725,
+          "val_f1_macro": 0.53697
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29622,
+          "val_auc": 0.69346,
+          "val_f1_macro": 0.56588
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.26691,
+          "val_auc": 0.67776,
+          "val_f1_macro": 0.55182
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25649,
+          "val_auc": 0.67344,
+          "val_f1_macro": 0.55224
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23638,
+          "val_auc": 0.67802,
+          "val_f1_macro": 0.56528
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "73ae9221649d",
+    "timestamp": "2026-09-17T03:56:40+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 3,
+    "initialization": 4,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0,
+      "ft_outer_epochs": 3,
+      "ft_inner_epochs": 10,
+      "ft_lr": 0.0001,
+      "ft_weight_decay": 0.0,
+      "ft_alpha": 0.1,
+      "ft_beta": 0.1,
+      "ft_accumulation_steps": 10,
+      "ft_orthogonality": "squared_dot",
+      "ft_selection_metric": "f1_macro"
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 1,
+    "epochs_run": 30,
+    "stopped_early": false,
+    "threshold": 0.25,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.7162779703750395,
+    "validation_f1_macro": 0.5823024818540513,
+    "test_auc": 0.6448122049906013,
+    "test_f1_macro": 0.5434862630340533,
+    "test_precision_fraud": 0.16962962962962963,
+    "test_recall_fraud": 0.1711509715994021,
+    "test_f1_fraud": 0.17038690476190477,
+    "test_accuracy": 0.848412752362178,
+    "test_ks": 0.2173742197679393,
+    "test_ece": 0.04084660508263804,
+    "training_time": 268.86,
+    "inference_time": 57.39,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": true,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.40263,
+          "val_auc": 0.71628,
+          "val_f1_macro": 0.5823
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.22416,
+          "val_auc": 0.69714,
+          "val_f1_macro": 0.55224
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.25219,
+          "val_auc": 0.69626,
+          "val_f1_macro": 0.5652
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.23355,
+          "val_auc": 0.69566,
+          "val_f1_macro": 0.57389
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.21006,
+          "val_auc": 0.6975,
+          "val_f1_macro": 0.57629
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.18611,
+          "val_auc": 0.69988,
+          "val_f1_macro": 0.57045
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.18849,
+          "val_auc": 0.69574,
+          "val_f1_macro": 0.5566
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.16871,
+          "val_auc": 0.69004,
+          "val_f1_macro": 0.56562
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.16762,
+          "val_auc": 0.68906,
+          "val_f1_macro": 0.55805
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.14909,
+          "val_auc": 0.68723,
+          "val_f1_macro": 0.55483
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.14753,
+          "val_auc": 0.69022,
+          "val_f1_macro": 0.55064
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.1369,
+          "val_auc": 0.67955,
+          "val_f1_macro": 0.54579
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.16961,
+          "val_auc": 0.68978,
+          "val_f1_macro": 0.55114
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.14223,
+          "val_auc": 0.69772,
+          "val_f1_macro": 0.55632
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.1457,
+          "val_auc": 0.67605,
+          "val_f1_macro": 0.54306
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.15037,
+          "val_auc": 0.67504,
+          "val_f1_macro": 0.54575
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.13453,
+          "val_auc": 0.68682,
+          "val_f1_macro": 0.55088
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.12467,
+          "val_auc": 0.6803,
+          "val_f1_macro": 0.55477
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.12573,
+          "val_auc": 0.68288,
+          "val_f1_macro": 0.54567
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.13341,
+          "val_auc": 0.69223,
+          "val_f1_macro": 0.5519
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.12693,
+          "val_auc": 0.68109,
+          "val_f1_macro": 0.55979
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.10799,
+          "val_auc": 0.67323,
+          "val_f1_macro": 0.55729
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.10219,
+          "val_auc": 0.66718,
+          "val_f1_macro": 0.55339
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.10721,
+          "val_auc": 0.6684,
+          "val_f1_macro": 0.54182
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.13237,
+          "val_auc": 0.67062,
+          "val_f1_macro": 0.5412
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.124,
+          "val_auc": 0.67032,
+          "val_f1_macro": 0.53779
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.11197,
+          "val_auc": 0.67393,
+          "val_f1_macro": 0.5446
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.07738,
+          "val_auc": 0.6726,
+          "val_f1_macro": 0.55247
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.10125,
+          "val_auc": 0.6687,
+          "val_f1_macro": 0.53505
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.08846,
+          "val_auc": 0.66736,
+          "val_f1_macro": 0.53723
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "25dbcec61a75",
+    "timestamp": "2026-09-17T04:03:45+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 0,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0,
+      "ft_outer_epochs": 3,
+      "ft_inner_epochs": 10,
+      "ft_lr": 0.0001,
+      "ft_weight_decay": 0.0,
+      "ft_alpha": 0.1,
+      "ft_beta": 0.1,
+      "ft_accumulation_steps": 10,
+      "ft_orthogonality": "squared_dot",
+      "ft_selection_metric": "f1_macro"
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 30,
+    "stopped_early": false,
+    "threshold": 0.3,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6733626049336733,
+    "validation_f1_macro": 0.5739724889741717,
+    "test_auc": 0.6370492292157289,
+    "test_f1_macro": 0.5306591366998938,
+    "test_precision_fraud": 0.14563806777217014,
+    "test_recall_fraud": 0.15097159940209268,
+    "test_f1_fraud": 0.14825688073394497,
+    "test_accuracy": 0.8422269050370471,
+    "test_ks": 0.20893458552733873,
+    "test_ece": 0.07104108983143399,
+    "training_time": 265.74,
+    "inference_time": 59.18,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": true,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.39678,
+          "val_auc": 0.67214,
+          "val_f1_macro": 0.55673
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.24426,
+          "val_auc": 0.66532,
+          "val_f1_macro": 0.56723
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.2237,
+          "val_auc": 0.67336,
+          "val_f1_macro": 0.57397
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.23448,
+          "val_auc": 0.67922,
+          "val_f1_macro": 0.56067
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.21098,
+          "val_auc": 0.66839,
+          "val_f1_macro": 0.56113
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.1813,
+          "val_auc": 0.65638,
+          "val_f1_macro": 0.55423
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.18106,
+          "val_auc": 0.64882,
+          "val_f1_macro": 0.54463
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.19982,
+          "val_auc": 0.65133,
+          "val_f1_macro": 0.53346
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.18471,
+          "val_auc": 0.65097,
+          "val_f1_macro": 0.53802
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.18231,
+          "val_auc": 0.64812,
+          "val_f1_macro": 0.54417
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.17763,
+          "val_auc": 0.6508,
+          "val_f1_macro": 0.5448
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.16321,
+          "val_auc": 0.63905,
+          "val_f1_macro": 0.53909
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.1471,
+          "val_auc": 0.63939,
+          "val_f1_macro": 0.53233
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.14504,
+          "val_auc": 0.64141,
+          "val_f1_macro": 0.54242
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.15448,
+          "val_auc": 0.63035,
+          "val_f1_macro": 0.53328
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.14566,
+          "val_auc": 0.63612,
+          "val_f1_macro": 0.53486
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.11354,
+          "val_auc": 0.62846,
+          "val_f1_macro": 0.52075
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.12878,
+          "val_auc": 0.61722,
+          "val_f1_macro": 0.51585
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.12048,
+          "val_auc": 0.61515,
+          "val_f1_macro": 0.51985
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.14066,
+          "val_auc": 0.61451,
+          "val_f1_macro": 0.5228
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.10354,
+          "val_auc": 0.61639,
+          "val_f1_macro": 0.52654
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.12116,
+          "val_auc": 0.60988,
+          "val_f1_macro": 0.51814
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.13439,
+          "val_auc": 0.60391,
+          "val_f1_macro": 0.51353
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.11097,
+          "val_auc": 0.61017,
+          "val_f1_macro": 0.5285
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.06976,
+          "val_auc": 0.606,
+          "val_f1_macro": 0.52478
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.08426,
+          "val_auc": 0.60697,
+          "val_f1_macro": 0.5202
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.07957,
+          "val_auc": 0.61131,
+          "val_f1_macro": 0.51735
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.09117,
+          "val_auc": 0.60996,
+          "val_f1_macro": 0.51536
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.10558,
+          "val_auc": 0.6111,
+          "val_f1_macro": 0.52387
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.11185,
+          "val_auc": 0.59556,
+          "val_f1_macro": 0.51826
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "f651f6b50ce1",
+    "timestamp": "2026-09-17T04:10:49+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 1,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6920107154112827,
+    "validation_f1_macro": 0.5781950704664751,
+    "test_auc": 0.6514622920578096,
+    "test_f1_macro": 0.5463128485705663,
+    "test_precision_fraud": 0.17498138495904692,
+    "test_recall_fraud": 0.1756352765321375,
+    "test_f1_fraud": 0.175307720999627,
+    "test_accuracy": 0.8497043029025899,
+    "test_ks": 0.2216212820670166,
+    "test_ece": 0.03247141653097197,
+    "training_time": 81.88,
+    "inference_time": 57.02,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.32939,
+          "val_auc": 0.64867,
+          "val_f1_macro": 0.53871
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29616,
+          "val_auc": 0.69201,
+          "val_f1_macro": 0.5782
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27294,
+          "val_auc": 0.68713,
+          "val_f1_macro": 0.56951
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.24495,
+          "val_auc": 0.66864,
+          "val_f1_macro": 0.54782
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.2446,
+          "val_auc": 0.66511,
+          "val_f1_macro": 0.54803
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "041ac5a2dda1",
+    "timestamp": "2026-09-17T04:17:53+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 2,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 2,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.667231326820044,
+    "validation_f1_macro": 0.5708549628434124,
+    "test_auc": 0.6422778724326519,
+    "test_f1_macro": 0.5397068678819857,
+    "test_precision_fraud": 0.15492170022371365,
+    "test_recall_fraud": 0.2070254110612855,
+    "test_f1_fraud": 0.17722328854766475,
+    "test_accuracy": 0.8251648426347631,
+    "test_ks": 0.2140194580316384,
+    "test_ece": 0.0338051597702118,
+    "training_time": 82.54,
+    "inference_time": 57.55,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33236,
+          "val_auc": 0.6416,
+          "val_f1_macro": 0.53865
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.30011,
+          "val_auc": 0.66723,
+          "val_f1_macro": 0.57085
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27199,
+          "val_auc": 0.65591,
+          "val_f1_macro": 0.54011
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26469,
+          "val_auc": 0.67028,
+          "val_f1_macro": 0.54776
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23861,
+          "val_auc": 0.6787,
+          "val_f1_macro": 0.54834
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "99e56be6ef42",
+    "timestamp": "2026-09-17T04:24:57+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 3,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 3,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.2,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6899335300690485,
+    "validation_f1_macro": 0.5740976411752161,
+    "test_auc": 0.6392203486108647,
+    "test_f1_macro": 0.5405382693382845,
+    "test_precision_fraud": 0.15671641791044777,
+    "test_recall_fraud": 0.2040358744394619,
+    "test_f1_fraud": 0.17727272727272728,
+    "test_accuracy": 0.827747943715587,
+    "test_ks": 0.21285744417085634,
+    "test_ece": 0.033721549591521634,
+    "training_time": 82.67,
+    "inference_time": 58.14,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33555,
+          "val_auc": 0.66901,
+          "val_f1_macro": 0.55993
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29816,
+          "val_auc": 0.686,
+          "val_f1_macro": 0.56285
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.28146,
+          "val_auc": 0.68993,
+          "val_f1_macro": 0.5741
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.26547,
+          "val_auc": 0.66677,
+          "val_f1_macro": 0.54184
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.23907,
+          "val_auc": 0.68008,
+          "val_f1_macro": 0.55023
+        }
+      ],
+      "test_label_distribution": {
+        "0": 13373,
+        "1": 1338
+      }
+    }
+  },
+  {
+    "experiment_id": "283d4df4477f",
+    "timestamp": "2026-09-17T04:32:03+00:00",
+    "git_commit": "a76394d0036c36b58066611c092988c5c3f35585-dirty",
+    "schema_version": "results-v1",
+    "dataset": "reddit",
+    "model": "gat",
+    "variant": "flag_finetuned",
+    "impl_source": "flag_bundled",
+    "fidelity_class": "adapted",
+    "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+    "seed": 4,
+    "initialization": 4,
+    "device": "cuda:0",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "framework": "torch 2.14.0+cu130",
+    "python_version": "3.12.14",
+    "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+    "hyperparameters": {
+      "cfg_epochs": 5,
+      "cfg_lr": 0.01,
+      "cfg_weight_decay": 0.0,
+      "cfg_dropout": 0.5,
+      "cfg_hidden_dim": 32,
+      "cfg_accumulation_steps": 10,
+      "cfg_optimizer": "adam",
+      "cfg_early_stopping": true,
+      "cfg_patience": 10,
+      "cfg_selection_metric": "f1_macro",
+      "cfg_threshold_policy": "validation_swept",
+      "cfg_class_weighted_loss": false,
+      "cfg_shuffle_each_epoch": true,
+      "cfg_max_grad_norm": null,
+      "cfg_log_every": 0
+    },
+    "sampling_config": {
+      "hops": 2,
+      "top_k": 10,
+      "similarity_threshold": 0.0,
+      "strategy": "semantic",
+      "per_hop": true,
+      "threshold_first": true,
+      "seed": 0,
+      "include_center": true,
+      "cache_key": "semantic_h2_k10_t0_perhop"
+    },
+    "dataset_version": "benchmark-v1",
+    "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+    "prompt_version": "",
+    "llm_model": "google/gemma-2-9b-it",
+    "llm_finetuned": false,
+    "best_epoch": 1,
+    "epochs_run": 5,
+    "stopped_early": false,
+    "threshold": 0.15,
+    "threshold_policy": "validation_swept",
+    "validation_auc": 0.6556635532762226,
+    "validation_f1_macro": 0.5621828604429233,
+    "test_auc": 0.6257303244819755,
+    "test_f1_macro": 0.5375931903490437,
+    "test_precision_fraud": 0.15024232633279483,
+    "test_recall_fraud": 0.27802690582959644,
+    "test_f1_fraud": 0.19507079181961196,
+    "test_accuracy": 0.7913126232071239,
+    "test_ks": 0.18757324761525052,
+    "test_ece": 0.01610907781837679,
+    "training_time": 80.5,
+    "inference_time": 56.52,
+    "checkpoint_path": "",
+    "status": "completed",
+    "error_message": "",
+    "notes": "",
+    "extra": {
+      "device_kind": "cuda",
+      "device_memory_gb": 79.25,
+      "device_capability": "8.0",
+      "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+      "split_sizes": {
+        "train": 1839,
+        "val": 1839,
+        "test": 14711
+      },
+      "finetune": {
+        "train_subgraphs_total": 1839,
+        "train_subgraphs_usable": 389,
+        "applied": false,
+        "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+      },
+      "epoch_history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.3346,
+          "val_auc": 0.65566,
+          "val_f1_macro": 0.56218
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.29353,
+          "val_auc": 0.68152,
+          "val_f1_macro": 0.54597
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.27832,
+          "val_auc": 0.67769,
+          "val_f1_macro": 0.54608
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.25756,
+          "val_auc": 0.66865,
+          "val_f1_macro": 0.54703
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.22561,
+          "val_auc": 0.6655,
+          "val_f1_macro": 0.53869
         }
       ],
       "test_label_distribution": {
