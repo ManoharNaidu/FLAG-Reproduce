@@ -147,9 +147,12 @@ The maintainer will rent GPUs on **vast.ai** for the LLM stages.
    one-command remote bootstrap (`scripts/setup/install_gpu.sh`) that works on a
    bare vast.ai image, and `docs/vastai_gpu_workflow.md` covering instance
    selection, the gated-model login, cache export/import and checksum verification.
-7. Until a GPU run happens, `flag` and `flag_finetuned` stay **`BLOCKED`** in
-   `reproduction_status.md`. They are never reported as passing, and no
-   placeholder numbers are generated.
+7. **Update, 2026-09-18: the GPU run has happened.** `google/gemma-2-9b-it` ran
+   on a rented vast.ai instance; `flag` and `flag_finetuned` are `DONE` in
+   `reproduction_status.md` for GAT, CARE-GNN, BWGNN and DGA-GNN on both
+   Reddit and Instagram (208 `flag` runs, 200 `flag_finetuned` runs). GCN,
+   GeniePath and PMP are not yet run under either variant. No placeholder
+   numbers were ever generated for the unrun combinations.
 
 **Note on the gated checkpoint.** `google/gemma-2-9b-it` requires accepting
 Google's licence and an authenticated `HF_TOKEN`. On a rented instance the token

@@ -4,17 +4,26 @@ A reproducible research benchmark for **FLAG: Fraud Detection with LLM-enhanced
 Graph Neural Network** (KDD 2025), plus the seven GNN baselines it compares
 against, on a shared dataset/split/metric protocol.
 
-> ## Status: pipeline runs end to end; baseline experiments in progress
+> ## Status: pipeline runs end to end; `flag` and `flag_finetuned` now have real GPU results
 >
 > The research audit is complete (**36/36 findings backed by passing tests**),
-> both datasets are downloaded and verified, and the pipeline produces real
-> numbers on CPU for the `baseline` and `+text` variants.
+> both datasets are downloaded and verified, and `google/gemma-2-9b-it` has been
+> run on a rented vast.ai GPU (decision D-003) to produce **real `+FLAG` and
+> `+FLAG*` numbers** for 4 of 7 backbones (GAT, CARE-GNN, BWGNN, DGA-GNN) on
+> both Reddit and Instagram — 208 `+FLAG` runs and 200 `+FLAG*` runs, no
+> placeholders. GCN, GeniePath and PMP still only have `baseline`.
 >
-> **`flag` and `flag_finetuned` have never been run** — they need
-> `gemma-2-9b-it` on a GPU. No placeholder numbers exist for them.
+> **The `+text` variant is currently absent from the tracked results store.**
+> `results/raw/` is git-ignored, so the `+text` numbers an earlier revision of
+> this README quoted are not part of the committed record any more — only
+> `baseline`, `flag` and `flag_finetuned` are in
+> [`results/aggregated/results.csv`](results/aggregated/results.csv) today.
+> Recorded as a gap to re-run, not silently dropped.
 >
 > **Nothing is claimed as "reproduced".** The paper's downsampling seed is
-> unpublished, so exact agreement with Table 4 is not achievable in principle.
+> unpublished, so exact agreement with Table 4 is not achievable in principle,
+> and `+FLAG*` reproduces the *released code's* behaviour (GNN retrains, LLM
+> frozen — decision D-001), not LLM fine-tuning.
 > The ledger is [`research/reproduction_status.md`](research/reproduction_status.md).
 
 ---
@@ -49,8 +58,11 @@ These are the load-bearing findings. Each is backed by a test in
 3. **LoRA fine-tuning is a no-op as shipped.** `model.generate()` is
    non-differentiable and the decode -> Sentence-BERT re-encode produces a fresh
    leaf tensor, so no gradient reaches the LoRA parameters. Yet the paper reports
-   `+FLAG*` beating `+FLAG`. **We do not know what produced that column** — this is
-   the project's biggest open question ([status §4.1](research/reproduction_status.md)).
+   `+FLAG*` beating `+FLAG`. **We do not know what produced that column.**
+   Decision [D-001](research/decisions.md) reproduces the released code as-is —
+   LLM frozen, GNN inner loop retrains under the full three-term loss — and
+   `flag_finetuned` results are now real GPU runs under that reading, each
+   stamped `llm_finetuned: false`. Contacting the authors remains open.
 
 4. **Four of the five bundled baselines are not their published algorithms.**
    FLAG ships its own PyG rewrites. CARE-GNN has no RL neighbour filtering and no
@@ -149,13 +161,20 @@ Verify:
 
 ## 6. GPU setup
 
-**Untested.** This machine has no CUDA, so every GPU claim is recorded as
-`UNTESTED` rather than `supported`. GPU tests skip when CUDA is absent; a skipped
-test is never reported as a pass.
+**Used, on a rented instance.** This development machine still has no CUDA, but
+`google/gemma-2-9b-it` has been run on a rented **vast.ai** GPU (decision D-003)
+to generate the LLM text cache the `flag`/`flag_finetuned` variants consume. Full
+workflow, instance sizing, and cache-integrity checks:
+[`docs/vastai_gpu_workflow.md`](docs/vastai_gpu_workflow.md).
 
-Full FLAG reproduction needs a GPU: `gemma-2-9b-it` is ~18.5 GB in fp16 plus KV
-cache, and the paper reports deployment on an **A100 80 GB**. We do not claim that
-Gemma-2-9B fine-tuning on CPU is practical.
+The production cache was generated at a **reduced decode budget**
+(`max_new_tokens=64, truncate_chars=300` instead of the paper-faithful
+550/1200) to control cost — see decision D-004 in
+[`research/decisions.md`](research/decisions.md).
+Node coverage from the generated text is low (0.6%-12.4% depending on
+dataset/kind), so most `flag`/`flag_finetuned` results are, for the majority of
+subgraphs, the documented raw-text fallback rather than genuine LLM-generated
+text — a materially weaker test of the method than Table 4's.
 
 ## 7. Quick start
 
@@ -187,11 +206,12 @@ every refused combination with its reason.
 
 ## 8-10. FLAG reproduction, baselines, fine-tuning
 
-Not implemented yet — deliberately. The brief called for research first, and the
-audit changed assumptions that would otherwise have been baked into a premature
-abstraction: the sampler does not exist, fine-tuning is non-functional, and most
-bundled baselines are not their published algorithms. Sequencing:
-[`research/reproduction_status.md` §7](research/reproduction_status.md).
+Implemented and run. The sampler was reimplemented from Eq. 3-4 (no upstream
+source), the seven bundled baselines run as `baseline`/`text`, and `flag` /
+`flag_finetuned` have real GPU-produced numbers for GAT, CARE-GNN, BWGNN and
+DGA-GNN on both datasets (§11). GCN, GeniePath and PMP still only have
+`baseline` — not yet run under `flag`/`flag_finetuned`. Status ledger:
+[`research/reproduction_status.md`](research/reproduction_status.md).
 
 ## 11. Results
 
@@ -211,33 +231,64 @@ After downsampling only 1.2% of Reddit nodes have degree > 10, so top-10
 selection is a no-op for 98.8% of them and every strategy picks the same
 neighbours. Full analysis: [`research/figure3a_reproduction.md`](research/figure3a_reproduction.md).
 
-**Table 4 rows** (1 run each, `argmax` threshold, `impl_source=flag_bundled`):
+**Current tables**, all `impl_source=flag_bundled`:
+[`results/tables/comparison.md`](results/tables/comparison.md) (ours only) and
+[`results/tables/comparison_vs_reported_f1_macro.md`](results/tables/comparison_vs_reported_f1_macro.md) /
+[`comparison_vs_reported_auc.md`](results/tables/comparison_vs_reported_auc.md)
+(ours vs. the paper's Table 4).
 
-| dataset | model | variant | ours F1 | paper | ours AUC | paper |
-|---|---|---|---:|---:|---:|---:|
-| reddit | gcn | baseline | 49.58 | 45.46 | 58.51 | 50.32 |
-| reddit | gcn | text | 48.32 | 45.84 | 59.69 | 57.82 |
-| reddit | gat | baseline | 47.62 | 46.66 | 52.18 | 52.66 |
-| reddit | gat | text | 47.62 | 48.26 | 64.13 | 59.32 |
-| reddit | care_gnn | baseline | 47.62 | 45.46 | 52.14 | 51.35 |
-| reddit | care_gnn | text | 47.62 | 47.66 | 62.35 | 56.72 |
-| reddit | bwgnn | baseline | 52.81 | 45.47 | 60.74 | 53.82 |
-| reddit | bwgnn | text | 53.41 | 48.76 | 66.52 | 57.56 |
-| instagram | gcn | baseline | 51.91 | 47.88 | 53.58 | 52.61 |
-| instagram | gcn | text | 47.62 | 47.29 | 60.34 | 55.74 |
+`+FLAG` and `+FLAG*` selected rows (paper vs. ours, AUC, mean over 25+ runs):
 
-Two things to read carefully before drawing conclusions:
+| dataset | model | variant | reported AUC | ours AUC | delta | status |
+|---|---|---|---:|---:|---:|---|
+| reddit | gat | flag | 60.61 | 64.33 | +3.72 | DEVIATION |
+| reddit | gat | flag_finetuned | 60.57 | 63.94 | +3.37 | DEVIATION |
+| reddit | dga_gnn | flag_finetuned | 61.61 | 62.07 | +0.46 | MATCH |
+| reddit | care_gnn | flag | 58.43 | 62.86 | +4.43 | DEVIATION |
+| instagram | bwgnn | flag_finetuned | 57.19 | 57.54 | +0.35 | MATCH |
+| instagram | gat | flag | 54.97 | 60.49 | +5.52 | DEVIATION |
 
-- **47.62 is the trivial classifier** on a 10:1 split, not a model score. The
-  paper's repeated 45.46 (four Reddit cells, std 0.01) and 47.29 (five Instagram
-  cells) are almost certainly the same thing on their split.
+Full 56-row comparison (28 `baseline`/`flag`/`flag_finetuned` cells x 2 metrics):
+F1-macro — 1 MATCH, 1 CLOSE, 28 DEVIATION, 26 UNAVAILABLE (`text` and the
+3 not-yet-run models). AUC — 5 MATCH, 6 CLOSE, 19 DEVIATION, 26 UNAVAILABLE.
+
+Four things to read carefully before drawing conclusions:
+
+- **Every available `+FLAG`/`+FLAG*` AUC is above the paper's**, same direction
+  and similar magnitude as the `baseline` gap below — this looks like the same
+  protocol difference (split, downsampling draw, sampler reimplementation), not
+  a `+FLAG`-specific effect.
+- **`flag_finetuned` here is not LLM fine-tuning.** Per decision D-001 it
+  reproduces the released code's actual behaviour — LLM frozen, GNN inner loop
+  retrains under the residual + orthogonality losses — and every row carries
+  `llm_finetuned: false`.
+- **The LLM text cache has low node coverage** (0.6%-12.4%, decision D-004), so
+  most subgraphs behind these numbers use the raw-text fallback, not
+  LLM-generated text. A materially weaker test of the method than Table 4's.
+- **47.62 is the trivial classifier** on a 10:1 split, not a model score, and
+  shows up repeatedly in `baseline`/`text` rows. The paper's repeated 45.46
+  (four Reddit cells, std 0.01) and 47.29 (five Instagram cells) are almost
+  certainly the same thing on their split.
   [`research/degenerate_baselines.md`](research/degenerate_baselines.md).
 - **The threshold policy is worth 2–4 F1 points** and the paper states none.
   Every result row records which was used.
 
 ## 12. Known limitations
 
-- **No GPU** -> FLAG's LLM stages and all `flag`/`flag_finetuned` variants are blocked.
+- **No local GPU** -> the LLM stage only runs on a rented vast.ai instance
+  (D-003). Working, but not free, and not repeatable at zero cost.
+- **`flag`/`flag_finetuned` are only run for 4 of 7 backbones** (GAT, CARE-GNN,
+  BWGNN, DGA-GNN). GCN, GeniePath and PMP have not been run under either variant.
+- **The LLM text cache has low node coverage** (0.6%-12.4%) because it was
+  generated at a reduced decode budget to control cost (D-004), so most
+  `flag`/`flag_finetuned` results reflect the raw-text fallback for most
+  subgraphs, not genuine LLM-generated text.
+- **The `+text` variant has no results in the current tracked aggregation.**
+  `results/raw/` is git-ignored; whatever produced the old `+text` numbers is
+  not part of the committed record. Needs re-running.
+- **`flag_finetuned` is not LLM fine-tuning as reproduced here** (D-001) — the
+  released code's LoRA gradient path is severed, so this variant reproduces
+  "GNN retrains, LLM frozen," not what the paper's `+FLAG*` label implies.
 - **Huabei (Table 3) is permanently unreproducible** — proprietary Alipay data.
 - **The 1:10 downsampling seed is unpublished and unrecoverable**, so exact
   agreement with Table 4 is impossible in principle. We will not claim it.

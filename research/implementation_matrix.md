@@ -2,8 +2,14 @@
 
 What exists, where it comes from, how faithful it is, and what has to be built.
 
-**Status date:** 2026-09-09 — end of Phase 0-3 (research/audit). No training runs
-have been executed yet. **Nothing in this file claims a reproduction.**
+**Status date:** 2026-09-09, Phase 0-3 (research/audit) baseline — **not
+refreshed since.** Training has since happened: all 7 backbones have `baseline`
+results, and `flag`/`flag_finetuned` have real GPU results for GAT, CARE-GNN,
+BWGNN and DGA-GNN. This file's "Class"/"Fidelity" analysis (sections 1-2, 5-6)
+is still the load-bearing audit content and is unaffected by that; its "TODO"
+build-status markers in section 3 predate the implementation and should be read
+against `research/reproduction_status.md` §3, which is kept current.
+**Nothing in this file claims a reproduction.**
 
 ---
 
@@ -87,7 +93,7 @@ is **UNKNOWN**. Exposed as the `SG` ablation flag rather than assumed.
 | Attention fusion at inference | **yes** — `models.py:DualGNN` | `OFFICIAL` | `ADAPTER_REQUIRED` | `AUDITED` |
 | Three fine-tuning losses | **yes** — `utils.py` | `OFFICIAL` (orthogonality **deviates from Eq. 9**) | `ADAPTER_REQUIRED` | `AUDITED` |
 | LoRA config | **yes** — `train.py:37-43` | `OFFICIAL` | `DIRECT` | `AUDITED` |
-| Two-stage alternating loop | **yes** — `train.py:main` | `OFFICIAL` but **non-functional** (5.5) | `REIMPLEMENT_REQUIRED` | **BLOCKED** |
+| Two-stage alternating loop | **yes** — `train.py:main` | `OFFICIAL` but **non-functional** (5.5) | `REIMPLEMENT_REQUIRED` | **DONE** — reproduced as-is per decision D-001 (LLM frozen, GNN inner loop trains); `flag_finetuned` results exist for 4/7 backbones |
 | **Semantic similarity sampling** | **NO** | — | **`REIMPLEMENT_REQUIRED`** | `TODO` |
 | 1:10 benchmark construction | **NO** | — | `REIMPLEMENT_REQUIRED` | `TODO` |
 | Train/val/test splitting | **NO** | — | `REIMPLEMENT_REQUIRED` | `TODO` |

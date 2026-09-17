@@ -25,7 +25,7 @@ gone stale.
 
 | Model | Source | Commit | Framework | Native dataset | Integrated | Licence |
 |---|---|---|---|---|---|---|
-| **flag** | [BUPT-GAMMA/FLAG](https://github.com/BUPT-GAMMA/FLAG) | `cb83944e` | PyTorch + PyG + transformers + peft | Reddit, Instagram (files not shipped) | **audited, not yet integrated** | **NONE** |
+| **flag** | [BUPT-GAMMA/FLAG](https://github.com/BUPT-GAMMA/FLAG) | `cb83944e` | PyTorch + PyG + transformers + peft | Reddit, Instagram (files not shipped) | **integrated and run** — `flag`/`flag_finetuned` have real GPU results for GAT, CARE-GNN, BWGNN, DGA-GNN (see `research/reproduction_status.md`) | **NONE** |
 | **care_gnn** | [YingtongDou/CARE-GNN](https://github.com/YingtongDou/CARE-GNN) | `a64ff752` | PyTorch (no DGL/PyG) | YelpChi, Amazon (in-repo) | no | Apache-2.0 |
 | **bwgnn** | [squareRoot3/Rethinking-Anomaly-Detection](https://github.com/squareRoot3/Rethinking-Anomaly-Detection) | `de0631f0` | PyTorch + DGL | Yelp, Amazon, T-Finance, T-Social | no | **NONE** |
 | **dga_gnn** | [AtwoodDuan/DGA-GNN](https://github.com/AtwoodDuan/DGA-GNN) | `0907392f` | PyTorch + DGL + Lightning + Hydra | Elliptic, T-Finance, T-Social, YelpChi, Amazon | no | **NONE** |
@@ -33,8 +33,13 @@ gone stale.
 | **geniepath** | [shuowang-ai/GeniePath-pytorch](https://github.com/shuowang-ai/GeniePath-pytorch) | `143f07cc` | PyTorch + PyG 1.x | PPI | no | MIT |
 | **glbench** | [NineAbyss/GLBench](https://github.com/NineAbyss/GLBench) | unpinned | PyTorch | source of Reddit + Instagram | no | MIT |
 
-`Integrated` means "wired into this framework's registry and runnable through our
-config system". Only `flag` has been *audited*; nothing is integrated yet.
+`Integrated` here means "the *official* upstream repository is wired into this
+framework's registry and runnable through our config system" — that is still
+`no` for care_gnn, bwgnn, dga_gnn, pmp and geniepath (decision D-002's
+`official` lineage). Their `flag_bundled` re-implementations, shipped inside
+`methods/flag/`, are what `flag` is integrated and run above: every backbone's
+`baseline` variant runs today, and `flag`/`flag_finetuned` run for GAT,
+CARE-GNN, BWGNN and DGA-GNN. See "Two lineages, never merged" below.
 
 ### Deliberately absent: GCN and GAT
 

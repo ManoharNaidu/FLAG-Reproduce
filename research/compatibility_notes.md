@@ -276,7 +276,12 @@ The GPU path will be written (device is threaded through configuration, never
 hardcoded) and covered by tests that **skip** when CUDA is absent — a skipped test
 is never reported as a pass.
 
-The `gemma-2-9b-it` requirement is the binding constraint for full reproduction:
-~18.5 GB of fp16 weights plus KV cache for `max_new_tokens=550`. The paper reports
-deployment on an **A100 80 GB**. Full FLAG* fine-tuning is out of reach here, and
-is documented as such rather than approximated.
+The `gemma-2-9b-it` requirement is the binding constraint for full reproduction
+**on this machine**: ~18.5 GB of fp16 weights plus KV cache. The paper reports
+deployment on an **A100 80 GB**.
+
+**Update:** per decision D-003, `gemma-2-9b-it` has since run on a rented
+vast.ai GPU (never on this machine), producing real `flag`/`flag_finetuned`
+results for 4 of 7 backbones — see `docs/vastai_gpu_workflow.md` and
+`research/reproduction_status.md`. This machine's own GPU status is unchanged
+and remains `UNTESTED`.
