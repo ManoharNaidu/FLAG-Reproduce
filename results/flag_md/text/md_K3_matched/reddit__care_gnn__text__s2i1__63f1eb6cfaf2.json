@@ -1,0 +1,124 @@
+{
+  "experiment_id": "63f1eb6cfaf2",
+  "timestamp": "2026-09-19T11:26:00+00:00",
+  "git_commit": "14eedbd784f43524589dcc9c848191495f337851-dirty",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "care_gnn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "approximation",
+  "model_fidelity": "NOT CARE-GNN - no RL neighbour filtering, no label-aware similarity, no multi-relation aggregation. A similarity-gated mean aggregator.",
+  "seed": 2,
+  "initialization": 1,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 3,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k10_t0_perhop_K3_matched_cosine"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 1,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.2,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6075570151562903,
+  "validation_f1_macro": 0.5358140292309571,
+  "test_auc": 0.6104186178406237,
+  "test_f1_macro": 0.5232352331882023,
+  "test_precision_fraud": 0.14285714285714285,
+  "test_recall_fraud": 0.10687593423019431,
+  "test_f1_fraud": 0.12227447627191107,
+  "test_accuracy": 0.8604445652912787,
+  "test_ks": 0.16893055938850976,
+  "test_ece": 0.021529342090951205,
+  "training_time": 17.25,
+  "inference_time": 8.61,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 14.8,
+    "diffusion_precompute_seconds": 0.297,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.33193,
+        "val_auc": 0.60756,
+        "val_f1_macro": 0.53581
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.28289,
+        "val_auc": 0.63818,
+        "val_f1_macro": 0.53294
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.26195,
+        "val_auc": 0.6324,
+        "val_f1_macro": 0.52092
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.2371,
+        "val_auc": 0.64904,
+        "val_f1_macro": 0.53512
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.21878,
+        "val_auc": 0.63834,
+        "val_f1_macro": 0.51897
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  }
+}
