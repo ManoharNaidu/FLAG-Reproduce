@@ -74,6 +74,9 @@ class SamplingConfig:
         random    -- RS,  uniform random neighbours
         none      -- NS,  keep all neighbours (no sampling)
         feature   -- FS,  similarity on the graph's own node features
+        markov_diffusion -- FLAG-MD, rank by Markov-diffusion distance instead
+                    of cosine (flagbench.sampling.markov_diffusion). Uses the
+                    `diffusion_*` / `md_selection` fields below.
     """
 
     per_hop: bool = True
@@ -88,6 +91,25 @@ class SamplingConfig:
     include_center: bool = True
     """Keep the centre node in its own subgraph. Required -- the centre is the
     node being classified."""
+
+    # ---- FLAG-MD only. Ignored (and absent from cache keys / records) for every
+    # other strategy, so existing cosine caches and result rows are unchanged.
+    diffusion_steps: int = 2
+    """K in Z(K) = (1/K) sum_{k=0..K} T^k."""
+
+    diffusion_operator: str = "paper_eq6"
+    """paper_eq6 | mean_k0 | walk_only. See markov_diffusion.py."""
+
+    diffusion_threshold: float | None = None
+    """Optional: drop candidates whose diffusion distance exceeds this. Not
+    comparable to the cosine `similarity_threshold`; off by default."""
+
+    md_selection: str = "matched_cosine"
+    """matched_cosine | top_n. See markov_diffusion.py."""
+
+    _MD_FIELDS = (
+        "diffusion_steps", "diffusion_operator", "diffusion_threshold", "md_selection",
+    )
 
     def cache_key(self) -> str:
         """Stable identifier for the sampling cache.
@@ -104,10 +126,21 @@ class SamplingConfig:
         ]
         if self.strategy == "random":
             parts.append(f"s{self.seed}")
+        if self.strategy == "markov_diffusion":
+            parts.append(f"K{self.diffusion_steps}")
+            parts.append(self.md_selection)
+            if self.diffusion_operator != "paper_eq6":
+                parts.append(self.diffusion_operator)
+            if self.diffusion_threshold is not None:
+                parts.append(f"d{self.diffusion_threshold:g}")
         return "_".join(parts)
 
     def as_record(self) -> dict:
-        return {**dataclasses.asdict(self), "cache_key": self.cache_key()}
+        record = dataclasses.asdict(self)
+        if self.strategy != "markov_diffusion":
+            for name in self._MD_FIELDS:
+                record.pop(name, None)
+        return {**record, "cache_key": self.cache_key()}
 
 
 @dataclass
@@ -237,12 +270,47 @@ def select_neighbors(
     return np.sort(candidates)
 
 
+class CosineNeighborSampler:
+    """FLAG's original selection (Eq. 3-4) behind the common `select` interface.
+
+    A thin wrapper: it delegates to `select_neighbors` unchanged, so the cosine
+    path is bit-for-bit what it was before the interface existed.
+    """
+
+    def __init__(self, normalized: torch.Tensor | None, config: SamplingConfig,
+                 rng: np.random.Generator | None = None):
+        self.normalized = normalized
+        self.config = config
+        self.rng = rng
+
+    def select(self, center: int, candidates: np.ndarray) -> np.ndarray:
+        return select_neighbors(center, candidates, self.normalized, self.config, self.rng)
+
+
+def make_sampler(
+    config: SamplingConfig,
+    adjacency: list[np.ndarray],
+    embeddings: torch.Tensor | None,
+):
+    """Sampler for `config.strategy`: cosine-family, or Markov diffusion."""
+    if config.strategy == "markov_diffusion":
+        if embeddings is None:
+            raise ValueError("strategy='markov_diffusion' needs embeddings")
+        from flagbench.sampling.markov_diffusion import MarkovDiffusionNeighborSampler
+
+        return MarkovDiffusionNeighborSampler(adjacency, embeddings, config)
+    normalized = normalize_embeddings(embeddings) if embeddings is not None else None
+    rng = np.random.default_rng(config.seed) if config.strategy == "random" else None
+    return CosineNeighborSampler(normalized, config, rng)
+
+
 def sample_subgraph(
     center: int,
     adjacency: list[np.ndarray],
     normalized: torch.Tensor | None,
     config: SamplingConfig,
     rng: np.random.Generator | None = None,
+    sampler=None,
 ) -> Subgraph:
     """Build the sampled k-hop subgraph around `center`.
 
@@ -250,7 +318,18 @@ def sample_subgraph(
     previous hop, applying `select_neighbors` to each. Already-visited nodes are
     not re-expanded, which keeps the subgraph a tree-like neighbourhood rather
     than the full induced subgraph.
+
+    `sampler` (anything with `select(node, candidates)`) replaces
+    `select_neighbors` as the ranking criterion; frontier expansion, budgets and
+    the induced subgraph are untouched. Omitted -> the original behaviour.
     """
+    if sampler is None:
+        def select(node):
+            return select_neighbors(node, adjacency[node], normalized, config, rng)
+    else:
+        def select(node):
+            return sampler.select(node, adjacency[node])
+
     visited: dict[int, int] = {center: 0}      # node -> hop at which it entered
     order: list[int] = [center]                # preserves centre-first ordering
     frontier = [center]
@@ -265,9 +344,7 @@ def sample_subgraph(
                 break
 
         for node in frontier:
-            selected = select_neighbors(
-                node, adjacency[node], normalized, config, rng
-            )
+            selected = select(node)
             for neighbor in selected.tolist():
                 if neighbor in visited:
                     continue
@@ -315,12 +392,16 @@ def sample_all(
     embeddings: torch.Tensor | None,
     config: SamplingConfig,
     progress: bool = False,
+    sampler=None,
 ) -> list[Subgraph]:
-    """Sample a subgraph for each node in `node_ids`."""
-    normalized = (
-        normalize_embeddings(embeddings) if embeddings is not None else None
-    )
-    rng = np.random.default_rng(config.seed) if config.strategy == "random" else None
+    """Sample a subgraph for each node in `node_ids`.
+
+    `sampler` may be passed pre-built (e.g. so a caller can time the diffusion
+    precompute separately); otherwise it is built from `config`.
+    """
+    if sampler is None:
+        sampler = make_sampler(config, adjacency, embeddings)
+    normalized = rng = None      # unused: the sampler owns them
 
     node_ids = list(node_ids)
     iterator = node_ids
@@ -333,7 +414,7 @@ def sample_all(
             pass
 
     return [
-        sample_subgraph(int(n), adjacency, normalized, config, rng)
+        sample_subgraph(int(n), adjacency, normalized, config, rng, sampler=sampler)
         for n in iterator
     ]
 

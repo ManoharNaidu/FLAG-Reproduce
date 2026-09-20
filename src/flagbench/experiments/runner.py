@@ -128,7 +128,8 @@ PRODUCTION_LLM_CONFIG = {"max_new_tokens": 64, "truncate_chars": 300}
 
 
 def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM-L6-v2",
-                          llm_model: str = "google/gemma-2-9b-it") -> tuple[str, pathlib.Path]:
+                          llm_model: str = "google/gemma-2-9b-it",
+                          sampling: SamplingConfig | None = None) -> tuple[str, pathlib.Path]:
     """Locate the Sentence-BERT cache for GPU-generated LLM text.
 
     Recomputes the exact cache key `scripts.llm.generate_text` /
@@ -136,12 +137,16 @@ def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM
     sampling config and LLM decode settings (decision D-004), so this can
     never silently pick up a cache built from a different prompt/model/decode
     config. See decisions D-003 and D-004 in `research/decisions.md`.
+
+    `sampling=None` keeps the original behaviour (the FLAG variant's default
+    cosine sampler). Passing a config (e.g. FLAG-MD) selects THAT sampler's LLM
+    cache, because the LLM text is generated per sampled subgraph.
     """
     from flagbench.llm.enhance import LLMConfig, PromptSet, cache_key as llm_cache_key
-    from flagbench.sampling.semantic import SamplingConfig
 
-    variant = get_variant("flag")
-    sampling = SamplingConfig(strategy=variant.default_sampling_strategy)
+    if sampling is None:
+        variant = get_variant("flag")
+        sampling = SamplingConfig(strategy=variant.default_sampling_strategy)
     prompts = PromptSet.load(dataset)
     config = LLMConfig(model_id=llm_model, **PRODUCTION_LLM_CONFIG)
     key = llm_cache_key(dataset, sampling.cache_key(), prompts, config, kind)
@@ -149,14 +154,15 @@ def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM
     return key, ROOT / "cache" / "embeddings" / f"{key}__{safe_sbert}.pt"
 
 
-def load_llm_embeddings(dataset: str, kind: str) -> dict[int, torch.Tensor]:
+def load_llm_embeddings(dataset: str, kind: str,
+                        sampling: SamplingConfig | None = None) -> dict[int, torch.Tensor]:
     """`{central_node_id: Tensor[k, 384]}`, `k` in `subgraph.subset` order.
 
     One entry per subgraph whose LLM text passed the format check (decision
     D-003 / `flagbench.llm.enhance.parse_response`) -- a missing key means
     that subgraph's generation failed, not that the cache is incomplete.
     """
-    key, path = _llm_embeddings_path(dataset, kind)
+    key, path = _llm_embeddings_path(dataset, kind, sampling=sampling)
     if not path.exists():
         raise FileNotFoundError(
             f"{path} missing. Run (on a GPU, decision D-003):\n"
@@ -168,7 +174,8 @@ def load_llm_embeddings(dataset: str, kind: str) -> dict[int, torch.Tensor]:
     return torch.load(path, map_location="cpu")
 
 
-def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str):
+def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str,
+                         sampling: SamplingConfig | None = None):
     """Return `(feature_fn, extra_feature_fn, in_dim, description)` for a
     dual-branch variant (`flag`, `flag_finetuned`).
 
@@ -190,7 +197,7 @@ def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str):
         )
 
     raw = load_text_embeddings(dataset)
-    disc = load_llm_embeddings(dataset, "discriminative")
+    disc = load_llm_embeddings(dataset, "discriminative", sampling)
 
     def feature_fn(subgraph: Subgraph):
         x_raw = raw[subgraph.subset]
@@ -200,7 +207,7 @@ def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str):
 
     extra_feature_fn = None
     if variant.requires_finetuned_llm:
-        common = load_llm_embeddings(dataset, "residual")
+        common = load_llm_embeddings(dataset, "residual", sampling)
 
         def extra_feature_fn(subgraph: Subgraph):
             d = disc.get(int(subgraph.central))
@@ -217,6 +224,17 @@ def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str):
     return feature_fn, extra_feature_fn, int(raw.shape[1]), description
 
 
+def _record_sampling_cost(result: RunResult, dataset: str, config: SamplingConfig) -> None:
+    """Copy the one-off sampling cost from the sampling cache's manifest into the
+    result row, so runtime can be compared across samplers. Measurement only."""
+    meta_path = ROOT / "cache" / "sampling" / f"{dataset}__{config.cache_key()}.json"
+    if not meta_path.exists():
+        return
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    result.extra["sampling_seconds"] = meta.get("seconds")
+    result.extra["diffusion_precompute_seconds"] = meta.get("diffusion_precompute_seconds")
+
+
 def run_single(
     dataset: str,
     model: str,
@@ -229,6 +247,7 @@ def run_single(
     finetune_config: FinetuneConfig | None = None,
     save_checkpoint: bool = False,
     save_result: bool = True,
+    results_dir: pathlib.Path | None = None,
 ) -> RunResult:
     """Run one experiment. Records a `failed` row rather than raising."""
     train_config = train_config or TrainConfig()
@@ -291,12 +310,13 @@ def run_single(
         result.dataset_manifest_sha256 = manifest.get("output_sha256", "")
 
         subgraphs = load_subgraphs(dataset, sampling_config)
+        _record_sampling_cost(result, dataset, sampling_config)
         by_center = {sg.central: sg for sg in subgraphs}
 
         extra_feature_fn = None
         if variant_spec.dual_branch:
             feature_fn, extra_feature_fn, in_dim, feature_desc = make_dual_feature_fn(
-                variant, payload, dataset
+                variant, payload, dataset, sampling_config
             )
             result.llm_model = "google/gemma-2-9b-it"
         else:
@@ -330,6 +350,8 @@ def run_single(
                 dual_branch=variant_spec.dual_branch,
             )
 
+        if device_info.device.type == "cuda":
+            torch.cuda.reset_peak_memory_stats(device_info.device)
         trainer = SubgraphTrainer(
             net, train_config, device_info.device, feature_fn, payload["y"],
             dual_branch=variant_spec.dual_branch,
@@ -391,6 +413,10 @@ def run_single(
             for e in outcome.history
         ]
         result.extra["test_label_distribution"] = test_eval.label_distribution
+        if device_info.device.type == "cuda":
+            result.extra["peak_gpu_mem_mb"] = round(
+                torch.cuda.max_memory_allocated(device_info.device) / 2**20, 1
+            )
 
         if save_checkpoint:
             path = (
@@ -415,5 +441,5 @@ def run_single(
         logger.exception("run failed: %s", result.summary())
 
     if save_result:
-        result.save()
+        result.save(results_dir)
     return result
