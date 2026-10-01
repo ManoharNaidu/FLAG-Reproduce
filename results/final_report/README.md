@@ -32,16 +32,27 @@ That did not block this report because no training/inference was needed.)
 | Loss curves | **Included, and real** — per-epoch `train_loss`, `val_auc`, `val_f1_macro` were stored by the original training runs and are plotted as-is (5 epochs each; that's the run configuration, not a truncation on my part). |
 | "everything" | Precision, F1-fraud, accuracy, KS, ECE are also included in the CSVs (all fields the runs recorded), even though not explicitly named. |
 
+## Focused reports
+
+- [`flag_vs_flag_md.md`](flag_vs_flag_md.md) — **flag (cosine) vs FLAG-MD, paired comparison.**
+  Built by [`scripts/analyze/build_flag_vs_flagmd_report.py`](../../scripts/analyze/build_flag_vs_flagmd_report.py)
+  (reads only `data/all_runs.csv`, no new training). Uses a *paired* t-test per (seed, init) —
+  cosine and FLAG-MD runs share the same seed/init streams by the project's own design
+  (`run_flag_md_matrix.sh`), so this is more sensitive than comparing two independent means.
+  Headline: essentially no distinguishable difference between the two samplers at n=8 pairs.
+
 ## Folder layout
 
 ```text
 results/final_report/
 ├── README.md                                   <- this file
+├── flag_vs_flag_md.md                          focused flag-vs-FLAG-MD paired comparison (see above)
 ├── data/
 │   ├── all_runs.csv                            one row per run, every stored field (924 rows)
 │   ├── epoch_history_long.csv                  one row per (run, epoch): train_loss, val_auc, val_f1_macro
 │   ├── failed_or_incomplete_runs.csv            rows with status != "completed" (0 rows: everything on disk succeeded)
-│   └── degenerate_all_majority_runs.csv         runs that predicted ZERO fraud cases (see below)
+│   ├── degenerate_all_majority_runs.csv         runs that predicted ZERO fraud cases (see below)
+│   └── flag_vs_flag_md_paired_stats.csv        per-model paired deltas + t-test p-values (flag vs FLAG-MD)
 ├── summary/
 │   ├── summary_by_dataset_model_variant_sampler.csv   mean/std/count of every metric, every cell
 │   ├── headline_baseline_text_flag.csv          the Table-4-style comparison (baseline / text-no-sampling / flag-cosine)
@@ -53,6 +64,7 @@ results/final_report/
     ├── headline_test_f1_macro.png                same, F1-macro
     ├── headline_test_recall_fraud.png            same, recall (fraud class)
     ├── sampler_ablation_{text,flag}_{test_auc,test_f1_macro}__{reddit,instagram}.png   (8 files)
+    ├── flag_vs_flag_md_delta_{auc,f1_macro}.png    paired-delta charts (see flag_vs_flag_md.md)
     └── training_curves/
         ├── baseline_text__{reddit,instagram}.png              per-model, per-epoch curves, single run
         ├── {text,flag}_variant_val_auc__{reddit,instagram}.png     mean val-AUC per epoch, one line per sampler
