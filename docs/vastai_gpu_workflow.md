@@ -4,6 +4,16 @@ Decision **D-003**: the LLM stage runs only on a GPU, on rented vast.ai
 instances. No mock LLM and no smaller substitute — a "FLAG-small" number would
 not be comparable to Table 4 and would invite misreading.
 
+**Status: this workflow has been run.** `google/gemma-2-9b-it` generated the
+production `cache/llm/` text corpus at a reduced decode budget to control cost
+(decision D-004: `max_new_tokens=64, truncate_chars=300`), giving node coverage
+of 0.6%-12.4% depending on dataset/kind. That cache backs the `flag` and
+`flag_finetuned` results now in `results/aggregated/results.csv` for GAT,
+CARE-GNN, BWGNN and DGA-GNN on both Reddit and Instagram. GCN, GeniePath and PMP
+have not been run under `flag`/`flag_finetuned` yet. Regenerating at the
+paper-faithful 550/1200 budget is still open — see `research/decisions.md` D-004
+and `research/reproduction_status.md` §7.
+
 ## The boundary
 
 Because rented instances are ephemeral and billed by the hour, the pipeline

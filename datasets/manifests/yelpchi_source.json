@@ -1,0 +1,121 @@
+{
+  "dataset": "YelpChi (review-level, with original review text)",
+  "retrieved_utc": "2026-09-17T23:11:29Z",
+  "retrieved_by": "subagent-c dataset-provenance investigation, loop 1",
+  "authoritative_origin": {
+    "dataset_first_released_by": "Mukherjee, Venkataraman, Liu, Glance, 'What Yelp Fake Review Filter Might Be Doing?', ICWSM 2013",
+    "graph_features_and_redistribution": "Rayana & Akoglu, 'Collective Opinion Spam Detection: Bridging Review Networks and Metadata', KDD 2015 (SpEagle)",
+    "author_pages": {
+      "https://shebuti.com/yelpchi-dataset/": "HTTP/1.1 200 OK (reachable). States 67,395 reviews, 201 hotels+restaurants, 38,063 reviewers, 13.23% filtered reviews, 20.33% spammers. NO download link: 'To get the datasets with ground truth please email: srayana@cs.stonybrook.edu'",
+      "https://odds.cs.stonybrook.edu/yelpchi-dataset/": "UNREACHABLE from this host. TLS handshake failure (alert 40) on port 443; plain HTTP 301-redirects to the failing HTTPS URL."
+    },
+    "gated": true,
+    "note": "The authoritative release is email-gated. No author-hosted direct download URL was found."
+  },
+  "actual_source_used": {
+    "type": "secondary mirror (third-party GitHub repository)",
+    "repository": "https://github.com/zyni2001/Anomaly-detection-LLM",
+    "ref": "main",
+    "raw_url_base": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/",
+    "caveat": "Not author-hosted. Contents were independently validated against the .mat-derived invariants (see verification block below) rather than trusted on faith."
+  },
+  "files": [
+    {
+      "filename": "metadata.gz",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/Data/metadata.gz",
+      "sha256": "253db76d0578a539ab5dcbbaaebaa8a149d6c86fd2add1d6da7b3448d1e9ec84",
+      "size_bytes": 409303,
+      "description": "Gzipped per-review metadata, 67,395 whitespace-separated rows. Schema: user_id prod_id rating label date (date = %Y-%m-%d). Decompresses byte-identical to metadata.txt."
+    },
+    {
+      "filename": "metadata.txt",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/Data/metadata.txt",
+      "sha256": "c674adf244460b48faab2ea9bd6c0ffcdaecb2332b9f6638043cc84c17852c1a",
+      "size_bytes": 1776502,
+      "description": "Uncompressed form of metadata.gz. 67,395 rows, 5 fields each. Verified byte-identical to gunzip(metadata.gz)."
+    },
+    {
+      "filename": "raw_text.txt",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/Data/raw_text.txt",
+      "sha256": "268502eb5f926c37a9299db68a135c5c3d76e64a5a0f514a43c16876c994c798",
+      "size_bytes": 5062002,
+      "description": "HOTEL review text, one review per line, 5,854 lines. Corresponds positionally to metadata rows 0..5853 (product ids 0-71)."
+    },
+    {
+      "filename": "output_review_yelpResData_NRYRcleaned.txt",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/Data/output_review_yelpResData_NRYRcleaned.txt",
+      "sha256": "6fb92e48165090d16b67f06818666df8466c18b960a63d4d2253693180bd2808",
+      "size_bytes": 45746857,
+      "description": "RESTAURANT review text, one review per line, 61,541 lines. Corresponds positionally to metadata rows 5854..67394 (product ids 72-200). Filename 'yelpResData' + 'NRYR' (Not-Recommended / Yelp-Recommended) is the Mukherjee et al. ICWSM'13 naming convention."
+    },
+    {
+      "filename": "YelpChi_feature_name.txt",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/Data/YelpChi_feature_name.txt",
+      "sha256": "e1f9d5bcf565d7d08cd2a387a46e9865650715276b95992d9d18fd867f8a4aae",
+      "size_bytes": 497,
+      "description": "Names of the 32 handcrafted features (indices 0-31) in YelpChi.mat, keyed to Table 2 of Rayana & Akoglu KDD 2015. 0-14 review features, 15-23 user features, 24-31 product features."
+    },
+    {
+      "filename": "rid_mapping.pkl",
+      "source_url": "https://raw.githubusercontent.com/zyni2001/Anomaly-detection-LLM/main/GNN_Methods/rid_mapping.pkl",
+      "sha256": "41e71de7ac0c5ecc7f6501bea265fece4a9d15f13acc7dea313c75e9d521a179",
+      "size_bytes": 798636,
+      "description": "Pickled dict {(user_id, prod_id): row_index}, exactly 45,954 entries, indices 0..45953. Keyset verified identical to the >800-pruned review set. Claimed row order for YelpChi.mat."
+    }
+  ],
+  "derived_files": [
+    {
+      "filename": "yelpchi_aligned_reviews.jsonl",
+      "size_bytes": 39769264,
+      "description": "DERIVED, not downloaded. 45,954 JSON lines, one per candidate graph node, in the canonical group-by-user order that reproduces rid_mapping.pkl exactly. Fields: node_idx, user_id, prod_id, rating, label, date, text.",
+      "provenance": "Built by pruning metadata to products with <=800 reviews and joining text positionally (metadata line i <-> concat(raw_text.txt, output_review_yelpResData_NRYRcleaned.txt)[i])."
+    },
+    {
+      "filename": "alignment_fingerprint.csv",
+      "size_bytes": 669984,
+      "description": "DERIVED. Per-node R-U-R degree, R-S-R degree and label under the canonical order. Intended for an exact row-by-row check against YelpChi.mat without needing this agent to open the .mat."
+    }
+  ],
+  "review_level_statistics": {
+    "rows_in_raw_release": 67395,
+    "unique_users": 38063,
+    "unique_products": 201,
+    "product_id_range": "0-200 (0-71 = 72 hotels, 72-200 = 129 restaurants)",
+    "columns": ["user_id", "prod_id", "rating", "label", "date"],
+    "explicit_review_id_column": false,
+    "de_facto_review_key": "(user_id, prod_id) - verified unique across all 67,395 rows, zero collisions",
+    "label_encoding": {"1": "genuine / Yelp-recommended (58,476 rows)", "-1": "spam / Yelp-filtered (8,919 rows = 13.23%)"},
+    "rating_distribution": {"1.0": 3493, "2.0": 5003, "3.0": 9186, "4.0": 24314, "5.0": 25399},
+    "date_range": "2004-10-12 to 2012-10-08",
+    "text_lines_total": 67395,
+    "comparison_to_mat_node_count": "RAW RELEASE IS 67,395, NOT 45,954. The 45,954 graph nodes are a strict SUBSET obtained by dropping the 19 products with >800 reviews."
+  },
+  "verification_against_mat_invariants": {
+    "method": "Reconstructed the node set and relation graphs from raw metadata alone and compared to the CARE-GNN YelpChi.mat invariants supplied by the caller.",
+    "prune_rule_recovered": "drop products with >800 reviews (19 products removed: 72,73,75,78,90,95,97,99,103,104,108,115,119,122,124,129,137,141,162)",
+    "node_count": {"reconstructed": 45954, "expected": 45954, "match": true},
+    "label_split": {"reconstructed_benign": 39277, "reconstructed_spam": 6677, "expected_benign": 39277, "expected_spam": 6677, "match": true},
+    "R_U_R_directed_entries": {"definition": "same user_id", "reconstructed": 98630, "expected": 98630, "match": true},
+    "R_S_R_directed_entries": {"definition": "same prod_id AND same rating", "reconstructed": 6805486, "expected": 6805486, "match": true},
+    "R_T_R_directed_entries": {"definition_tested": "same prod_id AND same year-month", "reconstructed": 412824, "expected": 1147232, "match": false, "status": "UNRESOLVED - roughly 35 alternative temporal definitions tested, none reproduce 1,147,232"},
+    "row_order": "Canonical order = group-by-user first-appearance order. Reproduces rid_mapping.pkl for all 45,954 of 45,954 rows. NOTE: this is NOT metadata file order (only 12/45,954 indices coincide).",
+    "degree_vector_sha256": {
+      "R_U_R": "97fc404aaf59385537a506bc4315235ed9fc9dfeff8c049655b93390b4ec02ff",
+      "R_S_R": "d21ce24342e0f837dcedbd7b1d65467ca93e34504524f6f2fa9948943a013dba",
+      "label_vector": "e422ecd60b5a0d2a3945b57aed5abc5e28eb3168875f44c1248fe9c0924769fe"
+    },
+    "outstanding_to_call_alignment_EXACT": [
+      "Compare alignment_fingerprint.csv row-by-row against per-row degrees of net_rur / net_rsr in YelpChi.mat (not just totals).",
+      "Compare the label vector in canonical order against the .mat label array element-by-element.",
+      "Resolve the R-T-R definition so all three adjacencies reproduce."
+    ]
+  },
+  "version_notes": {
+    "YelpChi_raw": "67,395 reviews, 201 businesses, 38,063 reviewers (shebuti.com, verified against downloaded metadata).",
+    "YelpChi_graph_mat": "45,954 review nodes, 6,677 spam (14.53%), 39,277 benign - the >800-pruned subset used by CARE-GNN/DGL FraudYelpDataset.",
+    "YelpNYC": "359,052 reviews, restaurants in New York City - DIFFERENT dataset, same authors.",
+    "YelpZip": "608,598 reviews, 5,044 restaurants, 260,277 reviewers - DIFFERENT dataset, same authors.",
+    "count_45941": "UNKNOWN - no source found in this investigation attributing 45,941 to any YelpChi release."
+  },
+  "license_and_ethics": "Original Yelp review text. Author distribution is email-gated; redistribution terms were not located. Treat as research-use-only and do not redistribute."
+}

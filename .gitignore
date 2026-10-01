@@ -5,6 +5,7 @@
 #     bash scripts/setup/fetch_methods.sh
 # Provenance is pinned in research/repository_provenance.md.
 # ---------------------------------------------------------------------------
+methods/*
 !methods/README.md
 
 # ---------------------------------------------------------------------------
@@ -17,6 +18,16 @@ data/**
 !data/**/dataset_manifest.json
 !data/**/*.sha256
 !data/**/.gitkeep
+
+# Same rule for datasets/ (the fraud_text YelpChi/Amazon raw + processed dumps) -- this
+# directory was accidentally committed once (commit 2166e57): 246MB of datasets/raw/ plus
+# 616MB of datasets/processed/, including a 116MB file that GitHub hard-rejects outright
+# (100MB limit). Manifests are small and traceable, so they stay tracked.
+datasets/**
+!datasets/**/
+!datasets/VERSIONS.md
+!datasets/manifests/**
+!datasets/**/.gitkeep
 
 # ---------------------------------------------------------------------------
 # Generated artefacts

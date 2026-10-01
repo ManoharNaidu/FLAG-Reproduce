@@ -11,10 +11,12 @@ sampling (NS), random sampling (RS), shallow-feature similarity (FS), or
 semantic sampling without a threshold (SS\*).
 
 It is the only substantive claim in the paper that can be checked **without
-training any model and without the 9B LLM** — so it is reproducible on CPU today,
-while everything involving `gemma-2-9b-it` is blocked on GPU access (decision
-D-003). It is therefore the cheapest honest test of whether our reimplemented
-sampler behaves like the authors'.
+training any model and without the 9B LLM** — so it was reproducible on CPU
+before anything involving `gemma-2-9b-it` had run (decision D-003 was still
+blocked on GPU access at the time this was written, 2026-09-09; `gemma-2-9b-it`
+has since run on a rented vast.ai GPU — see `research/reproduction_status.md`).
+It was therefore the cheapest honest test of whether our reimplemented sampler
+behaves like the authors', available before the GPU stage existed.
 
 Quantity measured is the paper's Eq. 5, averaged over sampled subgraphs:
 

@@ -1,0 +1,79 @@
+{
+  "dataset": "yelpchi_text",
+  "source_dataset": "yelpchi",
+  "node_type": "review",
+  "experiment_type": "text_augmented_study",
+  "native_text": false,
+  "is_flag_reproduction": false,
+  "not_comparable_to": "FLAG Table 4 -- the paper reports no YelpChi or Amazon results and states both lack textual information",
+  "constructed": {
+    "num_nodes": 45954,
+    "num_features": 32,
+    "num_edges": 7693958,
+    "label_distribution": {
+      "0": 39277,
+      "1": 6677
+    },
+    "splits": {
+      "train": {
+        "n": 13785,
+        "per_class": {
+          "0": 11782,
+          "1": 2003
+        }
+      },
+      "val": {
+        "n": 4596,
+        "per_class": {
+          "0": 3928,
+          "1": 668
+        }
+      },
+      "test": {
+        "n": 27573,
+        "per_class": {
+          "0": 23567,
+          "1": 4006
+        }
+      }
+    }
+  },
+  "edge_index_provenance": {
+    "strategy": "canonical_homo",
+    "note": "the .mat's own 'homo' adjacency, used unchanged",
+    "num_edges": 7693958,
+    "relations_collapsed": [
+      "rur",
+      "rtr",
+      "rsr"
+    ]
+  },
+  "text_provenance": {
+    "max_chars": null,
+    "truncated_nodes": 0,
+    "verified_nodes": 45954,
+    "unresolved_nodes": 0,
+    "verified_fraction": 1.0,
+    "status_values": [
+      "VERIFIED"
+    ]
+  },
+  "mapping": {
+    "method": "adjacency_proof",
+    "node_ordering": "PROVEN \u2014 R-U-R (98,630) and R-S-R (6,805,486) sparsity patterns matched entry-for-entry; labels 45,954/45,954",
+    "text_join": "VERIFIED (statistical) \u2014 within-product TF-IDF cosine 0.0747 vs 0.0433 same-block/different-product control (1.72x), decaying to control under shift",
+    "rtr_reproduced": false,
+    "rtr_note": "date-dependent relation not reproducible from this metadata snapshot; does not affect the ordering proof",
+    "verify_command": "python -m scripts.verify_yelpchi_alignment"
+  },
+  "field_provenance": {
+    "node_features": "CANONICAL",
+    "labels": "CANONICAL",
+    "relation_edges": "CANONICAL",
+    "edge_index": "DERIVED",
+    "raw_texts": "VERIFIED",
+    "splits": "DERIVED"
+  },
+  "relations_preserved_in": "datasets/processed/<name>/flag_dataset.pt (relation_edges); the payload here is the collapsed view FLAG requires",
+  "built_at": "2026-09-18T14:37:57+00:00"
+}

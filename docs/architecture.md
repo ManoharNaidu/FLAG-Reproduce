@@ -168,6 +168,8 @@ write an adapter and document why.
 - **Multi-relation.** `BenchmarkGraph` carries a single `edge_index`. Official
   CARE-GNN needs per-relation edges, so that lineage needs a multi-relation
   container before it can run.
-- **`flag_finetuned`.** Blocked on decision D-001 as well as on GPU access —
-  upstream's LoRA gradient path is severed, so what the paper's `+FLAG*` column
-  measures is genuinely unknown.
+- **`flag_finetuned`.** Runs, per decision D-001 — upstream's LoRA gradient path
+  is severed, so this variant reproduces the released code's actual behaviour
+  (GNN inner loop retrains, LLM frozen), not LLM fine-tuning. What the paper's
+  `+FLAG*` column itself measures is still genuinely unknown; see
+  `research/reproduction_status.md` §4.1.

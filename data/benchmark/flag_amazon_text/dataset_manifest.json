@@ -1,0 +1,78 @@
+{
+  "dataset": "amazon_text",
+  "source_dataset": "amazon",
+  "node_type": "user",
+  "experiment_type": "text_augmented_study",
+  "native_text": false,
+  "is_flag_reproduction": false,
+  "not_comparable_to": "FLAG Table 4 -- the paper reports no YelpChi or Amazon results and states both lack textual information",
+  "constructed": {
+    "num_nodes": 11944,
+    "num_features": 25,
+    "num_edges": 8796784,
+    "label_distribution": {
+      "0": 11123,
+      "1": 821
+    },
+    "splits": {
+      "train": {
+        "n": 2591,
+        "per_class": {
+          "0": 2345,
+          "1": 246
+        }
+      },
+      "val": {
+        "n": 864,
+        "per_class": {
+          "0": 782,
+          "1": 82
+        }
+      },
+      "test": {
+        "n": 5184,
+        "per_class": {
+          "0": 4691,
+          "1": 493
+        }
+      }
+    }
+  },
+  "edge_index_provenance": {
+    "strategy": "canonical_homo",
+    "note": "the .mat's own 'homo' adjacency, used unchanged",
+    "num_edges": 8796784,
+    "relations_collapsed": [
+      "upu",
+      "usu",
+      "uvu"
+    ]
+  },
+  "text_provenance": {
+    "max_chars": null,
+    "truncated_nodes": 0,
+    "verified_nodes": 8639,
+    "unresolved_nodes": 3305,
+    "verified_fraction": 0.723292029470864,
+    "status_values": [
+      "UNRESOLVED",
+      "VERIFIED"
+    ]
+  },
+  "mapping": {
+    "method": "generator_order + upu_adjacency_proof",
+    "labeled_block": "PROVEN \u2014 nodes [3305, 11944) follow reviewerID first-appearance order; labels 8,639/8,639 and induced U-P-U 294,764 edges, zero mismatches",
+    "unlabeled_prefix": "UNRESOLVED \u2014 nodes [0, 3305) come from rd.sample over a set-difference list (PYTHONHASHSEED-dependent). 16-column fingerprint recovery gave only 17% unique, so identities are left empty, not guessed",
+    "verify_command": "python -m scripts.verify_amazon_alignment"
+  },
+  "field_provenance": {
+    "node_features": "CANONICAL",
+    "labels": "CANONICAL",
+    "relation_edges": "CANONICAL",
+    "edge_index": "CANONICAL",
+    "raw_texts": "DERIVED",
+    "splits": "DERIVED"
+  },
+  "relations_preserved_in": "datasets/processed/<name>/flag_dataset.pt (relation_edges); the payload here is the collapsed view FLAG requires",
+  "built_at": "2026-09-18T14:37:55+00:00"
+}

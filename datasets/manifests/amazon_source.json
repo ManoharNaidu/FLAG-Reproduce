@@ -1,0 +1,95 @@
+{
+  "manifest_version": "1.0",
+  "created_utc": "2026-09-17T22:47:48Z",
+  "created_by": "loop1 subagent B (dataset-provenance investigation, research-only)",
+  "purpose": "Raw Amazon Musical Instruments review corpus underlying the CARE-GNN Amazon fraud graph (Amazon.mat), needed to recover per-node TEXT for FLAG.",
+  "certificate_bypass_used": false,
+  "certificate_caveat": "NONE. No download used --insecure / -k / verify=False. The canonical host jmcauley.ucsd.edu HAS an expired certificate (notAfter=May 21 23:59:59 2026 GMT, ~4 months expired as of 2026-09-17) and was NOT used. All files were obtained over fully-validated TLS from two authoritative alternatives reached via McAuley's own live dataset pages on cseweb.ucsd.edu.",
+  "authority_chain": [
+    "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon/links.html  (HTTP 200, valid TLS) = Julian McAuley's own 2014 'Amazon product data' page; its download links point at snap.stanford.edu.",
+    "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon_v2/index.html  (HTTP 200, valid TLS) = McAuley's own 2018 'Amazon Review Data' page; its download links point at mcauleylab.ucsd.edu."
+  ],
+  "files": [
+    {
+      "filename": "reviews_Musical_Instruments.json.gz",
+      "role": "PRIMARY - established as the corpus the fraud benchmark was built from (see verification block)",
+      "release": "2014 'Amazon product data' (McAuley), FULL category dump, NOT k-core filtered",
+      "source_url": "https://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Musical_Instruments.json.gz",
+      "linked_from": "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon/links.html",
+      "http_status": 200,
+      "tls_verified": true,
+      "downloaded_utc": "2026-09-17T22:47:48Z",
+      "server_last_modified": "Thu, 18 Feb 2016 01:09:13 GMT",
+      "bytes": 121616883,
+      "sha256": "8b46e724abe8da4316b30f51b692843d5dc0abb645d72ad2c44f5aa740d230b0",
+      "n_reviews": 500176,
+      "n_unique_reviewerID": 339231,
+      "n_unique_asin": 83046,
+      "description": "Full (non-5-core) Amazon Musical Instruments reviews, 2014 McAuley release, hosted by SNAP (Stanford) as linked from McAuley's official page. Contains the helpful:[helpful_votes,total_votes] pair required by the fraud-benchmark labelling rule."
+    },
+    {
+      "filename": "reviews_Musical_Instruments_5.json.gz",
+      "role": "CONTROL - 2014 5-core; RULED OUT as the benchmark source",
+      "release": "2014 'Amazon product data' (McAuley), 5-core subset",
+      "source_url": "https://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Musical_Instruments_5.json.gz",
+      "linked_from": "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon/links.html",
+      "http_status": 200,
+      "tls_verified": true,
+      "downloaded_utc": "2026-09-17T22:47:16Z",
+      "server_last_modified": "Tue, 26 Apr 2016 20:48:53 GMT",
+      "bytes": 2460495,
+      "sha256": "03f9cc27ae13a454cb4ea6cb620fb10546cc1194ef921441d1c5f34addff2748",
+      "n_reviews": 10261,
+      "n_unique_reviewerID": 1429,
+      "n_unique_asin": 900,
+      "description": "2014 5-core Musical Instruments. Matches McAuley's stated '10,261 reviews'. Only 1,429 reviewers - cannot be the source of an 11,944-node user graph."
+    },
+    {
+      "filename": "Musical_Instruments_5.json.gz",
+      "role": "CONTROL - 2018 5-core; RULED OUT as the benchmark source",
+      "release": "2018 'Amazon Review Data' (amazon_v2), 5-core subset",
+      "source_url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_v2/categoryFilesSmall/Musical_Instruments_5.json.gz",
+      "linked_from": "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon_v2/index.html",
+      "http_status": 200,
+      "tls_verified": true,
+      "downloaded_utc": "2026-09-17T22:47:16Z",
+      "server_last_modified": "Fri, 17 Jan 2025 05:59:57 GMT",
+      "bytes": 39353085,
+      "sha256": "e3ae8a3f0d70bf63242a49539a8847d30216a3aa2938c049c7f43d0473fef1bc",
+      "n_reviews": 231392,
+      "n_unique_reviewerID": 27530,
+      "n_unique_asin": 10620,
+      "description": "2018 5-core Musical Instruments. Matches McAuley's stated '231,392 reviews'. Uses 'vote' (helpful count only, no denominator) instead of 'helpful':[h,t] - the fraud labelling rule is NOT computable from this release."
+    }
+  ],
+  "hosts_tried": [
+    {"host": "https://jmcauley.ucsd.edu/data/amazon/", "result": "TLS FAILURE", "verbatim": "curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_CERT_EXPIRED (0x80090328) - The received certificate has expired.", "cert_notAfter": "May 21 23:59:59 2026 GMT", "cert_issuer": "C=US, O=Internet2, CN=InCommon RSA Server CA 2", "used": false},
+    {"host": "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon/links.html", "result": "HTTP/1.1 200 OK", "used": "as authority/index"},
+    {"host": "https://cseweb.ucsd.edu/~jmcauley/datasets/amazon_v2/index.html", "result": "HTTP/1.1 200 OK", "used": "as authority/index"},
+    {"host": "https://snap.stanford.edu/data/amazon/productGraph/categoryFiles/", "result": "HTTP/1.1 200 OK", "used": "download host (2014 release)"},
+    {"host": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_v2/", "result": "HTTP/1.1 200 OK", "used": "download host (2018 release)"},
+    {"host": "https://datarepo.eng.ucsd.edu/mcauley_group/data/amazon/", "result": "HTTP/1.1 404 Not Found", "used": false},
+    {"host": "https://huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023", "result": "HTTP/1.1 200 OK", "used": false, "note": "2023 release - wrong vintage for this benchmark, not used"}
+  ],
+  "no_kaggle_or_unofficial_mirror_used": true,
+  "benchmark_reconstruction_verified": {
+    "target_graph": "CARE-GNN Amazon.mat - 11944 user nodes, 25 features, 821 fraud, 3305 unlabeled [0,3305), 8639 labeled",
+    "rule_applied": "From reviews_Musical_Instruments.json.gz: keep reviewers with sum(helpful[1]) >= 20 total votes; benign if sum(helpful[0])/sum(helpful[1]) > 0.80; fraudulent if < 0.20",
+    "result_fraud": 821,
+    "result_fraud_target": 821,
+    "result_benign": 7818,
+    "result_benign_target": 7818,
+    "result_labeled": 8639,
+    "result_labeled_target": 8639,
+    "result_cohort_size": 11447,
+    "result_cohort_size_target": 11944,
+    "residual_unexplained": "cohort is 497 short of 11944; the entire shortfall sits in the UNLABELED/ambiguous band (2808 vs 3305). Labeled counts match exactly. Cause UNKNOWN.",
+    "adjacent_thresholds_rejected": "sum_tv>=19 gives fraud=894/benign=8283; sum_tv>=21 gives fraud=765/benign=7373. Only >=20 matches."
+  },
+  "provenance_of_features_and_labels": {
+    "25_features_and_labelling_rule_origin": "Zhang et al., 'GCN-Based User Representation Learning for Unifying Robust Recommendation and Fraudster Detection', SIGIR 2020, arXiv:2005.10150",
+    "helpful_vote_heuristic_origin": "Kumar, Hooi, Makhija, Kumar, Faloutsos, Subrahmanian, 'REV2: Fraudulent User Prediction in Rating Platforms', WSDM 2018, pp. 333-341",
+    "graph_constructor": "Dou et al., 'Enhancing Graph Neural Network-based Fraud Detectors against Camouflaged Fraudsters', CIKM 2020, arXiv:2008.08692 (CARE-GNN) - produced Amazon.mat",
+    "raw_corpus_citation": "McAuley and Leskovec 2013"
+  }
+}
