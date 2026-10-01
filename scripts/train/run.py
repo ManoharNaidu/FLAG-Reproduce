@@ -32,7 +32,7 @@ from flagbench.registry.registry import (  # noqa: E402
     VARIANT_REGISTRY,
     validate,
 )
-from flagbench.sampling.semantic import SamplingConfig  # noqa: E402
+from flagbench.sampling.cli import STRATEGIES, add_md_args, config_from_args  # noqa: E402
 from flagbench.training.trainer import TrainConfig  # noqa: E402
 
 
@@ -75,10 +75,16 @@ def main(argv=None) -> int:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument(
-        "--sampling-strategy", default=None,
-        choices=["semantic", "semantic_nothreshold", "random", "none", "feature"],
+        "--sampling-strategy", default=None, choices=STRATEGIES,
         help="override the per-variant default (baseline/+text use 'none', "
-             "FLAG variants use 'semantic')",
+             "FLAG variants use 'semantic' = cosine). 'markov_diffusion' = FLAG-MD.",
+    )
+    add_md_args(parser)
+    parser.add_argument(
+        "--results-dir", default=None,
+        help="write run JSONs here instead of results/raw/ (and skip the global "
+             "aggregation). Use for FLAG-MD so its runs never mix with the "
+             "original FLAG aggregates.",
     )
 
     parser.add_argument("--save-checkpoint", action="store_true")
@@ -108,11 +114,7 @@ def main(argv=None) -> int:
     # SS for the FLAG variants). --sampling-strategy forces one for all.
     sampling_config = None
     if args.sampling_strategy:
-        sampling_config = SamplingConfig(
-            hops=args.hops, top_k=args.top_k,
-            similarity_threshold=args.threshold,
-            strategy=args.sampling_strategy,
-        )
+        sampling_config = config_from_args(args, strategy=args.sampling_strategy)
 
     combos = [
         (d, m, v, s, i)
@@ -159,6 +161,10 @@ def main(argv=None) -> int:
         print("nothing to run.")
         return 1
 
+    results_dir = (ROOT / args.results_dir) if args.results_dir else None
+    if results_dir is not None and not results_dir.is_absolute():
+        results_dir = pathlib.Path(args.results_dir).resolve()
+
     completed, failed = [], []
     for index, ((d, m, v, s, i), _) in enumerate(runnable, 1):
         print(f"[{index}/{len(runnable)}] {d}/{m}/{v} seed={s} init={i} ... ",
@@ -169,6 +175,7 @@ def main(argv=None) -> int:
                 device=args.device, train_config=train_config,
                 sampling_config=sampling_config,
                 save_checkpoint=args.save_checkpoint,
+                results_dir=results_dir,
             )
         except ExperimentNotAvailable as exc:
             print("REFUSED")
@@ -190,6 +197,10 @@ def main(argv=None) -> int:
     print(f"\n{'=' * 78}")
     print(f"{len(completed)} completed, {len(failed)} failed, "
           f"{len(skipped)} refused")
+
+    if results_dir is not None:
+        print(f"results written to {results_dir} (global aggregation skipped)")
+        return 0 if not failed else 1
 
     summary = results_mod.aggregate_to_files()
     print(f"aggregated {summary['num_runs']} run(s) -> {summary['csv']}")

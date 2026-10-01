@@ -36,6 +36,7 @@ import time
 import torch
 
 from flagbench.sampling import semantic
+from flagbench.sampling.cli import STRATEGIES, add_md_args, config_from_args
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -211,13 +212,7 @@ def build_cache(dataset: str, args) -> dict:
     adjacency = semantic.build_adjacency(
         payload["edge_index"], num_nodes, drop_self_loops=True
     )
-    config = semantic.SamplingConfig(
-        hops=args.hops,
-        top_k=args.top_k,
-        similarity_threshold=args.threshold,
-        strategy=args.strategy,
-        seed=args.seed,
-    )
+    config = config_from_args(args, seed=args.seed)
     out = ROOT / "cache" / "sampling" / f"{dataset}__{config.cache_key()}.pt"
 
     print(f"\n{'=' * 74}\n{dataset.upper()} -- sampling\n{'=' * 74}")
@@ -226,9 +221,14 @@ def build_cache(dataset: str, args) -> dict:
         print(f"  cache hit: {out.relative_to(ROOT)}")
         return json.loads(out.with_suffix(".json").read_text(encoding="utf-8"))
 
+    # Build the sampler separately so the one-off diffusion precompute
+    # (H = Z(K)X, FLAG-MD only) is timed apart from the per-node selection.
     start = time.time()
+    sampler = semantic.make_sampler(config, adjacency, embeddings)
+    precompute = getattr(sampler, "precompute_seconds", 0.0)
     subgraphs = semantic.sample_all(
-        range(num_nodes), adjacency, embeddings, config, progress=True
+        range(num_nodes), adjacency, embeddings, config, progress=True,
+        sampler=sampler,
     )
     elapsed = time.time() - start
 
@@ -256,12 +256,17 @@ def build_cache(dataset: str, args) -> dict:
         "stats": stats,
         "subgraph_homophily": homophily,
         "seconds": round(elapsed, 1),
+        "diffusion_precompute_seconds": round(precompute, 3),
+        "sampler_stats": getattr(sampler, "stats", None),
         "embedding_model": args.model,
         "built_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "output": str(out.relative_to(ROOT)).replace("\\", "/"),
         "provenance": (
             "REIMPLEMENTED from FLAG Eq. 3-4; the official repository ships no "
             "sampler (flag_code_audit.md GAP-1)."
+            + (" Ranking criterion replaced by Markov-diffusion distance "
+               "(flagbench.sampling.markov_diffusion; idea from DGP Eq. 6-8)."
+               if config.strategy == "markov_diffusion" else "")
         ),
     }
     out.with_suffix(".json").write_text(
@@ -287,9 +292,8 @@ def main(argv=None) -> int:
     parser.add_argument("--hops", type=int, default=2)
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--threshold", type=float, default=0.0)
-    parser.add_argument("--strategy", default="semantic",
-                        choices=["semantic", "semantic_nothreshold", "random",
-                                 "none", "feature"])
+    parser.add_argument("--strategy", default="semantic", choices=STRATEGIES)
+    add_md_args(parser)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--compare-strategies", action="store_true",

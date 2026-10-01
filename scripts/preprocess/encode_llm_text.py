@@ -41,14 +41,11 @@ log = logging.getLogger("encode_llm")
 
 def _llm_cache_key(dataset: str, kind: str, args) -> tuple[str, pathlib.Path]:
     from flagbench.llm.enhance import LLMConfig, PromptSet, cache_key
-    from flagbench.sampling.semantic import SamplingConfig
     from flagbench.registry.registry import get_variant
+    from flagbench.sampling.cli import config_from_args
 
-    strategy = get_variant("flag").default_sampling_strategy
-    sampling = SamplingConfig(
-        hops=args.hops, top_k=args.top_k,
-        similarity_threshold=args.threshold, strategy=strategy,
-    )
+    strategy = args.strategy or get_variant("flag").default_sampling_strategy
+    sampling = config_from_args(args, strategy=strategy)
     prompts = PromptSet.load(dataset)
     config = LLMConfig(
         model_id=args.llm_model,
@@ -173,6 +170,11 @@ def main(argv=None) -> int:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument("--force", action="store_true")
+    from flagbench.sampling.cli import STRATEGIES, add_md_args
+    parser.add_argument("--strategy", default=None, choices=STRATEGIES,
+                        help="sampler whose LLM cache to encode (default: the FLAG "
+                             "variant's cosine sampler)")
+    add_md_args(parser)
     args = parser.parse_args(argv)
 
     datasets = ["instagram", "reddit"] if args.dataset == "all" else [args.dataset]

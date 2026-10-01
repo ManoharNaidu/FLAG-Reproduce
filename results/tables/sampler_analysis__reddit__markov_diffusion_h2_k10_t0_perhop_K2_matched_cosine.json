@@ -1,0 +1,123 @@
+{
+  "dataset": "reddit",
+  "cosine_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "semantic",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "semantic_h2_k10_t0_perhop"
+  },
+  "md_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k10_t0_perhop_K2_matched_cosine"
+  },
+  "nodes": 18389,
+  "nodes_with_neighbours": 15281,
+  "nodes_where_top_n_or_threshold_bites (candidates > kept)": 2994,
+  "overlap": {
+    "1hop_jaccard_all_nodes_with_neighbours": 0.9491912169664626,
+    "1hop_jaccard_contested_nodes": 0.740678352192557,
+    "subgraph_jaccard_all": 0.8865014143718516,
+    "centres_whose_subgraph_node_set_differs": 5049,
+    "fraction_of_centres_differing": 0.27456631681983795
+  },
+  "unique_neighbours_per_centre (subgraph, mean)": {
+    "cosine_only": 0.9218010767306541,
+    "md_only": 0.7143400946217847,
+    "both": 7.028604056773071
+  },
+  "nodes_per_subgraph_mean": {
+    "cosine": 8.950405133503725,
+    "md": 8.742944151394855
+  },
+  "graph_distance_hop_mean": {
+    "cosine": 1.7457113543091656,
+    "md": 1.7388980580819609
+  },
+  "cosine_similarity_of_selected_1hop": {
+    "selected_by_cosine": {
+      "mean": 0.19069775459678637,
+      "p05": 0.02126169018447399,
+      "p25": 0.08463981747627258,
+      "median": 0.15996450185775757,
+      "p75": 0.26405906677246094,
+      "p95": 0.46938520669937134,
+      "n": 37177
+    },
+    "selected_by_md": {
+      "mean": 0.185547307443008,
+      "p05": 0.00669399341568351,
+      "p25": 0.07940906286239624,
+      "median": 0.1568078100681305,
+      "p75": 0.2623029351234436,
+      "p95": 0.4693707346916199,
+      "n": 37177
+    }
+  },
+  "diffusion_distance_of_selected_1hop": {
+    "selected_by_cosine": {
+      "mean": 0.6832004986576135,
+      "p05": 0.4855929099746149,
+      "p25": 0.5994059274575572,
+      "median": 0.6906236195955047,
+      "p75": 0.766567388283543,
+      "p95": 0.8708403106119188,
+      "n": 37177
+    },
+    "selected_by_md": {
+      "mean": 0.6778361041174923,
+      "p05": 0.4850688843562125,
+      "p25": 0.5956582062530357,
+      "median": 0.6855115068949927,
+      "p75": 0.7596219207475092,
+      "p95": 0.8590524139294867,
+      "n": 37177
+    }
+  },
+  "subgraph_edge_homophily": {
+    "cosine": 0.6934124402798398,
+    "md": 0.7039513495701147,
+    "no_sampling(reference)": 0.6583096865729395
+  },
+  "composition (ANALYSIS ONLY; labels never used to select)": {
+    "cosine": {
+      "fraud_neighbour_frac_of_FRAUD_centres": 0.18945269813546192,
+      "fraud_neighbour_frac_of_NORMAL_centres": 0.13035951407843852,
+      "n_fraud_centres_with_neighbours": 1444,
+      "n_normal_centres_with_neighbours": 13255
+    },
+    "md": {
+      "fraud_neighbour_frac_of_FRAUD_centres": 0.17678380130726057,
+      "fraud_neighbour_frac_of_NORMAL_centres": 0.12256990601671883,
+      "n_fraud_centres_with_neighbours": 1444,
+      "n_normal_centres_with_neighbours": 13255
+    }
+  },
+  "md_sampler_stats": {
+    "calls": 73955,
+    "empty": 6216,
+    "nonfinite_dropped": 0
+  },
+  "contested_only": {
+    "n": 2994,
+    "subgraph_edge_homophily": {
+      "cosine": 0.6782393407922589,
+      "md": 0.7026318052808119
+    }
+  }
+}

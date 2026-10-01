@@ -1,0 +1,124 @@
+{
+  "experiment_id": "2242409862b8",
+  "timestamp": "2026-09-19T11:38:19+00:00",
+  "git_commit": "14eedbd784f43524589dcc9c848191495f337851-dirty",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "bwgnn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "approximation",
+  "model_fidelity": "beta-wavelet basis NOT applied - the polynomial is evaluated over raw adjacency A, not the normalised Laplacian, so it is not a beta wavelet. Theta coefficients themselves are correct.",
+  "seed": 2,
+  "initialization": 1,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-5.15.0-119-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "top_n",
+    "cache_key": "markov_diffusion_h2_k10_t0_perhop_K2_top_n"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 4,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.3,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6594096496003208,
+  "validation_f1_macro": 0.60197327544137,
+  "test_auc": 0.6368476148927792,
+  "test_f1_macro": 0.5730828832764462,
+  "test_precision_fraud": 0.21046301864101022,
+  "test_recall_fraud": 0.2615844544095665,
+  "test_f1_fraud": 0.2332555814728424,
+  "test_accuracy": 0.8435864319216912,
+  "test_ks": 0.21491159093177625,
+  "test_ece": 0.03807927129028278,
+  "training_time": 19.88,
+  "inference_time": 9.63,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 2.7,
+    "diffusion_precompute_seconds": 0.209,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.33006,
+        "val_auc": 0.63822,
+        "val_f1_macro": 0.56336
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.28978,
+        "val_auc": 0.63973,
+        "val_f1_macro": 0.54406
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.25883,
+        "val_auc": 0.6639,
+        "val_f1_macro": 0.5853
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.2471,
+        "val_auc": 0.65941,
+        "val_f1_macro": 0.60197
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.25057,
+        "val_auc": 0.66263,
+        "val_f1_macro": 0.57092
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  }
+}
