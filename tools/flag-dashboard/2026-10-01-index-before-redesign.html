@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLAG progress</title><link rel="stylesheet" href="/palette.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.4 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+header{position:sticky;top:0;padding:10px 16px;background:color-mix(in srgb,var(--st,var(--muted)) 10%,var(--bg));border-bottom:1px solid color-mix(in srgb,var(--muted) 30%,transparent)}
+header .row{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+main{max-width:960px;margin:0 auto;padding:4px 16px 24px}
+h1{font-size:16px;margin:0}
+h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 6px}
+.pill{font-weight:600;color:var(--st,var(--muted))}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.bar{height:3px;background:color-mix(in srgb,var(--muted) 25%,transparent);border-radius:2px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--accent))}
+.rows>div{display:grid;grid-template-columns:minmax(9em,14em) 1fr auto;gap:2px 12px;align-items:center;padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--muted) 18%,transparent)}
+.rows>div>.bar{grid-column:1/-1}
+.gpu>div{grid-template-columns:4em 1fr auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:4px 8px 4px 0;border-bottom:1px solid color-mix(in srgb,var(--muted) 18%,transparent);vertical-align:middle}
+th{font-weight:600;color:var(--muted);font-size:12px}
+.r{text-align:right}
+td .bar{margin-top:3px;min-width:4em}
+.ok{--c:var(--ok);color:var(--ok)}.warn{--c:var(--warn);color:var(--warn)}.bad{--c:var(--bad);color:var(--bad)}
+.banner{margin:10px 0 0;padding:6px 10px;border-radius:6px;background:color-mix(in srgb,var(--bad) 10%,var(--bg));color:var(--bad)}
+.banner[hidden]{display:none}
+ul.fails{margin:0;padding-left:1.2em}
+details summary{cursor:pointer;color:var(--muted);font-weight:600;font-size:13px;min-height:24px;padding:4px 0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.short{display:none}
+@media(max-width:560px){.hide-sm{display:none}.long{display:none}.short{display:inline}td .bar{min-width:2em}th,td{padding-right:5px}.rows>div{grid-template-columns:1fr auto}.rows>div>.mid{display:none}}
+@media(prefers-reduced-motion:no-preference){.bar>i{transition:width .4s ease}}
+</style></head><body>
+<header id="hdr"><div class="row">
+  <h1>FLAG progress</h1>
+  <span id="pill" class="pill">○ loading</span>
+  <span id="overall" class="num"></span>
+  <span id="eta" class="num muted"></span>
+  <span id="upd" class="muted num"></span>
+</div></header>
+<main>
+  <div id="banner" class="banner" role="alert" hidden></div>
+  <p id="live" class="sr" aria-live="polite"></p>
+
+  <section aria-labelledby="h-prog"><h2 id="h-prog">Runs by variant</h2>
+    <div id="groups" class="rows"><div><span class="muted">Loading…</span></div></div></section>
+
+  <section aria-labelledby="h-gpu"><h2 id="h-gpu">GPUs</h2>
+    <div id="gpus" class="rows gpu"><div><span class="muted">Loading…</span></div></div></section>
+
+  <section aria-labelledby="h-open"><h2 id="h-open">Unfinished cells <span id="open-n" class="muted"></span></h2>
+    <table><thead><tr><th scope="col"><span class="long">Variant · sampler</span><span class="short">Variant</span></th><th scope="col">Dataset</th><th scope="col">Model</th>
+      <th scope="col" class="r">Runs</th><th scope="col" class="hide-sm">Now</th><th scope="col" class="r"><span class="long">Est. left</span><span class="short">Left</span></th></tr></thead>
+      <tbody id="open"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody></table></section>
+
+  <section aria-labelledby="h-fail"><h2 id="h-fail">Failures</h2>
+    <div id="fails" class="muted">Loading…</div></section>
+
+  <section aria-labelledby="h-llm"><h2 id="h-llm">LLM text</h2>
+    <div id="llm-live"></div>
+    <details><summary>Node coverage per cache</summary>
+      <table><thead><tr><th scope="col">Dataset</th><th scope="col">Disc · cosine</th><th scope="col">Disc · MD</th>
+        <th scope="col">Resid · cosine</th><th scope="col">Resid · MD</th></tr></thead>
+        <tbody id="llm"></tbody></table></details></section>
+</main>
+<script>
+// All rendering goes through el(): text is set with textContent, never parsed as HTML.
+const $=id=>document.getElementById(id);
+function el(tag,props,...kids){
+  const n=document.createElement(tag);
+  for(const [k,v] of Object.entries(props||{})){
+    if(v==null||v===false)continue;
+    if(k==='class')n.className=v; else if(k==='width')n.style.width=v; else n.setAttribute(k,v);
+  }
+  for(const k of kids.flat()) if(k!=null&&k!==false) n.append(k instanceof Node?k:String(k));
+  return n;
+}
+const pct=(a,b)=>b?Math.round(100*a/b):0;
+const dur=s=>s==null?'—':s<90?`${Math.round(s)}s`:s<5400?`${Math.round(s/60)} min`:`${(s/3600).toFixed(1)} h`;
+const bar=(p,cls='')=>el('div',{class:'bar '+cls,role:'presentation'},el('i',{width:Math.max(0,Math.min(100,p))+'%'}));
+const NAMES={baseline:'baseline',flag:'flag',flag_finetuned:'flag_finetuned',default:'default',cosine:'cosine',md_K2_matched:'FLAG-MD'};
+const SHORT={baseline:'base',flag:'F',flag_finetuned:'F*',default:'',cosine:'cos',md_K2_matched:'MD'};
+const DSS={reddit:'Red',instagram:'IG',amazon_text:'Amz',yelpchi_text:'Yelp'};
+const DS={reddit:'Reddit',instagram:'Instagram',amazon_text:'Amazon',yelpchi_text:'YelpChi'};
+const STATE={running:['● running','warn'],done:['✓ done','ok'],failing:['✕ failures','bad'],idle:['○ idle','']};
+let lastState=null,lastData=0;
+
+function render(d){
+  const [label,cls]=STATE[d.state]||['○ '+d.state,''];
+  $('hdr').style.setProperty('--st',cls?`var(--${cls})`:'var(--muted)');
+  $('pill').textContent=label;
+  $('overall').textContent=`${d.done.toLocaleString()} / ${d.total.toLocaleString()} runs (${pct(d.done,d.total)}%)`;
+  $('eta').textContent=d.state==='done'?'':`est. ${dur(d.eta_s)} left${d.eta_partial?'+':''}`;
+  $('eta').title=d.eta_partial?'Some cells have no finished run yet, so the estimate may grow':'';
+  if(d.state!==lastState){if(lastState!==null)$('live').textContent=`Status changed to ${d.state}`;lastState=d.state;}
+
+  $('groups').replaceChildren(...d.groups.map(g=>{
+    const full=g.done>=g.total,c=full?'ok':'warn';
+    return el('div',{},el('span',{},NAMES[g.variant]+(g.sampler!=='default'?' · '+NAMES[g.sampler]:'')),
+      el('span',{class:'mid'}),el('span',{class:'num '+c},`${g.done} / ${g.total}${full?' ✓':''}`),bar(pct(g.done,g.total),c));
+  }));
+
+  const onGpu=[...new Set((d.open_cells||[]).filter(c=>c.device==='gpu').map(c=>`${c.model}/${DS[c.dataset]||c.dataset}`))].join(', ');
+  $('gpus').replaceChildren(...(d.gpus.length?d.gpus.map(g=>{
+    const busy=(g.util||0)>5,c=busy?'warn':'';
+    return el('div',{},el('span',{class:'num'},`GPU ${g.index}`),
+      el('span',{class:'mid muted num'},`${Math.round((g.mem_used||0)/1024)} / ${Math.round((g.mem_total||0)/1024)} GB · ${g.temp??'—'} °C · ${Math.round(g.power||0)} W`),
+      el('span',{class:'num '+c},`${busy?'':'idle · '}${g.util??'—'}%`),bar(g.util||0,c));
+  }):[el('div',{},el('span',{class:'muted'},'nvidia-smi unavailable'))]),
+    el('div',{},el('span',{class:'muted'},'Jobs'),
+      el('span',{class:'muted'},`${d.procs.train_gpu} GPU runs${onGpu?' ('+onGpu+')':''} · ${d.procs.train_cpu} CPU runs · ${d.procs.llm} LLM`),el('span')));
+
+  const open=d.open_cells||[];
+  $('open-n').textContent=open.length?`(${open.length})`:'';
+  $('open').replaceChildren(...(open.length?open.map(c=>el('tr',{},
+    el('td',{},el('span',{class:'long'},`${NAMES[c.variant]} · ${NAMES[c.sampler]||c.sampler}`),el('span',{class:'short',title:`${NAMES[c.variant]} · ${NAMES[c.sampler]}`},`${SHORT[c.variant]} ${SHORT[c.sampler]}`)),
+    el('td',{},el('span',{class:'long'},DS[c.dataset]||c.dataset),el('span',{class:'short'},DSS[c.dataset]||c.dataset)),el('td',{},c.model),
+    el('td',{class:'r num'},`${c.done}/25`,bar(pct(c.done,25),'warn')),
+    el('td',{class:'hide-sm '+(c.running?'warn':'muted')},c.running?`● ${c.running} on ${c.device.toUpperCase()}`:'queued'),
+    el('td',{class:'r num'},c.eta_s!=null?dur(c.eta_s):c.running?[el('span',{class:'long'},'measuring'),el('span',{class:'short',title:'measuring: no run finished yet'},'…')]:'—')))
+    :[el('tr',{},el('td',{colspan:6,class:'ok'},'✓ Every cell has 25 runs'))]));
+
+  const f=[...(d.failures||[]).map(x=>`${x.cell} ${x.run}: ${x.error}`),...(d.log_failures||[])];
+  $('fails').className=f.length?'bad':'ok';
+  $('fails').replaceChildren(f.length?el('ul',{class:'fails'},f.map(x=>el('li',{},'✕ '+x)))
+    :el('span',{},'✓ None',d.superseded?el('span',{class:'muted'},` (${d.superseded} CPU jobs moved to GPU, not counted)`):null));
+
+  $('llm-live').replaceChildren((d.llm_live||[]).length?el('div',{class:'rows'},d.llm_live.map(l=>el('div',{},
+      el('span',{},l.job),el('span',{class:'mid muted'},l.log),el('span',{class:'num warn'},`${l.percent}% · ${l.left} left`),bar(l.percent,'warn'))))
+    :el('p',{class:'muted'},'No generation running. All caches below are final.'));
+  const cov={};(d.llm_caches||[]).forEach(r=>cov[`${r.dataset}|${r.kind}|${r.sampler}`]=r);
+  const cell=(ds,k,s)=>{const r=cov[`${ds}|${k}|${s}`];if(!r)return el('td',{class:'muted'},'—');
+    const p=Math.round(100*(r.coverage||0)),c=p>=50?'ok':p>=20?'warn':'bad';
+    return el('td',{},el('span',{class:'num '+c},p+'%'),bar(p,c));};
+  $('llm').replaceChildren(...Object.keys(DS).map(ds=>el('tr',{},el('th',{scope:'row'},DS[ds]),
+    cell(ds,'discriminative','cosine'),cell(ds,'discriminative','md_K2_matched'),
+    cell(ds,'residual','cosine'),cell(ds,'residual','md_K2_matched'))));
+}
+
+async function poll(){
+  try{
+    const d=await (await fetch('/api/status',{cache:'no-store'})).json();
+    render(d);lastData=d.updated*1000;
+    $('banner').hidden=!d.error;if(d.error)$('banner').textContent='Status refresh failed, showing the last good data: '+d.error;
+  }catch(e){$('banner').hidden=false;$('banner').textContent="Can't reach the status service. Is server.py running?";}
+  const age=(Date.now()-lastData)/1000;
+  $('upd').textContent=lastData?`updated ${new Date(lastData).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${age>90?' · stale':''}`:'';
+}
+poll();setInterval(poll,20000);
+</script></body></html>

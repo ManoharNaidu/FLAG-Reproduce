@@ -32,14 +32,32 @@ def add_md_args(parser: argparse.ArgumentParser) -> None:
                             "top_n = keep the N closest, no threshold")
 
 
-def config_from_args(args, strategy: str | None = None, seed: int = 0) -> SamplingConfig:
+def config_from_args(args, strategy: str | None = None, seed: int = 0,
+                     dataset: str | None = None) -> SamplingConfig:
     """Build a SamplingConfig from parsed args (falls back to defaults if a
-    script does not declare the MD options)."""
+    script does not declare the MD options).
+
+    `--top-k` left unset (None) resolves to the dataset's registry default, and
+    strategy 'none' resolves to the dataset's `baseline_sampling_strategy`, so
+    every script (sample, generate, encode, train) derives the same config.
+    """
+    strategy = strategy or args.strategy
+    top_k = getattr(args, "top_k", None)
+    if dataset is not None:
+        from flagbench.registry.registry import get_dataset
+
+        spec = get_dataset(dataset)
+        if top_k is None:
+            top_k = spec.default_top_k
+        if strategy == "none":
+            strategy = spec.baseline_sampling_strategy
+    if top_k is None:
+        top_k = 10
     return SamplingConfig(
         hops=args.hops,
-        top_k=args.top_k,
+        top_k=top_k,
         similarity_threshold=args.threshold,
-        strategy=strategy or args.strategy,
+        strategy=strategy,
         seed=seed,
         diffusion_steps=getattr(args, "diffusion_steps", 2),
         diffusion_operator=getattr(args, "diffusion_operator", "paper_eq6"),

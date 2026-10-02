@@ -166,7 +166,7 @@ def encode(dataset: str, args) -> dict | None:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="all",
-                        choices=["reddit", "instagram", "all"])
+                        choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "all"])
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--device", default=None,
                         help="cpu | cuda | cuda:N | auto (default: FLAG_DEVICE or cpu)")

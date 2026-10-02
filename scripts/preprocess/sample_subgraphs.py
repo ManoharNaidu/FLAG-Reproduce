@@ -141,7 +141,7 @@ def compare_strategies(dataset: str, args) -> dict:
           f"subgraph homophily")
     print(f"{'=' * 74}")
     print(f"  centres: {len(center_list):,} test nodes")
-    print(f"  hops={args.hops}  top_k={args.top_k}  "
+    print(f"  hops={args.hops}  top_k={args.top_k or 10}  "
           f"threshold={args.threshold}\n")
     print(f"  {'strategy':<38} {'homophily':>10} {'nodes/sg':>10} {'edges/sg':>10}")
     print(f"  {'-' * 38} {'-' * 10} {'-' * 10} {'-' * 10}")
@@ -150,7 +150,7 @@ def compare_strategies(dataset: str, args) -> dict:
     for strategy in ["none", "random", "feature", "semantic_nothreshold", "semantic"]:
         config = semantic.SamplingConfig(
             hops=args.hops,
-            top_k=args.top_k,
+            top_k=args.top_k or 10,
             similarity_threshold=args.threshold,
             strategy=strategy,
             seed=args.seed,
@@ -212,7 +212,7 @@ def build_cache(dataset: str, args) -> dict:
     adjacency = semantic.build_adjacency(
         payload["edge_index"], num_nodes, drop_self_loops=True
     )
-    config = config_from_args(args, seed=args.seed)
+    config = config_from_args(args, seed=args.seed, dataset=dataset)
     out = ROOT / "cache" / "sampling" / f"{dataset}__{config.cache_key()}.pt"
 
     print(f"\n{'=' * 74}\n{dataset.upper()} -- sampling\n{'=' * 74}")
@@ -287,10 +287,11 @@ def build_cache(dataset: str, args) -> dict:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="all",
-                        choices=["reddit", "instagram", "all"])
+                        choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "all"])
     parser.add_argument("--model", default="all-MiniLM-L6-v2")
     parser.add_argument("--hops", type=int, default=2)
-    parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--top-k", type=int, default=None,
+                        help="per-hop budget (default: the dataset's registry default, 10 or 3)")
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument("--strategy", default="semantic", choices=STRATEGIES)
     add_md_args(parser)

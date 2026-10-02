@@ -45,11 +45,12 @@ def _llm_cache_key(dataset: str, kind: str, args) -> tuple[str, pathlib.Path]:
     from flagbench.sampling.cli import config_from_args
 
     strategy = args.strategy or get_variant("flag").default_sampling_strategy
-    sampling = config_from_args(args, strategy=strategy)
+    sampling = config_from_args(args, strategy=strategy, dataset=dataset)
     prompts = PromptSet.load(dataset)
     config = LLMConfig(
         model_id=args.llm_model,
         max_new_tokens=args.max_new_tokens, truncate_chars=args.truncate_chars,
+        engine=args.engine, dtype=args.llm_dtype,
     )
     key = cache_key(dataset, sampling.cache_key(), prompts, config, kind)
     return key, ROOT / "cache" / "llm" / f"{key}.json"
@@ -149,7 +150,7 @@ def encode(dataset: str, kind: str, args) -> dict | None:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", default="all", choices=["reddit", "instagram", "all"])
+    parser.add_argument("--dataset", default="all", choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "all"])
     parser.add_argument("--kind", default="discriminative",
                         choices=["discriminative", "residual", "both"])
     parser.add_argument("--model", default=DEFAULT_MODEL)
@@ -163,11 +164,17 @@ def main(argv=None) -> int:
     parser.add_argument("--truncate-chars", type=int,
                         default=PRODUCTION_LLM_CONFIG["truncate_chars"],
                         help="must match the generate_text run being encoded")
+    parser.add_argument("--llm-dtype", default=PRODUCTION_LLM_CONFIG.get("dtype", "float16"),
+                        help="must match the generate_text run being encoded")
+    parser.add_argument("--engine", default=PRODUCTION_LLM_CONFIG.get("engine", "hf"),
+                        choices=["hf", "vllm"],
+                        help="must match the generate_text run being encoded")
     parser.add_argument("--device", default=None,
                         help="cpu | cuda | cuda:N | auto (default: FLAG_DEVICE or cpu)")
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--hops", type=int, default=2)
-    parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--top-k", type=int, default=None,
+                        help="per-hop budget (default: the dataset's registry default, 10 or 3)")
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument("--force", action="store_true")
     from flagbench.sampling.cli import STRATEGIES, add_md_args

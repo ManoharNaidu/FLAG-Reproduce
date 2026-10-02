@@ -1,0 +1,124 @@
+{
+  "experiment_id": "612d7b6ff099",
+  "timestamp": "2026-10-01T14:22:37+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "yelpchi_text",
+  "model": "pmp",
+  "variant": "flag",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "partial - fraud/benign partition present, but applied to the aggregated mean rather than per-neighbour before aggregation",
+  "seed": 4,
+  "initialization": 2,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 3,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k3_t0_perhop_K2_matched_cosine"
+  },
+  "dataset_version": "",
+  "dataset_manifest_sha256": "",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 5,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.15,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6547213617571375,
+  "validation_f1_macro": 0.5775711686057234,
+  "test_auc": 0.697440674393849,
+  "test_f1_macro": 0.5972908044804168,
+  "test_precision_fraud": 0.29153786707882534,
+  "test_recall_fraud": 0.3766849725411882,
+  "test_f1_fraud": 0.3286865606621651,
+  "test_accuracy": 0.7764479744677765,
+  "test_ks": 0.2904471209339934,
+  "test_ece": 0.060783575441593934,
+  "training_time": 237.82,
+  "inference_time": 38.2,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 80.7,
+    "diffusion_precompute_seconds": 3.575,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+    "split_sizes": {
+      "train": 13785,
+      "val": 4596,
+      "test": 27573
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.41016,
+        "val_auc": 0.65735,
+        "val_f1_macro": 0.57698
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.40116,
+        "val_auc": 0.65045,
+        "val_f1_macro": 0.56452
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.39616,
+        "val_auc": 0.64872,
+        "val_f1_macro": 0.57236
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.39354,
+        "val_auc": 0.65042,
+        "val_f1_macro": 0.56235
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.39049,
+        "val_auc": 0.65472,
+        "val_f1_macro": 0.57757
+      }
+    ],
+    "test_label_distribution": {
+      "0": 23567,
+      "1": 4006
+    }
+  }
+}

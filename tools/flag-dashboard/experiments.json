@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Main study",
+    "note": "baseline, flag and flag_finetuned (cosine and FLAG-MD) on all four datasets",
+    "groups": [
+      [
+        "baseline",
+        "default"
+      ],
+      [
+        "flag",
+        "cosine"
+      ],
+      [
+        "flag",
+        "md_K2_matched"
+      ],
+      [
+        "flag_finetuned",
+        "cosine"
+      ],
+      [
+        "flag_finetuned",
+        "md_K2_matched"
+      ]
+    ],
+    "datasets": [
+      "reddit",
+      "instagram",
+      "amazon_text",
+      "yelpchi_text"
+    ]
+  },
+  {
+    "name": "Text + engineered features (D-006)",
+    "note": "flag_feat on the text-augmented datasets",
+    "groups": [
+      [
+        "flag_feat",
+        "cosine"
+      ],
+      [
+        "flag_feat",
+        "md_K2_matched"
+      ]
+    ],
+    "datasets": [
+      "amazon_text",
+      "yelpchi_text"
+    ]
+  },
+  {
+    "name": "Raw text only (5 \u00d7 5)",
+    "note": "text variant: Sentence-BERT of raw node text, no LLM text (reference for the LLM branch)",
+    "groups": [
+      [
+        "text",
+        "default"
+      ]
+    ],
+    "datasets": [
+      "reddit",
+      "instagram",
+      "amazon_text",
+      "yelpchi_text"
+    ]
+  }
+]

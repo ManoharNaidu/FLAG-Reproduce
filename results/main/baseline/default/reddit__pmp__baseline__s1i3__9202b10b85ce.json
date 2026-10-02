@@ -1,0 +1,120 @@
+{
+  "experiment_id": "9202b10b85ce",
+  "timestamp": "2026-10-01T03:16:17+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "pmp",
+  "variant": "baseline",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "partial - fraud/benign partition present, but applied to the aggregated mean rather than per-neighbour before aggregation",
+  "seed": 1,
+  "initialization": 3,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "none",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "none_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 2,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.15,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.5254938687218864,
+  "validation_f1_macro": 0.5324676518065266,
+  "test_auc": 0.5093669483510771,
+  "test_f1_macro": 0.5065338531364733,
+  "test_precision_fraud": 0.1080797481636936,
+  "test_recall_fraud": 0.07698056801195814,
+  "test_f1_fraud": 0.08991706678306416,
+  "test_accuracy": 0.858269322275848,
+  "test_ks": 0.016972209470547117,
+  "test_ece": 0.025355824925925093,
+  "training_time": 29.37,
+  "inference_time": 14.48,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 1.1,
+    "diffusion_precompute_seconds": null,
+    "feature_source": "stored graph features (4096d). The paper calls these 'shallow embeddings'; measured to be 4096-d and Llama-2-derived - see research/dataset_notes.md section 7.",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 1.63441,
+        "val_auc": 0.55697,
+        "val_f1_macro": 0.52066
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.32861,
+        "val_auc": 0.52549,
+        "val_f1_macro": 0.53247
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.30805,
+        "val_auc": 0.52722,
+        "val_f1_macro": 0.53072
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.30582,
+        "val_auc": 0.50265,
+        "val_f1_macro": 0.48734
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.30499,
+        "val_auc": 0.51301,
+        "val_f1_macro": 0.51186
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  }
+}

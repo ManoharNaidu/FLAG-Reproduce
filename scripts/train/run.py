@@ -57,6 +57,11 @@ def main(argv=None) -> int:
                         help="number of data seeds (paper uses 5)")
     parser.add_argument("--inits", type=int, default=1,
                         help="initialisations per seed (paper uses 5 -> 25 runs)")
+    parser.add_argument("--seed-list", default=None,
+                        help="comma-separated seeds to run instead of range(--seeds), "
+                             "e.g. to split one cell across processes")
+    parser.add_argument("--init-list", default=None,
+                        help="comma-separated inits to run instead of range(--inits)")
     parser.add_argument("--device", default="cpu")
 
     parser.add_argument("--epochs", type=int, default=5)
@@ -72,7 +77,8 @@ def main(argv=None) -> int:
     parser.add_argument("--class-weighted-loss", action="store_true")
 
     parser.add_argument("--hops", type=int, default=2)
-    parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--top-k", type=int, default=None,
+                        help="per-hop budget (default: the dataset's registry default, 10 or 3)")
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument(
         "--sampling-strategy", default=None, choices=STRATEGIES,
@@ -112,14 +118,23 @@ def main(argv=None) -> int:
     )
     # None lets each variant pick its own default (NS for baseline/+text,
     # SS for the FLAG variants). --sampling-strategy forces one for all.
-    sampling_config = None
+    sampling_config = None      # used only for the banner below
     if args.sampling_strategy:
         sampling_config = config_from_args(args, strategy=args.sampling_strategy)
 
+    def sampling_for(dataset: str):
+        if not args.sampling_strategy:
+            return None
+        return config_from_args(args, strategy=args.sampling_strategy, dataset=dataset)
+
+    seeds = ([int(x) for x in args.seed_list.split(",")] if args.seed_list
+             else list(range(args.seeds)))
+    inits = ([int(x) for x in args.init_list.split(",")] if args.init_list
+             else list(range(args.inits)))
     combos = [
         (d, m, v, s, i)
         for d in datasets for m in models for v in variants
-        for s in range(args.seeds) for i in range(args.inits)
+        for s in seeds for i in inits
     ]
 
     print(f"{'=' * 78}")
@@ -173,7 +188,7 @@ def main(argv=None) -> int:
             result = run_single(
                 dataset=d, model=m, variant=v, seed=s, init=i,
                 device=args.device, train_config=train_config,
-                sampling_config=sampling_config,
+                sampling_config=sampling_for(d),
                 save_checkpoint=args.save_checkpoint,
                 results_dir=results_dir,
             )

@@ -1,0 +1,1 @@
+You are provided with a list of Yelp reviews of hotels and restaurants. Each review is classified as either fraudulent or legitimate based on its content and the behaviour of its author.

@@ -1,0 +1,12 @@
+However, your task is to generate a brief non-causal text for each review that is unrelated to classifying it as fraudulent or legitimate. The non-causal text should capture generic or background information that is not indicative of the review's classification. Focus on generating text that doesn't directly contribute to differentiating reviews based on their categories.
+Here is the format for the input, one entry per review:
+1. [review 1]
+2. [review 2]
+3. [review 3]
+...
+For each review, generate the non-causal text as follows:
+1. [Generated non-causal text for review1]
+2. [Generated non-causal text for review2]
+3. [Generated non-causal text for review3]
+...
+Remember: Each review's non-causal text should occupy only one single line.

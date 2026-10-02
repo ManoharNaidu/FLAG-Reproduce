@@ -1,0 +1,124 @@
+{
+  "experiment_id": "f68b610f8636",
+  "timestamp": "2026-10-01T12:15:43+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "instagram",
+  "model": "geniepath",
+  "variant": "flag",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "closest to faithful - Breadth(GAT)+Depth(LSTM) preserved; matches PyG's example globals exactly. No official author repo exists.",
+  "seed": 0,
+  "initialization": 2,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k10_t0_perhop_K2_matched_cosine"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "b0d8f240a7f8c9a48e35d85144621b650f8a6a09231664d413c107eacaf49406",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 4,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.3,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.5818328716528163,
+  "validation_f1_macro": 0.5392001688297985,
+  "test_auc": 0.5588796530213959,
+  "test_f1_macro": 0.5286225132130639,
+  "test_precision_fraud": 0.1452513966480447,
+  "test_recall_fraud": 0.13494809688581316,
+  "test_f1_fraud": 0.13991031390134528,
+  "test_accuracy": 0.8491664045297264,
+  "test_ks": 0.09584775086505187,
+  "test_ece": 0.0798235255436806,
+  "training_time": 208.24,
+  "inference_time": 71.08,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 26.7,
+    "diffusion_precompute_seconds": 0.168,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+    "split_sizes": {
+      "train": 794,
+      "val": 794,
+      "test": 6358
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.37321,
+        "val_auc": 0.61707,
+        "val_f1_macro": 0.48974
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.30567,
+        "val_auc": 0.60961,
+        "val_f1_macro": 0.5252
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.30012,
+        "val_auc": 0.59301,
+        "val_f1_macro": 0.53023
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.28846,
+        "val_auc": 0.58183,
+        "val_f1_macro": 0.5392
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.26217,
+        "val_auc": 0.57579,
+        "val_f1_macro": 0.52659
+      }
+    ],
+    "test_label_distribution": {
+      "0": 5780,
+      "1": 578
+    }
+  }
+}

@@ -242,3 +242,45 @@ exists and both options remain runnable from config.
 
 Any of S-001..S-008 becomes an escalated decision if evidence emerges that the
 choice changes a conclusion rather than just a number.
+
+## D-005 — Main 5x5 push: faithful decode budget via batched vLLM; dense-graph sampling budget
+
+**Date:** 2026-10-01. **Supersedes:** D-004 for all new results.
+
+1. **LLM budget.** Every cache is regenerated at upstream's `max_new_tokens=550`,
+   `truncate_chars=1200`. The D-004 caches (64/300) gave 0.6–12.9% node coverage,
+   because only 1–3-node subgraphs could emit one line per node in 64 tokens, so
+   `flag` was mostly the raw-text fallback. They remain on disk under their own keys.
+2. **Engine.** Generation uses vLLM (`LLMConfig.engine="vllm"`, `.venv-vllm`):
+   same raw prompt string (no chat template), greedy, same budget, one process per
+   GPU. Kernel numerics can flip a near-tied greedy token, so text is not
+   guaranteed byte-identical to the HF path; `engine` therefore enters the cache
+   key (omitted when `"hf"`, so every older key is unchanged). Prompts longer than
+   Gemma-2's 8,192-token context are recorded as format failures
+   (`context_overflows`); upstream's HF loop would run past the context instead.
+3. **Amazon / YelpChi (text-augmented study only).** Average degree is 736 / 167,
+   so FLAG's top-10 2-hop sampler gives median 75 / 56-node subgraphs; 72% / 87%
+   of prompts exceed the context and the rest cannot fit one line per node in 550
+   tokens. These two datasets use `default_top_k=3` (≤13 nodes, comparable to
+   Reddit's mean of 9). The `none` sampler keeps nearly the whole graph per node
+   there, so `baseline`/`+text` use `random` at the same budget (the paper's RS),
+   size-matched to FLAG. Both are registry fields (`DatasetSpec.default_top_k`,
+   `baseline_sampling_strategy`) and enter every cache key. Reddit/Instagram are
+   unchanged (k=10, `none`).
+4. **Prompts** for `amazon_text` / `yelpchi_text` were drafted here (upstream has
+   none), mirroring the Reddit prompt structure; recorded in `prompts/manifest.json`.
+5. **dtype.** vLLM refuses float16 for Gemma-2 ("numerical instability"), so
+   generation runs in bfloat16, Gemma-2's training dtype. Upstream used float16.
+   `dtype` was already part of the cache key.
+
+## D-006 — `flag_feat`: text + engineered features for the Amazon/YelpChi study
+
+**Date:** 2026-10-02. On Amazon and YelpChi the `baseline` trains on the datasets'
+engineered features while `flag` replaces node features with text embeddings, so the
+two differ in *information*, not only in method (main-run report §10). `flag_feat`
+keeps flag's dual text branch and concatenates the engineered features onto both
+branches, z-scored with train-node mean/std (no val/test statistics). Run with the
+cosine and FLAG-MD samplers on Amazon and YelpChi only (Reddit/Instagram's stored
+features are 4096-d Llama embeddings, not engineered features). The baseline keeps
+its raw, unscaled features, as before. No `flag_finetuned` counterpart: it matched
+`flag` within 0.01 F1 at 3–6× the cost.

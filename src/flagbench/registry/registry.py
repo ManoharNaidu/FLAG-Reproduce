@@ -165,6 +165,15 @@ class DatasetSpec:
     source: str
     obtainable: bool = True
     notes: str = ""
+    default_top_k: int = 10
+    """Per-hop neighbour budget for the sampler (paper: 10). Lowered on graphs
+    so dense that a top-10 2-hop subgraph (up to 111 nodes) cannot fit one
+    Gemma prompt or yield one output line per node in 550 tokens."""
+    baseline_sampling_strategy: str = "none"
+    """What a variant whose default is 'none' (baseline, +text) uses here.
+    'none' keeps every 2-hop neighbour, which on a dense graph is close to the
+    whole graph per node; there 'random' with the same per-hop budget (the
+    paper's RS) keeps baseline subgraphs size-matched to FLAG's."""
 
 
 # ---------------------------------------------------------------------------
@@ -265,6 +274,17 @@ VARIANT_REGISTRY: dict[str, VariantSpec] = {
         notes="zero-shot: LLM extracts discriminative text; attention-fused "
               "with the raw-text branch (models.py:DualGNN)",
     ),
+    "flag_feat": VariantSpec(
+        key="flag_feat", display_name="+FLAG+feat", feature_source="lm_disc+stored",
+        requires_llm=True, dual_branch=True,
+        default_sampling_strategy="semantic",
+        notes=(
+            "decision D-006: flag's dual text branch with the dataset's engineered "
+            "node features (z-scored on train nodes) concatenated onto both "
+            "branches. For the text-augmented Amazon/YelpChi study, where the "
+            "baseline uses engineered features and plain flag uses text only."
+        ),
+    ),
     "flag_finetuned": VariantSpec(
         key="flag_finetuned", display_name="+FLAG*", feature_source="lm_disc",
         requires_llm=True, requires_finetuned_llm=True, dual_branch=True,
@@ -300,6 +320,26 @@ DATASET_REGISTRY: dict[str, DatasetSpec] = {
         key="amazon", display_name="Amazon", has_native_text=False,
         num_relations=3, source="DGL FraudAmazonDataset / CARE-GNN",
         notes="the FLAG paper states it lacks textual information",
+    ),
+    # Text-augmented STUDY datasets (flagbench.flag_adapter). The canonical
+    # `yelpchi` / `amazon` keys above stay blocked for the text variants; these
+    # carry the separately-recovered review text, and every run is stamped
+    # native_text=false in its dataset manifest. Not comparable to FLAG Table 4.
+    "yelpchi_text": DatasetSpec(
+        key="yelpchi_text", default_top_k=3, baseline_sampling_strategy="random",
+        display_name="YelpChi (+recovered text)",
+        has_native_text=True, num_relations=1,
+        source="CARE-GNN YelpChi.mat + Mukherjee et al. ICWSM'13 review text",
+        notes="text_augmented_study; homo adjacency (rur/rtr/rsr collapsed); "
+              "45,954 review nodes, 100% text coverage",
+    ),
+    "amazon_text": DatasetSpec(
+        key="amazon_text", default_top_k=3, baseline_sampling_strategy="random",
+        display_name="Amazon (+recovered text)",
+        has_native_text=True, num_relations=1,
+        source="CARE-GNN Amazon.mat + McAuley 2014 Musical Instruments reviews",
+        notes="text_augmented_study; homo adjacency (upu/usu/uvu collapsed); "
+              "user nodes; 3,305 unlabelled prefix nodes have empty text",
     ),
     "tfinance": DatasetSpec(
         key="tfinance", display_name="T-Finance", has_native_text=False,

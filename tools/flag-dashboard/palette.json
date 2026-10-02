@@ -1,0 +1,4 @@
+{
+  "light": {"bg": "#ffffff", "fg": "#1a1a1a", "muted": "#595959", "accent": "#1f5fbf", "ok": "#1b7a3a", "warn": "#8a5a00", "bad": "#b3261e"},
+  "dark":  {"bg": "#16181c", "fg": "#ececec", "muted": "#a3a3a3", "accent": "#7ab0ff", "ok": "#5ccf82", "warn": "#e0b04a", "bad": "#ff8a80"}
+}
