@@ -1,5 +1,8 @@
 # Final results report
 
+> **Superseded (2026-10-02):** this report covers the earlier 64-token / 4 × 2 run. The current results are in
+> [`../2026-10-02-flag-cosine-vs-md-main-run-report.md`](../2026-10-02-flag-cosine-vs-md-main-run-report.md).
+
 Generated entirely from **existing, already-completed run files** already sitting in this
 repository (`results/raw/` and `results/flag_md/`). **No training was run to produce this
 report** — that was your explicit choice (see "Scope" below). Built by

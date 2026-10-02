@@ -284,3 +284,16 @@ cosine and FLAG-MD samplers on Amazon and YelpChi only (Reddit/Instagram's store
 features are 4096-d Llama embeddings, not engineered features). The baseline keeps
 its raw, unscaled features, as before. No `flag_finetuned` counterpart: it matched
 `flag` within 0.01 F1 at 3–6× the cost.
+
+## D-007 — Follow-ups: `baseline_z`, raw text with FLAG samplers, `flag_feat` on Amazon Video
+
+**Date:** 2026-10-02. Three cheap runs to close open questions in the main-run report:
+
+1. **`baseline_z`**: the baseline with its engineered features z-scored on train-node
+   statistics, exactly as `flag_feat` (D-006) scales them, on Amazon, YelpChi and Amazon
+   Video. Separates the effect of feature scaling from the effect of adding text.
+2. **`text` with the cosine and FLAG-MD samplers** (results under
+   `results/main/text/{cosine,md_K2_matched}/`) on all four datasets, so "flag − raw text"
+   can be read with the same neighbourhoods and isolates the LLM-text effect from the
+   sampler effect.
+3. **`flag_feat` on Amazon Video**, completing the D-006 comparison on the self-built graph.

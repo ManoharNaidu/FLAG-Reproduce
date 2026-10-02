@@ -1,0 +1,120 @@
+{
+  "experiment_id": "9f92c64d82dd",
+  "timestamp": "2026-10-02T14:13:41+00:00",
+  "git_commit": "cedccecfb822fe345cc17e3895fe9f904e386308-dirty",
+  "schema_version": "results-v1",
+  "dataset": "amazon_text",
+  "model": "dga_gnn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "approximation",
+  "model_fidelity": "NOT DGA-GNN - no decision-tree dynamic grouping, no bidirectional grouped aggregation. GraphSAGE-mean.",
+  "seed": 1,
+  "initialization": 3,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 3,
+    "similarity_threshold": 0.0,
+    "strategy": "semantic",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "semantic_h2_k3_t0_perhop"
+  },
+  "dataset_version": "",
+  "dataset_manifest_sha256": "",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 3,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.25,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.8322780862079722,
+  "validation_f1_macro": 0.7129351355433059,
+  "test_auc": 0.8562324039429869,
+  "test_f1_macro": 0.708625410957381,
+  "test_precision_fraud": 0.42018072289156627,
+  "test_recall_fraud": 0.565922920892495,
+  "test_f1_fraud": 0.4822817631806396,
+  "test_accuracy": 0.8844521604938271,
+  "test_ks": 0.5752070232454967,
+  "test_ece": 0.04130552125639462,
+  "training_time": 18.28,
+  "inference_time": 2.22,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 32.1,
+    "diffusion_precompute_seconds": 0.0,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 2591,
+      "val": 864,
+      "test": 5184
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.30466,
+        "val_auc": 0.77434,
+        "val_f1_macro": 0.66223
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.26902,
+        "val_auc": 0.78718,
+        "val_f1_macro": 0.65801
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.25991,
+        "val_auc": 0.83228,
+        "val_f1_macro": 0.71294
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.26177,
+        "val_auc": 0.85722,
+        "val_f1_macro": 0.69225
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.25383,
+        "val_auc": 0.81576,
+        "val_f1_macro": 0.67628
+      }
+    ],
+    "test_label_distribution": {
+      "0": 4691,
+      "1": 493
+    }
+  }
+}

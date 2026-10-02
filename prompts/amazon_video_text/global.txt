@@ -1,0 +1,1 @@
+You are provided with a list of Amazon users' product reviews. Each user is classified as either fraudulent or benign based on their reviewing behaviour and content.

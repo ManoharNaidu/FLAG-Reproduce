@@ -1,0 +1,123 @@
+{
+  "experiment_id": "b674780abe8b",
+  "timestamp": "2026-10-02T13:46:17+00:00",
+  "git_commit": "cedccecfb822fe345cc17e3895fe9f904e386308-dirty",
+  "schema_version": "results-v1",
+  "dataset": "amazon_text",
+  "model": "geniepath",
+  "variant": "baseline_z",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "closest to faithful - Breadth(GAT)+Depth(LSTM) preserved; matches PyG's example globals exactly. No official author repo exists.",
+  "seed": 4,
+  "initialization": 2,
+  "device": "cuda:0",
+  "device_name": "NVIDIA A100-SXM4-80GB",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 3,
+    "similarity_threshold": 0.0,
+    "strategy": "random",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "random_h2_k3_t0_perhop_s0"
+  },
+  "dataset_version": "",
+  "dataset_manifest_sha256": "",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 4,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.7,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.9498159815357745,
+  "validation_f1_macro": 0.9070595980327615,
+  "test_auc": 0.9566348404415168,
+  "test_f1_macro": 0.9076486718807377,
+  "test_precision_fraud": 0.8948598130841121,
+  "test_recall_fraud": 0.7768762677484787,
+  "test_f1_fraud": 0.8317046688382194,
+  "test_accuracy": 0.9701003086419753,
+  "test_ks": 0.7995894775849313,
+  "test_ece": 0.01202110084821376,
+  "training_time": 309.5,
+  "inference_time": 48.47,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cuda",
+    "device_memory_gb": 79.25,
+    "device_capability": "8.0",
+    "sampling_seconds": 25.0,
+    "diffusion_precompute_seconds": 0.0,
+    "feature_source": "stored graph features (25d), z-scored with train-node statistics (decision D-007)",
+    "split_sizes": {
+      "train": 2591,
+      "val": 864,
+      "test": 5184
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.18564,
+        "val_auc": 0.94532,
+        "val_f1_macro": 0.86956
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.1268,
+        "val_auc": 0.94724,
+        "val_f1_macro": 0.89654
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.10314,
+        "val_auc": 0.94847,
+        "val_f1_macro": 0.89962
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.10426,
+        "val_auc": 0.94982,
+        "val_f1_macro": 0.90706
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.10599,
+        "val_auc": 0.95527,
+        "val_f1_macro": 0.89394
+      }
+    ],
+    "test_label_distribution": {
+      "0": 4691,
+      "1": 493
+    },
+    "peak_gpu_mem_mb": 160.1
+  }
+}

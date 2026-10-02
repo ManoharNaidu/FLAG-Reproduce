@@ -1,3 +1,8 @@
+## Unreleased (config only)
+experiments.json (no code change): added "Raw text only (5 × 5)", "Amazon Video (self-built)", and follow-ups
+"A: raw text with FLAG samplers", "B: flag_feat on Amazon Video", "C: z-scored baseline" (D-007). Totals now 8,050 runs.
+selftest.py derives expected group and run counts from experiments.json.
+
 ## 0.4.0 (2026-10-02)
 Experiments: tracked runs are defined in experiments.json (blocks of variant·sampler groups x datasets x
 backbones, re-read every refresh), so new experiments need no code change. Page gains an Experiments strip,

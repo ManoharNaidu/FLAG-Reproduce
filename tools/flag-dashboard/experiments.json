@@ -64,5 +64,86 @@
       "amazon_text",
       "yelpchi_text"
     ]
+  },
+  {
+    "name": "Amazon Video (self-built)",
+    "note": "main-study variants on the CARE-GNN-recipe Amazon Instant Video graph",
+    "groups": [
+      [
+        "baseline",
+        "default"
+      ],
+      [
+        "flag",
+        "cosine"
+      ],
+      [
+        "flag",
+        "md_K2_matched"
+      ],
+      [
+        "flag_finetuned",
+        "cosine"
+      ],
+      [
+        "flag_finetuned",
+        "md_K2_matched"
+      ]
+    ],
+    "datasets": [
+      "amazon_video_text"
+    ]
+  },
+  {
+    "name": "Follow-up A: raw text with FLAG samplers",
+    "note": "text variant with cosine / FLAG-MD neighbourhoods (D-007)",
+    "groups": [
+      [
+        "text",
+        "cosine"
+      ],
+      [
+        "text",
+        "md_K2_matched"
+      ]
+    ],
+    "datasets": [
+      "reddit",
+      "instagram",
+      "amazon_text",
+      "yelpchi_text"
+    ]
+  },
+  {
+    "name": "Follow-up B: flag_feat on Amazon Video",
+    "note": "text + engineered features on the self-built graph (D-007)",
+    "groups": [
+      [
+        "flag_feat",
+        "cosine"
+      ],
+      [
+        "flag_feat",
+        "md_K2_matched"
+      ]
+    ],
+    "datasets": [
+      "amazon_video_text"
+    ]
+  },
+  {
+    "name": "Follow-up C: z-scored baseline",
+    "note": "baseline_z: engineered features z-scored like flag_feat (D-007)",
+    "groups": [
+      [
+        "baseline_z",
+        "default"
+      ]
+    ],
+    "datasets": [
+      "amazon_text",
+      "yelpchi_text",
+      "amazon_video_text"
+    ]
   }
 ]

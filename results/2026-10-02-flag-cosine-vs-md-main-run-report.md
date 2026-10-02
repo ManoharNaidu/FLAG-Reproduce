@@ -1,8 +1,9 @@
 # FLAG vs FLAG-MD: main 5 × 5 run, full report
 
-**Repository:** `FLAG-Reproduce` · **Run window:** 2026-10-01 02:45 UTC → 2026-10-02 06:15 UTC (all 3,500 runs complete)
+**Repository:** `FLAG-Reproduce` · **Run window:** 2026-10-01 02:45 UTC → 2026-10-02 14:31 UTC (main study, 3 extensions and 3 follow-ups: 8,050 runs, all complete)
 **Hardware:** 4 × NVIDIA A100-SXM4-80GB, 256 logical CPUs (container quota ≈ 122 cores), 1 TB RAM (vast.ai instance)
-**Status:** **complete**: 3,500 / 3,500 runs, 0 failed (see [§1](#1-progress)). Sections marked *auto-generated* are rebuilt from the result files with
+**Status:** **all complete: 8,050 / 8,050 runs, 0 failed**: main study 3,500 ([§1](#1-progress)); text + engineered features
+700 (§10b); Amazon Video 875 (§10c); raw text 5 × 5 700 (§11.1); follow-ups A/B/C 2,275 (§11.2). Sections marked *auto-generated* are rebuilt from the result files with
 
 ```bash
 .venv-gpu/bin/python -P -m scripts.analyze.build_main_run_report
@@ -27,7 +28,10 @@ authoritative.
 8. [Results: F1-macro and AUC per cell](#8-results-per-cell)
 9. [Cosine vs FLAG-MD](#9-cosine-vs-flag-md)
 10. [FLAG variants vs baseline](#10-flag-vs-baseline)
-11. [Did the bigger LLM budget matter?](#11-llm-budget)
+    - [10b. Text + engineered features (flag_feat)](#10b-text--engineered-features)
+    - [10c. Amazon Video (self-built dataset)](#10c-amazon-video)
+11. [Did the bigger LLM budget matter?](#11-llm-budget) (incl. raw text at 5 × 5)
+    - [11.2 Follow-ups A/B/C](#112-follow-ups-abc)
 12. [Compute, timing and scheduling](#12-compute-timing-and-scheduling)
 13. [Progress dashboard](#13-progress-dashboard)
 14. [Incidents and fixes](#14-incidents-and-fixes)
@@ -41,28 +45,41 @@ authoritative.
 
 ## 0. Executive summary
 
-**What was run.** 5 variant·sampler groups (baseline; flag and flag_finetuned, each with the paper's cosine sampler and with
+**What was run.** Main study: 5 variant·sampler groups (baseline; flag and flag_finetuned, each with the paper's cosine sampler and with
 FLAG-MD) × 7 GNN backbones × 4 datasets (Reddit, Instagram, Amazon, YelpChi) × 5 seeds × 5 initialisations = **3,500 runs**,
-after regenerating all LLM text at the paper's decode budget with batched vLLM on 4 A100s.
+after regenerating all LLM text at the paper's decode budget with batched vLLM on 4 A100s. Extensions (2026-10-02):
+**text + engineered features** (`flag_feat`, 700 runs), a **self-built Amazon Video** dataset (875 runs) and a **raw-text-only**
+reference at 5 × 5 (700 runs); follow-ups (D-007): raw text with the FLAG samplers (1,400), `flag_feat` on Amazon Video
+(350), z-scored baseline (525). **8,050 runs in total, 0 failed**.
 
 **Headline findings (final).**
 
-1. **FLAG-MD vs cosine: equal on three datasets, clearly better on Amazon.** Across all 56 paired cells, FLAG-MD's average
+1. **FLAG-MD vs cosine: equal on Reddit, Instagram and YelpChi; clearly better on both user-review graphs (Amazon and
+   Amazon Video).** Across all 56 paired cells, FLAG-MD's average
    Δ F1-macro is **+0.005** (AUC +0.001). The gain is concentrated on **Amazon: Δ F1 +0.015**, with FLAG-MD ahead beyond the
    run-to-run spread in 9 of 14 cells and a paired Wilcoxon test significant (p < 0.05) in favour of FLAG-MD in 12 of 14.
    On Reddit, Instagram and YelpChi every cell is within noise (|Δ| below the larger std); Reddit is ±0.000 on average.
-   FLAG-MD loses beyond noise **nowhere**.
+   FLAG-MD loses beyond noise **nowhere**. The self-built **Amazon Video** graph replicates it: FLAG-MD +0.016 / +0.023 F1 and
+   +0.029 / +0.033 AUC over cosine (flag / flag_finetuned), significant in 4 of 7 F1 and 5–6 of 7 AUC cells, no losses (§10c).
 2. **FLAG beats the baseline on the two native-text datasets.** Reddit: +0.030 to +0.034 F1 and +0.064 to +0.072 AUC averaged
    over backbones; Instagram: +0.024 to +0.029 F1, +0.053 to +0.061 AUC. All 7 backbones improve.
-3. **On Amazon and YelpChi the picture is mixed and must not be read as "FLAG hurts".** Amazon F1 drops (−0.040 to −0.059)
+3. **On Amazon and YelpChi, text alone loses to the engineered-feature baseline, but text + features wins clearly.** Amazon F1 drops (−0.040 to −0.059)
    while AUC rises (+0.046 to +0.053); YelpChi is slightly positive on average but the strong spectral/linear backbones (BWGNN,
    GCN, GeniePath, PMP) score *below* baseline there. The baseline on these two datasets uses their engineered fraud features
-   (on Amazon these very likely include helpful-vote statistics, the quantity the labels are derived from), while the FLAG
-   variants replace node features with text embeddings. See §10 and §15.
-4. **The 12× larger LLM text coverage barely moved results.** Reddit discriminative-text coverage went from 4.4% → 55.5% of
-   nodes, but flag's mean F1 changed by only +0.001; a raw-text-only reference (previous run) is within ±0.006 of flag on both
-   Reddit and Instagram. The LLM branch contributes little beyond the raw-text embedding in this reproduction (§11).
-5. **flag_finetuned ≈ flag.** As designed in this repository (decision D-001: the LLM stays frozen; extra GNN epochs with the
+   (rating, profile, timing and sentiment statistics; CARE-GNN removed the helpful-vote aggregates as "polluted"), while
+   the FLAG variants replace node features with text embeddings. Adding the engineered features back to both FLAG branches
+   (`flag_feat`, decision D-006) beats the baseline by **+0.066 F1 / +0.110 AUC on Amazon** and **+0.092 F1 / +0.119 AUC on
+   YelpChi** (averaged over backbones). A z-scored baseline (§11.2) shows that **most of that gain on Amazon and Amazon Video
+   is feature scaling** (+0.049 of +0.066 F1 on Amazon); on **YelpChi text adds substantially beyond scaling** (+0.05 F1,
+   +0.07 AUC). See §10, §10b, §11.2 and §15.
+4. **With engineered features present, the sampler stops mattering.** FLAG-MD's Amazon advantage (+0.015 F1 with text
+   only) disappears in `flag_feat` (Δ F1 −0.004, every cell within noise; §10b).
+5. **The LLM text adds little except on Amazon.** Against a raw-text-only model *with the same neighbourhoods* (§11.2),
+   flag's LLM branch adds +0.003 to +0.005 F1 on Reddit, −0.004 to −0.006 on Instagram, +0.003 to +0.004 on YelpChi, but
+   **+0.030 to +0.039 F1 (and ≈ +0.03 AUC) on Amazon**. The larger YelpChi gap seen in §11.1 was the neighbour sampler, not the
+   LLM text. Separately, **the 12× larger LLM text coverage barely moved results.** Reddit discriminative-text coverage went from 4.4% → 55.5% of
+   nodes, but flag's mean F1 changed by only +0.001 (§11).
+6. **flag_finetuned ≈ flag.** As designed in this repository (decision D-001: the LLM stays frozen; extra GNN epochs with the
    residual + orthogonality losses), the fine-tuned variant is within ±0.01 F1 of flag in 55 of 56 cells (largest gap: Amazon
    CARE-GNN −0.013), at 3–6× the compute.
 
@@ -78,7 +95,7 @@ dashboard (v0.3.1) with a cosine-vs-MD comparison view; a wall-clock-aware ETA a
 *Auto-generated.*
 
 <!-- AUTO:progress BEGIN -->
-_Generated 2026-10-02 06:16 UTC._
+_Generated 2026-10-02 14:32 UTC._
 
 | Variant · sampler | Reddit | Instagram | Amazon | YelpChi | Total |
 |---|---:|---:|---:|---:|---:|
@@ -178,6 +195,9 @@ All 144 unit tests passed after the changes (`tests/unit`).
 | `scripts/analyze/build_main_run_report.py` | Generates this report's tables. |
 | `logs/main/parallel/{plan.py, jobs.txt, procs.py, run_queue.sh, stop_gpu_originals.py, scheduler.py}` | The per-(seed, init) parallel queue and scheduler (§12). |
 | `tools/flag-dashboard/` | Progress dashboard (§13). |
+| `experiments/amazon_video/build_amazon_video.py` | Builds the Amazon Video graph with CARE-GNN's recipe (§10c). |
+| `prompts/amazon_video_text/` | Prompts (copied from Amazon). |
+| `logs/main/parallel/jobs_{feat,text,av_baseline,av_flag,followups}.txt` | Run lists for the extensions and follow-ups (scheduler `--jobs`). |
 | `.venv-vllm/` | Separate venv for vLLM 0.30 (torch 2.13 cu130), so `.venv-gpu` stays untouched. |
 | `.env` | `HF_TOKEN` (git-ignored). |
 
@@ -217,6 +237,15 @@ All times UTC.
 | 23:25 | Scheduler adds **16 GPU slots** (GPUs had been idle since 22:00). |
 | 10-02 05:26 | Amazon and Reddit done; last YelpChi flag_finetuned GeniePath runs finishing (~7–8.5 h each). |
 | **10-02 06:15** | **Queue finished: all 3,500 runs complete, 0 failed.** Report tables regenerated. |
+| 07:09–09:20 | **Text + engineered features** (`flag_feat`, D-006): 700 runs, 52 CPU + 16 GPU slots, 0 failed. |
+| 09:20–10:25 | Machine idle (next step not started in time; my oversight). |
+| 10:26 | **Raw text 5 × 5** started (700 runs). (Dashboard v0.4.0 with experiment blocks went live during the `flag_feat` run.) |
+| 10:30–11:03 | **Amazon Video** built (6,241 nodes), sampled, LLM text generated and encoded on 4 GPUs. |
+| 11:03–11:37 | **Amazon Video** training: 875 runs, 0 failed. |
+| 11:37–11:45 | GPUs idle (raw-text queue still capped for Amazon Video's priority; my oversight); reassigned. |
+| **11:53** | **Raw text 5 × 5 complete: all 5,775 runs done, 0 failed.** |
+| 12:20 | **Follow-ups A/B/C** started (D-007): 2,275 runs, 60 CPU + 16 GPU slots. |
+| **14:31** | **Follow-ups complete: 8,050 / 8,050 runs, 0 failed.** |
 
 ---
 
@@ -500,14 +529,162 @@ Average over the 7 backbones of (variant mean − baseline mean), complete cells
 - **Amazon and YelpChi are not like-for-like and should be reported separately.** The baseline there trains on the datasets'
   **engineered features** (Amazon: 25 user features; YelpChi: 32 review features), while the FLAG variants replace node
   features with **text embeddings** (raw text + LLM text). On Amazon the labels are derived from helpful votes (≥ 20 votes;
-  > 0.8 benign / < 0.2 fraud), and CARE-GNN's own feature generator computes helpful-vote statistics as user features (the
-  exact composition of the `.mat`'s 25 columns is unverified), so the baseline's features very likely correlate with the label;
-  BWGNN, GCN, GeniePath and PMP reach F1 ≈ 0.91 there and the FLAG variants ≈ 0.78–0.80. AUC nevertheless rises with FLAG on
+  > 0.8 benign / < 0.2 fraud). CARE-GNN's generator (`methods/care_gnn/amazon_preprocess.py`) computes 36 user features and
+  then drops columns 19–29, the helpful/unhelpful-vote aggregates, as "polluted", keeping columns 0–18 (rating and profile
+  statistics) and 30–35 (one weak vote statistic, the minimum unhelpful-vote count on a user's reviews, plus timing, summary
+  length and sentiment): 25 columns, matching the `.mat` in count. So the baseline is **not** fed the label rule directly;
+  its strength reflects genuinely informative behavioural features. BWGNN, GCN, GeniePath and PMP reach F1 ≈ 0.91 there and
+  the text-only FLAG variants ≈ 0.78–0.80. AUC nevertheless rises with FLAG on
   Amazon (ranking improves while thresholded F1 drops). On YelpChi the weaker backbones (CARE-GNN, DGA-GNN, GAT) gain
   substantially (+0.04 to +0.12 F1) and the spectral/linear ones lose ~0.05. A fair text-vs-features comparison on these two
-  datasets would need a variant that **concatenates** engineered and text features; that was out of scope.
+  datasets needs a variant that **concatenates** engineered and text features: that is `flag_feat`, §10b.
 - **flag_finetuned vs flag:** within ±0.01 F1 in 55 of 56 cells (largest gaps: Amazon CARE-GNN −0.013, Reddit CARE-GNN
   −0.010); on Reddit/Instagram slightly lower AUC (−0.005 to −0.008 averaged over backbones). Consistent with D-001: without LLM fine-tuning, the extra GNN epochs add compute but little signal.
+
+---
+
+## 10b. Text + engineered features
+
+**Why.** §10 showed that on Amazon and YelpChi the baseline (engineered features) and flag (text embeddings) differ in the
+*information* they get, not only in method. `flag_feat` (decision D-006, 2026-10-02) keeps flag's dual text branch and
+concatenates the dataset's engineered features, z-scored with train-node statistics, onto both branches. Same samplers,
+splits, seeds, inits and hyper-parameters as flag; 700 runs (2 datasets × 7 backbones × cosine/FLAG-MD × 25), run
+07:09–09:20 UTC, 0 failed. *Auto-generated.*
+
+<!-- AUTO:feat BEGIN -->
+**Amazon, F1-macro** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.909 ± 0.011 | 0.777 ± 0.009 | 0.791 ± 0.005 | 0.904 ± 0.009 | 0.905 ± 0.010 |
+| care_gnn | 0.645 ± 0.164 | 0.714 ± 0.017 | 0.738 ± 0.007 | 0.826 ± 0.033 | 0.822 ± 0.021 |
+| dga_gnn | 0.703 ± 0.110 | 0.762 ± 0.012 | 0.784 ± 0.009 | 0.903 ± 0.008 | 0.899 ± 0.011 |
+| gat | 0.744 ± 0.043 | 0.747 ± 0.013 | 0.770 ± 0.009 | 0.820 ± 0.017 | 0.820 ± 0.020 |
+| gcn | 0.912 ± 0.003 | 0.791 ± 0.006 | 0.798 ± 0.004 | 0.915 ± 0.008 | 0.904 ± 0.014 |
+| geniepath | 0.912 ± 0.008 | 0.777 ± 0.016 | 0.786 ± 0.005 | 0.910 ± 0.010 | 0.909 ± 0.010 |
+| pmp | 0.912 ± 0.004 | 0.784 ± 0.007 | 0.791 ± 0.006 | 0.919 ± 0.008 | 0.911 ± 0.008 |
+| *avg Δ vs baseline* | ±0.000 | −0.055 | −0.040 | +0.066 | +0.062 |
+
+**YelpChi, F1-macro** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.649 ± 0.001 | 0.596 ± 0.004 | 0.596 ± 0.004 | 0.678 ± 0.003 | 0.677 ± 0.004 |
+| care_gnn | 0.546 ± 0.013 | 0.588 ± 0.003 | 0.589 ± 0.003 | 0.622 ± 0.023 | 0.613 ± 0.004 |
+| dga_gnn | 0.469 ± 0.030 | 0.579 ± 0.007 | 0.583 ± 0.011 | 0.702 ± 0.009 | 0.707 ± 0.007 |
+| gat | 0.465 ± 0.011 | 0.581 ± 0.004 | 0.585 ± 0.004 | 0.602 ± 0.007 | 0.602 ± 0.004 |
+| gcn | 0.649 ± 0.001 | 0.598 ± 0.004 | 0.598 ± 0.005 | 0.687 ± 0.002 | 0.687 ± 0.005 |
+| geniepath | 0.648 ± 0.002 | 0.598 ± 0.004 | 0.597 ± 0.004 | 0.679 ± 0.005 | 0.679 ± 0.003 |
+| pmp | 0.629 ± 0.015 | 0.592 ± 0.005 | 0.594 ± 0.004 | 0.724 ± 0.005 | 0.726 ± 0.006 |
+| *avg Δ vs baseline* | ±0.000 | +0.011 | +0.013 | +0.092 | +0.091 |
+
+**Amazon, AUC** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.927 ± 0.026 | 0.915 ± 0.003 | 0.915 ± 0.002 | 0.974 ± 0.002 | 0.975 ± 0.002 |
+| care_gnn | 0.704 ± 0.195 | 0.850 ± 0.015 | 0.858 ± 0.011 | 0.931 ± 0.013 | 0.935 ± 0.015 |
+| dga_gnn | 0.712 ± 0.102 | 0.906 ± 0.005 | 0.912 ± 0.004 | 0.964 ± 0.004 | 0.962 ± 0.003 |
+| gat | 0.836 ± 0.042 | 0.878 ± 0.007 | 0.884 ± 0.007 | 0.925 ± 0.011 | 0.928 ± 0.012 |
+| gcn | 0.916 ± 0.017 | 0.918 ± 0.002 | 0.916 ± 0.002 | 0.976 ± 0.002 | 0.976 ± 0.002 |
+| geniepath | 0.920 ± 0.026 | 0.913 ± 0.007 | 0.916 ± 0.004 | 0.974 ± 0.003 | 0.974 ± 0.003 |
+| pmp | 0.933 ± 0.012 | 0.916 ± 0.004 | 0.918 ± 0.002 | 0.973 ± 0.003 | 0.975 ± 0.003 |
+| *avg Δ vs baseline* | ±0.000 | +0.050 | +0.053 | +0.110 | +0.111 |
+
+**YelpChi, AUC** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.767 ± 0.002 | 0.691 ± 0.003 | 0.691 ± 0.003 | 0.800 ± 0.005 | 0.800 ± 0.005 |
+| care_gnn | 0.615 ± 0.002 | 0.671 ± 0.004 | 0.671 ± 0.003 | 0.722 ± 0.026 | 0.713 ± 0.002 |
+| dga_gnn | 0.514 ± 0.049 | 0.670 ± 0.009 | 0.674 ± 0.010 | 0.841 ± 0.007 | 0.843 ± 0.005 |
+| gat | 0.513 ± 0.025 | 0.661 ± 0.006 | 0.667 ± 0.005 | 0.697 ± 0.010 | 0.696 ± 0.008 |
+| gcn | 0.767 ± 0.002 | 0.694 ± 0.004 | 0.695 ± 0.005 | 0.811 ± 0.004 | 0.809 ± 0.005 |
+| geniepath | 0.767 ± 0.002 | 0.692 ± 0.003 | 0.691 ± 0.005 | 0.800 ± 0.006 | 0.801 ± 0.004 |
+| pmp | 0.755 ± 0.008 | 0.692 ± 0.004 | 0.693 ± 0.005 | 0.860 ± 0.003 | 0.860 ± 0.004 |
+| *avg Δ vs baseline* | ±0.000 | +0.010 | +0.012 | +0.119 | +0.118 |
+
+**Cosine vs FLAG-MD within flag_feat** (14 complete pairs): avg Δ F1 −0.002 (W/L/T 0/0/14, sig+/sig− 0/4); avg Δ AUC ±0.000 (W/L/T 0/0/14, sig+/sig− 0/1). Same rules as §9.
+- Amazon: avg Δ F1 −0.004, avg Δ AUC +0.001 over 7 backbones.
+- YelpChi: avg Δ F1 −0.001, avg Δ AUC −0.001 over 7 backbones.
+<!-- AUTO:feat END -->
+
+**Interpretation.**
+
+- **Text and engineered features are complementary.** `flag_feat` beats both inputs on their own: on YelpChi every backbone
+  improves over the baseline (+0.03 to +0.24 F1) and over flag; on Amazon the three backbones that were unstable on raw
+  features (CARE-GNN, DGA-GNN, GAT) improve sharply (e.g. DGA-GNN 0.703 → 0.903 F1) and the strong ones (BWGNN, GCN, GeniePath, PMP) match the baseline's ≈ 0.91 F1 while gaining ≈ +0.05 AUC.
+- **The variance collapses.** Baseline CARE-GNN/DGA-GNN on Amazon had stds of 0.11–0.16 F1 (some runs fail to train on the
+  raw-scale features); with z-scored features plus text, stds drop to 0.01–0.03.
+- **The sampler stops mattering.** Within `flag_feat`, cosine and FLAG-MD are within noise in all 14 cells. The paired test
+  favours cosine slightly in 4 F1 cells (avg Δ F1 −0.002), so FLAG-MD's text-only Amazon gain (§9) does not survive once the
+  model has the engineered features: the neighbour *ranking* helps when text is the only signal, not when strong per-node
+  features are available.
+- **Scaling vs text (resolved in §11.2).** `flag_feat` z-scores the engineered features while the baseline keeps them raw.
+  The z-scored baseline (`baseline_z`) recovers most of the gain on Amazon (+0.049 of +0.066 F1, +0.094 of +0.110 AUC) and
+  Amazon Video, so on those graphs **scaling explains most of it**; on **YelpChi** `baseline_z` gets only +0.040 F1 / +0.051
+  AUC of `flag_feat`'s +0.092 / +0.119, so **text adds about +0.05 F1 / +0.07 AUC beyond scaling** there.
+
+---
+
+## 10c. Amazon Video
+
+**What.** A new fraud graph built here with CARE-GNN's own recipe on McAuley's 2014 *Amazon Instant Video* reviews
+(`experiments/amazon_video/build_amazon_video.py`; decision approved 2026-10-01, built 2026-10-02):
+
+- 426,922 reviewers / 583,933 reviews; CARE-GNN's label rule (≥ 20 votes; helpful ratio > 0.8 benign, < 0.2 fraud) gives
+  1,821 benign and 1,211 fraud users. **Downsampled to 1:10** (all benign, 182 fraud; seed 0) to match the Reddit/Instagram
+  protocol, plus 1% of unlabelled users (4,238) as graph context, as CARE-GNN does: **6,241 nodes**.
+- Graph: user-product-user (shared product), 208,832 edges, average degree 33.5. Features: CARE-GNN's `build_features`
+  imported and run unchanged, then its "filter polluted features" step → 25 columns. Text: each user's reviews, serialised
+  exactly like Amazon. Split: CARE-GNN convention (60% test, stratified; 25% of train as validation): 600 / 201 / 1,202.
+- Same pipeline as Amazon: top-3 sampling, random baseline sampler, prompts copied from Amazon, vLLM text at 550 / 1200.
+  LLM node coverage 96.6% (discriminative) and 98.7–98.9% (residual), for both samplers (≤ 13-node subgraphs). 875 runs (5 groups × 7 backbones × 25), 0 failed.
+- Self-constructed: no published reference numbers exist; `experiment_type: text_augmented_study`.
+
+*Auto-generated.*
+
+<!-- AUTO:amazon_video BEGIN -->
+**Amazon Video, F1-macro** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_finetuned · cosine | flag_finetuned · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.820 ± 0.021 | 0.663 ± 0.029 | 0.700 ± 0.021 | 0.659 ± 0.029 | 0.705 ± 0.017 |
+| care_gnn | 0.611 ± 0.093 | 0.596 ± 0.027 | 0.578 ± 0.025 | 0.567 ± 0.054 | 0.569 ± 0.042 |
+| dga_gnn | 0.556 ± 0.049 | 0.690 ± 0.016 | 0.699 ± 0.018 | 0.689 ± 0.027 | 0.701 ± 0.021 |
+| gat | 0.616 ± 0.065 | 0.658 ± 0.023 | 0.666 ± 0.025 | 0.618 ± 0.022 | 0.630 ± 0.026 |
+| gcn | 0.811 ± 0.015 | 0.698 ± 0.014 | 0.727 ± 0.010 | 0.680 ± 0.021 | 0.712 ± 0.024 |
+| geniepath | 0.829 ± 0.013 | 0.640 ± 0.011 | 0.670 ± 0.018 | 0.656 ± 0.008 | 0.681 ± 0.019 |
+| pmp | 0.825 ± 0.018 | 0.691 ± 0.024 | 0.708 ± 0.018 | 0.667 ± 0.041 | 0.695 ± 0.023 |
+| *avg Δ vs baseline* | ±0.000 | −0.062 | −0.046 | −0.076 | −0.053 |
+
+**Amazon Video, AUC** (mean ± std, 25 runs; n shown when below 25)
+
+| Backbone | baseline | flag · cosine | flag · FLAG-MD | flag_finetuned · cosine | flag_finetuned · FLAG-MD |
+|---|---:|---:|---:|---:|---:|
+| bwgnn | 0.858 ± 0.055 | 0.829 ± 0.012 | 0.868 ± 0.017 | 0.818 ± 0.025 | 0.868 ± 0.017 |
+| care_gnn | 0.722 ± 0.096 | 0.732 ± 0.013 | 0.736 ± 0.012 | 0.648 ± 0.131 | 0.677 ± 0.102 |
+| dga_gnn | 0.660 ± 0.062 | 0.846 ± 0.009 | 0.879 ± 0.007 | 0.841 ± 0.019 | 0.868 ± 0.030 |
+| gat | 0.697 ± 0.101 | 0.776 ± 0.013 | 0.800 ± 0.010 | 0.741 ± 0.022 | 0.751 ± 0.027 |
+| gcn | 0.882 ± 0.053 | 0.847 ± 0.005 | 0.885 ± 0.004 | 0.827 ± 0.019 | 0.871 ± 0.018 |
+| geniepath | 0.854 ± 0.058 | 0.812 ± 0.012 | 0.854 ± 0.022 | 0.818 ± 0.009 | 0.852 ± 0.011 |
+| pmp | 0.908 ± 0.042 | 0.852 ± 0.011 | 0.879 ± 0.008 | 0.820 ± 0.041 | 0.855 ± 0.026 |
+| *avg Δ vs baseline* | ±0.000 | +0.016 | +0.046 | −0.010 | +0.023 |
+
+- **Cosine vs FLAG-MD, flag** (7 backbones): avg Δ F1 +0.016 (W/L/T 3/0/4, sig+/sig− 4/1); avg Δ AUC +0.029 (W/L/T 6/0/1, sig+/sig− 6/0).
+- **Cosine vs FLAG-MD, flag_finetuned** (7 backbones): avg Δ F1 +0.023 (W/L/T 3/0/4, sig+/sig− 4/0); avg Δ AUC +0.033 (W/L/T 3/0/4, sig+/sig− 5/0).
+<!-- AUTO:amazon_video END -->
+
+**Interpretation.**
+
+- **The Amazon pattern replicates.** Text-only FLAG trails the engineered-feature baseline in F1 (−0.046 to −0.076 averaged)
+  because the strong spectral/linear backbones (BWGNN, GCN, GeniePath, PMP ≈ 0.81–0.83 F1) do best on the behavioural
+  features, while the weak/unstable ones (DGA-GNN, GAT) gain from text.
+- **FLAG-MD's advantage over cosine is larger here than on Amazon**: +0.016 F1 / +0.029 AUC (flag) and +0.023 / +0.033
+  (flag_finetuned), never worse beyond noise. With FLAG-MD, flag's AUC is above the baseline on average (+0.046). Together with
+  Amazon, this makes the sampler effect a property of the user-review graphs rather than a single-dataset accident.
+- **flag_finetuned again ≈ flag** or slightly worse (cosine: −0.014 F1), consistent with §10.
+- Not run here: `flag_feat` on Amazon Video (§17).
 
 ---
 
@@ -530,7 +707,161 @@ flag variant, F1-macro averaged over the 7 backbones. *Previous* = results/flag_
 Instagram's from 0.6% to 9.1%, yet flag's average F1 moved by ≤ 0.003. Against the raw-text-only reference, flag is +0.005
 on Reddit and −0.006 on Instagram. In this reproduction the attention-fused LLM branch adds little beyond the Sentence-BERT
 embedding of the raw text; the large gain over the baseline (§10) comes mostly from using text at all. Caveat: the raw-text
-reference is from the previous 4 × 2 run, not re-run at 5 × 5 (§17).
+reference is from the previous 4 × 2 run; §11.1 replaces it with a full 5 × 5 run.
+
+### 11.1 Raw text only at 5 × 5
+
+The `text` variant (Sentence-BERT of the raw node text, no LLM text) re-run at 5 seeds × 5 inits on all four datasets
+(700 runs, started 2026-10-02 10:26 UTC). *Auto-generated.*
+
+<!-- AUTO:text BEGIN -->
+Average over the 7 backbones (cells with 25/25 runs only; the count of such backbones is shown). *LLM adds* = flag − raw text, same sampler family except that `text` uses the variant's default neighbourhood (full 2-hop on Reddit/Instagram, random top-3 on Amazon/YelpChi) while flag uses cosine / FLAG-MD.
+
+| Dataset | metric | baseline | raw text only | flag · cosine | flag · FLAG-MD | LLM adds (cos) | LLM adds (MD) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Reddit | F1-macro | 0.503 | 0.533 (7/7) | 0.537 | 0.536 | +0.004 | +0.003 |
+| Reddit | AUC | 0.550 | 0.619 (7/7) | 0.622 | 0.620 | +0.004 | +0.002 |
+| Instagram | F1-macro | 0.510 | 0.538 (7/7) | 0.534 | 0.536 | −0.004 | −0.002 |
+| Instagram | AUC | 0.530 | 0.595 (7/7) | 0.590 | 0.591 | −0.005 | −0.004 |
+| Amazon | F1-macro | 0.819 | 0.729 (7/7) | 0.765 | 0.780 | +0.036 | +0.051 |
+| Amazon | AUC | 0.850 | 0.872 (7/7) | 0.900 | 0.903 | +0.027 | +0.031 |
+| YelpChi | F1-macro | 0.579 | 0.573 (7/7) | 0.590 | 0.592 | +0.017 | +0.018 |
+| YelpChi | AUC | 0.671 | 0.663 (7/7) | 0.681 | 0.683 | +0.018 | +0.020 |
+
+Raw-text runs complete: **700/700**.
+<!-- AUTO:text END -->
+
+**Interpretation.** On the two native-text datasets the LLM branch adds essentially nothing over the raw-text embedding
+(Reddit +0.004 F1 / +0.004 AUC; Instagram −0.004 / −0.005, where only 9–22% of nodes have LLM text). On Amazon and YelpChi,
+flag beats raw text by +0.036 to +0.051 F1 (Amazon) and +0.017 (YelpChi). That gap combines two things that cannot be
+separated here: the LLM text, and the neighbour sampler (`text` uses the random top-3 neighbourhood on these graphs, flag uses
+cosine or FLAG-MD; FLAG-MD's larger Amazon gain, +0.051 vs +0.036, is consistent with the sampler contributing). The raw-text
+model already accounts for most of FLAG's gain over the baseline on Reddit and Instagram (+0.030 of +0.034 F1 on Reddit).
+Follow-up A (§11.2) separates the two effects.
+
+### 11.2 Follow-ups A/B/C
+
+Decision D-007 (2026-10-02 12:20 UTC): three cheap runs to close open questions, run together on 60 CPU + 16 GPU slots.
+
+- **A. Raw text with the cosine and FLAG-MD samplers** (1,400 runs, all four datasets): makes *flag − raw text* compare the
+  same neighbourhoods, isolating the LLM-text effect from the sampler effect in §11.1.
+- **B. `flag_feat` on Amazon Video** (350 runs): completes §10b on the self-built graph.
+- **C. `baseline_z`**: the baseline with z-scored engineered features (525 runs, Amazon/YelpChi/Amazon Video): how much
+  of `flag_feat`'s gain is feature scaling alone.
+
+*Auto-generated.*
+
+<!-- AUTO:followups BEGIN -->
+Progress: **A** 1400/1400 · **B** 350/350 · **C** 525/525.
+
+**C + B: scaling vs adding text** (F1-macro / AUC, mean ± std; n when below 25).
+
+*Amazon, F1-macro*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.909 ± 0.011 | 0.899 ± 0.015 | 0.904 ± 0.009 | 0.905 ± 0.010 |
+| care_gnn | 0.645 ± 0.164 | 0.828 ± 0.028 | 0.826 ± 0.033 | 0.822 ± 0.021 |
+| dga_gnn | 0.703 ± 0.110 | 0.888 ± 0.013 | 0.903 ± 0.008 | 0.899 ± 0.011 |
+| gat | 0.744 ± 0.043 | 0.751 ± 0.015 | 0.820 ± 0.017 | 0.820 ± 0.020 |
+| gcn | 0.912 ± 0.003 | 0.901 ± 0.010 | 0.915 ± 0.008 | 0.904 ± 0.014 |
+| geniepath | 0.912 ± 0.008 | 0.905 ± 0.012 | 0.910 ± 0.010 | 0.909 ± 0.010 |
+| pmp | 0.912 ± 0.004 | 0.908 ± 0.012 | 0.919 ± 0.008 | 0.911 ± 0.008 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.049 | +0.066 | +0.062 |
+
+*YelpChi, F1-macro*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.649 ± 0.001 | 0.642 ± 0.003 | 0.678 ± 0.003 | 0.677 ± 0.004 |
+| care_gnn | 0.546 ± 0.013 | 0.583 ± 0.025 | 0.622 ± 0.023 | 0.613 ± 0.004 |
+| dga_gnn | 0.469 ± 0.030 | 0.598 ± 0.050 | 0.702 ± 0.009 | 0.707 ± 0.007 |
+| gat | 0.465 ± 0.011 | 0.529 ± 0.017 | 0.602 ± 0.007 | 0.602 ± 0.004 |
+| gcn | 0.649 ± 0.001 | 0.647 ± 0.005 | 0.687 ± 0.002 | 0.687 ± 0.005 |
+| geniepath | 0.648 ± 0.002 | 0.638 ± 0.006 | 0.679 ± 0.005 | 0.679 ± 0.003 |
+| pmp | 0.629 ± 0.015 | 0.696 ± 0.004 | 0.724 ± 0.005 | 0.726 ± 0.006 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.040 | +0.092 | +0.091 |
+
+*Amazon Video, F1-macro*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.820 ± 0.021 | 0.831 ± 0.015 | 0.819 ± 0.019 | 0.829 ± 0.014 |
+| care_gnn | 0.611 ± 0.093 | 0.677 ± 0.056 | 0.762 ± 0.037 | 0.739 ± 0.044 |
+| dga_gnn | 0.556 ± 0.049 | 0.811 ± 0.032 | 0.805 ± 0.021 | 0.810 ± 0.027 |
+| gat | 0.616 ± 0.065 | 0.757 ± 0.030 | 0.780 ± 0.024 | 0.792 ± 0.019 |
+| gcn | 0.811 ± 0.015 | 0.816 ± 0.013 | 0.850 ± 0.011 | 0.847 ± 0.009 |
+| geniepath | 0.829 ± 0.013 | 0.814 ± 0.022 | 0.821 ± 0.019 | 0.829 ± 0.017 |
+| pmp | 0.825 ± 0.018 | 0.836 ± 0.012 | 0.840 ± 0.015 | 0.847 ± 0.019 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.067 | +0.087 | +0.089 |
+
+*Amazon, AUC*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.927 ± 0.026 | 0.968 ± 0.002 | 0.974 ± 0.002 | 0.975 ± 0.002 |
+| care_gnn | 0.704 ± 0.195 | 0.914 ± 0.008 | 0.931 ± 0.013 | 0.935 ± 0.015 |
+| dga_gnn | 0.712 ± 0.102 | 0.942 ± 0.008 | 0.964 ± 0.004 | 0.962 ± 0.003 |
+| gat | 0.836 ± 0.042 | 0.885 ± 0.020 | 0.925 ± 0.011 | 0.928 ± 0.012 |
+| gcn | 0.916 ± 0.017 | 0.968 ± 0.002 | 0.976 ± 0.002 | 0.976 ± 0.002 |
+| geniepath | 0.920 ± 0.026 | 0.965 ± 0.003 | 0.974 ± 0.003 | 0.974 ± 0.003 |
+| pmp | 0.933 ± 0.012 | 0.963 ± 0.005 | 0.973 ± 0.003 | 0.975 ± 0.003 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.094 | +0.110 | +0.111 |
+
+*YelpChi, AUC*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.767 ± 0.002 | 0.753 ± 0.006 | 0.800 ± 0.005 | 0.800 ± 0.005 |
+| care_gnn | 0.615 ± 0.002 | 0.661 ± 0.039 | 0.722 ± 0.026 | 0.713 ± 0.002 |
+| dga_gnn | 0.514 ± 0.049 | 0.743 ± 0.034 | 0.841 ± 0.007 | 0.843 ± 0.005 |
+| gat | 0.513 ± 0.025 | 0.571 ± 0.034 | 0.697 ± 0.010 | 0.696 ± 0.008 |
+| gcn | 0.767 ± 0.002 | 0.754 ± 0.007 | 0.811 ± 0.004 | 0.809 ± 0.005 |
+| geniepath | 0.767 ± 0.002 | 0.748 ± 0.006 | 0.800 ± 0.006 | 0.801 ± 0.004 |
+| pmp | 0.755 ± 0.008 | 0.827 ± 0.005 | 0.860 ± 0.003 | 0.860 ± 0.004 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.051 | +0.119 | +0.118 |
+
+*Amazon Video, AUC*
+
+| Backbone | baseline (raw) | baseline_z (z-scored) | flag_feat · cosine | flag_feat · FLAG-MD |
+|---|---:|---:|---:|---:|
+| bwgnn | 0.858 ± 0.055 | 0.956 ± 0.010 | 0.954 ± 0.013 | 0.959 ± 0.008 |
+| care_gnn | 0.722 ± 0.096 | 0.862 ± 0.042 | 0.896 ± 0.025 | 0.900 ± 0.024 |
+| dga_gnn | 0.660 ± 0.062 | 0.955 ± 0.005 | 0.956 ± 0.008 | 0.961 ± 0.003 |
+| gat | 0.697 ± 0.101 | 0.905 ± 0.022 | 0.911 ± 0.016 | 0.925 ± 0.017 |
+| gcn | 0.882 ± 0.053 | 0.956 ± 0.007 | 0.965 ± 0.004 | 0.971 ± 0.003 |
+| geniepath | 0.854 ± 0.058 | 0.954 ± 0.006 | 0.957 ± 0.007 | 0.960 ± 0.008 |
+| pmp | 0.908 ± 0.042 | 0.967 ± 0.003 | 0.966 ± 0.004 | 0.971 ± 0.003 |
+| *avg Δ vs raw baseline* | ±0.000 | +0.139 | +0.146 | +0.152 |
+
+**A: what the LLM text adds with the same neighbourhoods** (average over backbones with 25/25 runs on both sides; count shown).
+
+| Dataset | metric | raw text · default nbhd | raw text · cosine | raw text · FLAG-MD | flag · cosine | flag · FLAG-MD | LLM adds (cos) | LLM adds (MD) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Reddit | F1-macro | 0.533 | 0.532 (7/7) | 0.532 (7/7) | 0.537 | 0.536 | +0.005 | +0.003 |
+| Reddit | AUC | 0.619 | 0.615 (7/7) | 0.616 (7/7) | 0.622 | 0.620 | +0.007 | +0.004 |
+| Instagram | F1-macro | 0.538 | 0.541 (7/7) | 0.540 (7/7) | 0.534 | 0.536 | −0.006 | −0.004 |
+| Instagram | AUC | 0.595 | 0.599 (7/7) | 0.600 (7/7) | 0.590 | 0.591 | −0.009 | −0.008 |
+| Amazon | F1-macro | 0.729 | 0.735 (7/7) | 0.741 (7/7) | 0.765 | 0.780 | +0.030 | +0.039 |
+| Amazon | AUC | 0.872 | 0.870 (7/7) | 0.875 (7/7) | 0.900 | 0.903 | +0.030 | +0.027 |
+| YelpChi | F1-macro | 0.573 | 0.587 (7/7) | 0.589 (7/7) | 0.590 | 0.592 | +0.004 | +0.003 |
+| YelpChi | AUC | 0.663 | 0.677 (7/7) | 0.679 (7/7) | 0.681 | 0.683 | +0.005 | +0.004 |
+<!-- AUTO:followups END -->
+
+**Interpretation.**
+
+- **C: scaling vs text.** Z-scoring alone (`baseline_z`) fixes the unstable backbones (Amazon CARE-GNN 0.645 → 0.828 F1,
+  DGA-GNN 0.703 → 0.888) and raises AUC everywhere on Amazon/Amazon Video (+0.094 / +0.139 averaged), but slightly lowers the
+  already-strong BWGNN/GCN/GeniePath on YelpChi and Amazon. Against `baseline_z`, `flag_feat`'s **text adds**: Amazon +0.017 F1 /
+  +0.016 AUC; Amazon Video ≈ +0.021 F1 / +0.010 AUC; **YelpChi +0.052 F1 / +0.068 AUC**. Text helps most where nodes are
+  individual reviews (YelpChi), less where nodes are users with aggregated behavioural features (Amazon, Amazon Video).
+- **B: `flag_feat` on Amazon Video** beats the raw baseline by +0.087 / +0.089 F1 and +0.146 / +0.152 AUC (cosine / FLAG-MD),
+  and the z-scored baseline by ≈ +0.02 F1. FLAG-MD is marginally ahead of cosine here (+0.002 F1, +0.006 AUC on average), unlike
+  Amazon/YelpChi `flag_feat` where they tie.
+- **A: LLM text with matched neighbourhoods.** Holding the sampler fixed, the LLM branch adds +0.003 to +0.005 F1 on Reddit,
+  −0.004 to −0.006 on Instagram (−0.008 to −0.009 AUC), +0.003 to +0.004 on YelpChi and **+0.030 to +0.039 on Amazon**. So
+  §11.1's YelpChi gap (+0.017) was almost entirely the neighbour sampler (raw text gains +0.014 F1 from cosine/FLAG-MD
+  neighbourhoods over random ones), while on Amazon the LLM text itself contributes about +0.03.
 
 ---
 
@@ -643,8 +974,8 @@ requeued.
    (README §2); `flag_finetuned` does not fine-tune the LLM (D-001).
 2. **Amazon and YelpChi are a text-augmented study** (`native_text: false`); the paper reports neither. Their prompts were
    drafted here; their sampler budget (top-3) and baseline sampler (random) differ from Reddit/Instagram; their baseline uses
-   engineered features (on Amazon very likely correlated with the vote-based label rule). Report them separately from
-   Reddit/Instagram.
+   engineered behavioural features (on Amazon, CARE-GNN removed the helpful-vote aggregates the labels are built from, but
+   one weak vote statistic remains). Report them separately from Reddit/Instagram.
 3. **Instagram's LLM coverage is low (9–22%)**, so Instagram's flag results mostly reflect the raw-text branch.
 4. **vLLM vs HF generation:** same prompt, greedy decoding and budget, but kernel numerics can flip near-tied tokens; bf16
    instead of float16. The engine is in the cache key.
@@ -654,7 +985,8 @@ requeued.
    criterion.
 7. **Mixed devices:** most runs on CPU; YelpChi GeniePath flag runs on GPU, and some flag_finetuned runs on GPU after 23:25.
    CPU/GPU numerics differ slightly; each run's device is recorded in its JSON.
-8. **Raw-text reference in §11** comes from the previous 4 × 2 run.
+8. **Raw-text reference in §11** comes from the previous 4 × 2 run; §11.1 adds the 5 × 5 re-run.
+9. **`flag_feat` vs baseline scaling:** `flag_feat` z-scores the engineered features, the baseline does not (§10b).
 
 ---
 
@@ -662,15 +994,19 @@ requeued.
 
 *Final (3,500 / 3,500 runs).*
 
-1. **Swapping cosine for the Markov-diffusion sampler is safe and sometimes helps.** It never hurts beyond noise, is neutral on
-   Reddit, Instagram and YelpChi, and gives a consistent, statistically supported gain on Amazon (+0.015 F1-macro), the
-   densest graph with the richest per-node text. The effect is the same with and without flag_finetuned's extra epochs.
-2. **FLAG's benefit on the native-text datasets is real but mostly comes from using text, not from the LLM branch.** FLAG
-   beats the shallow-feature baseline on Reddit and Instagram for every backbone, but raising LLM coverage 12× changed almost
-   nothing and a raw-text-only model is about as good.
-3. **On engineered-feature fraud benchmarks (Amazon, YelpChi), text-only FLAG does not dominate the feature baseline.** It
-   improves Amazon AUC and the weaker backbones on YelpChi, but loses F1 to strong backbones that use the engineered
-   (label-correlated) features.
+1. **Swapping cosine for the Markov-diffusion sampler is safe and helps on user-review graphs.** It never hurts beyond noise,
+   is neutral on Reddit, Instagram and YelpChi, and gives consistent, statistically supported gains on both user-review graphs:
+   Amazon (+0.015 F1) and the self-built Amazon Video (+0.016 to +0.023 F1, +0.03 AUC). The effect holds with and without
+   flag_finetuned's extra epochs, but vanishes once strong engineered features are added (`flag_feat`).
+2. **FLAG's benefit comes mostly from using text; the LLM branch matters only on Amazon.** FLAG beats the shallow-feature
+   baseline on Reddit and Instagram for every backbone, but a raw-text-only model with the same neighbourhoods is within
+   ±0.006 F1 of it (Instagram slightly *better* without LLM text), and raising LLM coverage 12× changed almost nothing. On
+   Amazon the LLM text adds ≈ +0.03 F1 and AUC; on YelpChi its apparent gain was the sampler.
+3. **On engineered-feature fraud benchmarks, scale the features first; then text helps most on review-level nodes.**
+   Text-only FLAG does not dominate the feature baseline. Text + engineered features (`flag_feat`) beats the raw baseline by
+   +0.06 to +0.09 F1 and +0.11 to +0.15 AUC on Amazon, YelpChi and Amazon Video, but a z-scored baseline recovers most of that
+   on the two user graphs; on YelpChi (review nodes) text still adds ≈ +0.05 F1 / +0.07 AUC beyond scaling. With strong
+   features in place, cosine and FLAG-MD are interchangeable (within ±0.006).
 4. **flag_finetuned, as implementable from the released code, is not worth its 3–6× cost** in this setup.
 
 ---
@@ -679,12 +1015,9 @@ requeued.
 
 1. ~~Refresh this report when the queue finishes~~: done 2026-10-02 06:15 UTC; hand-written numbers re-checked against the
    final tables.
-2. **Re-run the `text` (raw-text-only) variant at 5 × 5** on all four datasets: about 700 cheap runs, to put §11's
-   "LLM branch adds little" on equal footing.
-3. **Feature + text variant for Amazon/YelpChi** (concatenate engineered features with text embeddings) for a fair comparison.
-4. **Amazon Video** (approved, deferred): CARE-GNN's generator on McAuley's Amazon Instant Video reviews gives 3,032
-   labelled users (1,821 benign, 1,211 fraud, 40% fraud); plan was to downsample to 1:10. New self-constructed dataset,
-   no published reference.
+2. ~~Re-run the `text` variant at 5 × 5~~: running since 10:26 UTC (§11.1).
+3. ~~Feature + text variant for Amazon/YelpChi~~: done as `flag_feat` (§10b); ~~z-scored baseline~~: done (§11.2).
+4. ~~Amazon Video~~: done (§10c); ~~`flag_feat` on Amazon Video~~ and ~~raw text with the FLAG samplers~~: done (§11.2).
 5. **Housekeeping:** back up `cache/llm/` off-box (git-ignored, the only copy); commit the code changes on a branch;
    rotate the Hugging Face token (it was pasted in chat).
 6. Optional dashboard fix: subtract elapsed time for in-flight runs in the ETA.
@@ -730,6 +1063,9 @@ python3 logs/main/parallel/plan.py && python3 logs/main/parallel/scheduler.py --
 |---|---|
 | `results/main/{baseline,flag,flag_finetuned}/{default,cosine,md_K2_matched}/` | One JSON per run (3,500 runs incl. `results/main_gpu/`). |
 | `results/main_gpu/` | YelpChi GeniePath runs executed on GPU (supersede CPU duplicates). |
+| `results/main/flag_feat/`, `results/main/text/`, `results/main/baseline_z/` | Extensions and follow-ups: `flag_feat` (1,050 incl. Amazon Video), raw text (700 default + 1,400 with FLAG samplers), z-scored baseline (525). |
+| `results/main/*/*/amazon_video_text__*` | Amazon Video runs (875). |
+| `data/benchmark/flag_amazon_video_text/` | Amazon Video payload + manifest. |
 | `results/flag_md/` | Previous 4 × 2, 64-token run (unchanged; used in §11). |
 | `cache/llm/*vllm*` keys | 16 LLM text caches + manifests (git-ignored). |
 | `cache/embeddings/` | Sentence-BERT encodings of raw and LLM text (git-ignored). |

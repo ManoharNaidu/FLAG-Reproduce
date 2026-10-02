@@ -123,6 +123,38 @@
       "path": "prompts/yelpchi_text/residual.txt",
       "chars": 743,
       "sha256": "8657616df6e2c429ffa67f1f97c6baa619a59f4ed83309edc54bcca92cbb8a9d"
+    },
+    "amazon_video_text/system_instruction": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "copied verbatim from prompts/amazon_text (same data type: Amazon users' product reviews), 2026-10-02",
+      "path": "prompts/amazon_video_text/system_instruction.txt",
+      "chars": 55,
+      "sha256": "988eb666cc706eb34f48b4a6d4e1d65abfa8c25f907340c7f2ec62c8d0e81062"
+    },
+    "amazon_video_text/global": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "copied verbatim from prompts/amazon_text (same data type: Amazon users' product reviews), 2026-10-02",
+      "path": "prompts/amazon_video_text/global.txt",
+      "chars": 165,
+      "sha256": "f80f4ec879cefdfd5712dd0584e49365d782b6eda02761a3ca55569326536083"
+    },
+    "amazon_video_text/discriminative": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "copied verbatim from prompts/amazon_text (same data type: Amazon users' product reviews), 2026-10-02",
+      "path": "prompts/amazon_video_text/discriminative.txt",
+      "chars": 619,
+      "sha256": "65cd3120c0fcee87072ab8066cc1335772a1139dec9bb37352ec1716412fbf71"
+    },
+    "amazon_video_text/residual": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "copied verbatim from prompts/amazon_text (same data type: Amazon users' product reviews), 2026-10-02",
+      "path": "prompts/amazon_video_text/residual.txt",
+      "chars": 744,
+      "sha256": "3a6c7f36091ff27cd7cb9d70e66d13dca6988051fda78c69f28c31b4faa6eab9"
     }
   }
 }

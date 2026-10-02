@@ -1,0 +1,120 @@
+{
+  "experiment_id": "6de561eede23",
+  "timestamp": "2026-10-02T14:14:42+00:00",
+  "git_commit": "cedccecfb822fe345cc17e3895fe9f904e386308-dirty",
+  "schema_version": "results-v1",
+  "dataset": "instagram",
+  "model": "gat",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "NOT canonical GAT - conv2 is a SAGEConv, not a GATConv, so the second layer performs no attention",
+  "seed": 2,
+  "initialization": 0,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "semantic",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "semantic_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "b0d8f240a7f8c9a48e35d85144621b650f8a6a09231664d413c107eacaf49406",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 1,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.15,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6420821791320406,
+  "validation_f1_macro": 0.5805951718806298,
+  "test_auc": 0.6181143065815783,
+  "test_f1_macro": 0.5468716799314678,
+  "test_precision_fraud": 0.1635322976287817,
+  "test_recall_fraud": 0.3460207612456747,
+  "test_f1_fraud": 0.2220988339811216,
+  "test_accuracy": 0.7796476879521862,
+  "test_ks": 0.19204152249134943,
+  "test_ece": 0.024634226275412816,
+  "training_time": 18.48,
+  "inference_time": 7.57,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 15.7,
+    "diffusion_precompute_seconds": null,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 794,
+      "val": 794,
+      "test": 6358
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.33695,
+        "val_auc": 0.64208,
+        "val_f1_macro": 0.5806
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.32972,
+        "val_auc": 0.64912,
+        "val_f1_macro": 0.56205
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.29738,
+        "val_auc": 0.58285,
+        "val_f1_macro": 0.5656
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.34299,
+        "val_auc": 0.58772,
+        "val_f1_macro": 0.54165
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.29775,
+        "val_auc": 0.57281,
+        "val_f1_macro": 0.51644
+      }
+    ],
+    "test_label_distribution": {
+      "0": 5780,
+      "1": 578
+    }
+  }
+}

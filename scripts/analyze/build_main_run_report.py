@@ -346,6 +346,90 @@ def sec_text(runs):
     return "\n".join(lines)
 
 
+def sec_amazon_video(runs):
+    """The self-built Amazon Video dataset: all main-study variants."""
+    d = "amazon_video_text"
+    out = []
+    for metric, label in (("f1", "F1-macro"), ("auc", "AUC")):
+        out += [f"**Amazon Video, {label}** (mean ± std, 25 runs; n shown when below 25)", "",
+                "| Backbone | " + " | ".join(GNAME[g] for g in GROUPS) + " |", "|---|" + "---:|" * len(GROUPS)]
+        for m in MODELS:
+            cells = []
+            for g in GROUPS:
+                xs = [r[metric] for r in runs.get((*g, d, m), {}).values()]
+                cells.append(ms(xs) + ("" if len(xs) >= PER_CELL else f" (n={len(xs)})"))
+            out.append(f"| {m} | " + " | ".join(cells) + " |")
+        avg = []
+        for g in GROUPS:
+            ds_ = [(_avg(runs, (*g, d, m), metric) - _avg(runs, ("baseline", "default", d, m), metric))
+                   for m in MODELS if len(runs.get((*g, d, m), {})) >= PER_CELL
+                   and len(runs.get(("baseline", "default", d, m), {})) >= PER_CELL]
+            avg.append(sign(st.fmean(ds_)) if ds_ else "—")
+        out += ["| *avg Δ vs baseline* | " + " | ".join(avg) + " |", ""]
+    for v in ("flag", "flag_finetuned"):
+        rows = [paired(runs, v, d, m) for m in MODELS]
+        comp = [r for r in rows if r["complete"] and r["f1"] and r["auc"]]
+        if not comp:
+            continue
+        w = lambda k, c: sum(r[k]["cls"] == c for r in comp)
+        sig = lambda k, sgn: sum(1 for r in comp if r[k]["p"] is not None and r[k]["p"] < 0.05 and sgn * r[k]["d"] > 0)
+        out.append(f"- **Cosine vs FLAG-MD, {v}** ({len(comp)} backbones): avg Δ F1 "
+                   f"{sign(st.fmean(r['f1']['d'] for r in comp))} (W/L/T {w('f1','win')}/{w('f1','loss')}/{w('f1','tie')}, "
+                   f"sig+/sig− {sig('f1',1)}/{sig('f1',-1)}); avg Δ AUC {sign(st.fmean(r['auc']['d'] for r in comp))} "
+                   f"(W/L/T {w('auc','win')}/{w('auc','loss')}/{w('auc','tie')}, sig+/sig− {sig('auc',1)}/{sig('auc',-1)}).")
+    return "\n".join(out)
+
+
+def _cell(runs, key, metric):
+    xs = [r[metric] for r in runs.get(key, {}).values()]
+    return ms(xs) + ("" if len(xs) >= PER_CELL else f" (n={len(xs)})")
+
+
+def sec_followups(runs):
+    """D-007 follow-ups: z-scored baseline (C), flag_feat on Amazon Video (B), raw text with FLAG samplers (A)."""
+    out = []
+    n = lambda g, dsets: sum(min(len(runs.get((*g, d, m), {})), PER_CELL) for d in dsets for m in MODELS)
+    fd = ["amazon_text", "yelpchi_text", "amazon_video_text"]
+    a_done = n(("text", "cosine"), DATASETS) + n(("text", "md_K2_matched"), DATASETS)
+    b_done = n(("flag_feat", "cosine"), ["amazon_video_text"]) + n(("flag_feat", "md_K2_matched"), ["amazon_video_text"])
+    c_done = n(("baseline_z", "default"), fd)
+    out += [f"Progress: **A** {a_done}/1400 · **B** {b_done}/350 · **C** {c_done}/525.", "",
+            "**C + B: scaling vs adding text** (F1-macro / AUC, mean ± std; n when below 25).", ""]
+    cols = [("baseline", "default"), ("baseline_z", "default"), ("flag_feat", "cosine"), ("flag_feat", "md_K2_matched")]
+    names = ["baseline (raw)", "baseline_z (z-scored)", "flag_feat · cosine", "flag_feat · FLAG-MD"]
+    dsn = {**DS, "amazon_video_text": "Amazon Video"}
+    for metric, label in (("f1", "F1-macro"), ("auc", "AUC")):
+        for d in fd:
+            out += [f"*{dsn[d]}, {label}*", "", "| Backbone | " + " | ".join(names) + " |", "|---|" + "---:|" * len(cols)]
+            for m in MODELS:
+                out.append(f"| {m} | " + " | ".join(_cell(runs, (*g, d, m), metric) for g in cols) + " |")
+            avg = []
+            for g in cols:
+                ds_ = [(_avg(runs, (*g, d, m), metric) - _avg(runs, ("baseline", "default", d, m), metric))
+                       for m in MODELS if len(runs.get((*g, d, m), {})) >= PER_CELL]
+                avg.append(sign(st.fmean(ds_)) + ("" if len(ds_) == 7 else f" ({len(ds_)}/7)") if ds_ else "—")
+            out += ["| *avg Δ vs raw baseline* | " + " | ".join(avg) + " |", ""]
+    out += ["**A: what the LLM text adds with the same neighbourhoods** (average over backbones with 25/25 runs on both "
+            "sides; count shown).", "",
+            "| Dataset | metric | raw text · default nbhd | raw text · cosine | raw text · FLAG-MD | flag · cosine | flag · FLAG-MD | "
+            "LLM adds (cos) | LLM adds (MD) |", "|---|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for d in DATASETS:
+        for k, label in (("f1", "F1-macro"), ("auc", "AUC")):
+            row = []
+            for s_ in ("cosine", "md_K2_matched"):
+                full = [m for m in MODELS if len(runs.get(("text", s_, d, m), {})) >= PER_CELL]
+                row.append(full)
+            fc, fm = row
+            a = lambda g, ms_: st.fmean(_avg(runs, (*g, d, m), k) for m in ms_) if ms_ else None
+            td = a(("text", "default"), MODELS)
+            tc, tm = a(("text", "cosine"), fc), a(("text", "md_K2_matched"), fm)
+            flc, flm = a(("flag", "cosine"), fc), a(("flag", "md_K2_matched"), fm)
+            f = lambda x: "—" if x is None else f"{x:.3f}"
+            out.append(f"| {DS[d]} | {label} | {f(td)} | {f(tc)} ({len(fc)}/7) | {f(tm)} ({len(fm)}/7) | {f(flc)} | {f(flm)} | "
+                       f"{sign(flc - tc) if tc is not None else '—'} | {sign(flm - tm) if tm is not None else '—'} |")
+    return "\n".join(out)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true")
@@ -355,7 +439,8 @@ def main(argv=None):
                 "results_auc": sec_results(runs, "auc"), "compare": sec_compare(runs),
                 "vs_baseline": sec_vs_baseline(runs), "before_after": sec_before_after(runs),
                 "coverage": sec_coverage(), "timing": sec_timing(runs),
-                "feat": sec_feat(runs), "text": sec_text(runs)}
+                "feat": sec_feat(runs), "text": sec_text(runs), "amazon_video": sec_amazon_video(runs),
+                "followups": sec_followups(runs)}
     if args.check:
         for k, v in sections.items():
             print(f"\n===== {k} =====\n{v}")

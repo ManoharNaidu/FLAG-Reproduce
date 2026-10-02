@@ -150,7 +150,7 @@ def encode(dataset: str, kind: str, args) -> dict | None:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", default="all", choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "all"])
+    parser.add_argument("--dataset", default="all", choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "amazon_video_text", "all"])
     parser.add_argument("--kind", default="discriminative",
                         choices=["discriminative", "residual", "both"])
     parser.add_argument("--model", default=DEFAULT_MODEL)

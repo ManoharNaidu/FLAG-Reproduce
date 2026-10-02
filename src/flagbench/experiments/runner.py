@@ -103,7 +103,13 @@ def make_feature_fn(variant_key: str, payload: dict, dataset: str):
     """
     variant = get_variant(variant_key)
 
-    if variant.feature_source == "stored":
+    if variant.feature_source == "stored_z":
+        x = payload["x"].float()
+        tr = payload["train_mask"]
+        features = (x - x[tr].mean(0)) / x[tr].std(0).clamp_min(1e-6)
+        description = (f"stored graph features ({features.shape[1]}d), z-scored with "
+                       f"train-node statistics (decision D-007)")
+    elif variant.feature_source == "stored":
         features = payload["x"]
         description = (
             f"stored graph features ({features.shape[1]}d). The paper calls "
