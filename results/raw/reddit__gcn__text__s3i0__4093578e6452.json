@@ -1,0 +1,120 @@
+{
+  "experiment_id": "4093578e6452",
+  "timestamp": "2026-09-30T02:16:30+00:00",
+  "git_commit": "e1e5f51b0d1e8759e779dcc43b6f96239deaf8c8",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "gcn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "faithful",
+  "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+  "seed": 3,
+  "initialization": 0,
+  "device": "cpu",
+  "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+  "framework": "torch 2.3.1+cpu",
+  "python_version": "3.12.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "none",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "none_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 3,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.25,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6076734091625362,
+  "validation_f1_macro": 0.5421722894258083,
+  "test_auc": 0.6046598253603601,
+  "test_f1_macro": 0.5312635748942485,
+  "test_precision_fraud": 0.1431215299198026,
+  "test_recall_fraud": 0.17339312406576982,
+  "test_f1_fraud": 0.15680973301791146,
+  "test_accuracy": 0.830399021140643,
+  "test_ks": 0.15915465391804673,
+  "test_ece": 0.0439830043590444,
+  "training_time": 31.74,
+  "inference_time": 18.61,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 3.2,
+    "diffusion_precompute_seconds": null,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.33,
+        "val_auc": 0.5717,
+        "val_f1_macro": 0.53177
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.28028,
+        "val_auc": 0.60121,
+        "val_f1_macro": 0.54177
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.26383,
+        "val_auc": 0.60767,
+        "val_f1_macro": 0.54217
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.25177,
+        "val_auc": 0.60337,
+        "val_f1_macro": 0.53606
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.24328,
+        "val_auc": 0.60275,
+        "val_f1_macro": 0.53442
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  }
+}

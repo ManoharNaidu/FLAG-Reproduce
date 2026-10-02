@@ -1,0 +1,118 @@
+{
+  "experiment_id": "5f0a2a9f5e88",
+  "timestamp": "2026-09-09T09:45:21+00:00",
+  "git_commit": "84447284fd7e441c9c7afaac53b938ffcab4e568-dirty",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "gcn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+  "seed": 0,
+  "initialization": 0,
+  "device": "cpu",
+  "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+  "framework": "torch 2.3.1+cpu",
+  "python_version": "3.11.9",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "argmax",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "none",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "none_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "df3ae0eca55cdcf3cc3e91a9cf3365d5f2261b437a72dea6cf7322fa29901a0b",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 4,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.5,
+  "threshold_policy": "argmax",
+  "validation_auc": 0.600002148812423,
+  "validation_f1_macro": 0.4876689794239775,
+  "test_auc": 0.5968939154893117,
+  "test_f1_macro": 0.4831888079907288,
+  "test_precision_fraud": 0.29411764705882354,
+  "test_recall_fraud": 0.007473841554559043,
+  "test_f1_fraud": 0.014577259475218658,
+  "test_accuracy": 0.9080959825980559,
+  "test_ks": 0.14900843756640142,
+  "test_ece": 0.04205668336425465,
+  "training_time": 36.44,
+  "inference_time": 22.19,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "metadata corrected post-hoc: impl_source was wrongly carrying a fidelity judgement, which excluded 3 models from the reported comparison. No measured value changed.",
+  "extra": {
+    "device_kind": "cpu",
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.32947,
+        "val_auc": 0.58636,
+        "val_f1_macro": 0.47622
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.28327,
+        "val_auc": 0.60367,
+        "val_f1_macro": 0.47622
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.26524,
+        "val_auc": 0.61481,
+        "val_f1_macro": 0.48745
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.25428,
+        "val_auc": 0.6,
+        "val_f1_macro": 0.48767
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.24328,
+        "val_auc": 0.61146,
+        "val_f1_macro": 0.48659
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  },
+  "fidelity_class": "faithful"
+}

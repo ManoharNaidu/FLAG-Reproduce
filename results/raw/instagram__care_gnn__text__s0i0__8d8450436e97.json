@@ -1,0 +1,118 @@
+{
+  "experiment_id": "8d8450436e97",
+  "timestamp": "2026-09-09T10:29:41+00:00",
+  "git_commit": "e9f9a139e84a4578d8c96ccdb38abf5e48b1e665",
+  "schema_version": "results-v1",
+  "dataset": "instagram",
+  "model": "care_gnn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "model_fidelity": "NOT CARE-GNN - no RL neighbour filtering, no label-aware similarity, no multi-relation aggregation. A similarity-gated mean aggregator.",
+  "seed": 0,
+  "initialization": 0,
+  "device": "cpu",
+  "device_name": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+  "framework": "torch 2.3.1+cpu",
+  "python_version": "3.11.9",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "argmax",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "none",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "none_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "fa7cbbf35dca07cd7e7afa9b59900fa261e9f5d64c2453eae672d79e2515cff8",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 1,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.5,
+  "threshold_policy": "argmax",
+  "validation_auc": 0.659414435210834,
+  "validation_f1_macro": 0.4762532981530343,
+  "test_auc": 0.6092310616491661,
+  "test_f1_macro": 0.47619047619047616,
+  "test_precision_fraud": 0.0,
+  "test_recall_fraud": 0.0,
+  "test_f1_fraud": 0.0,
+  "test_accuracy": 0.9090909090909091,
+  "test_ks": 0.19740484429065752,
+  "test_ece": 0.018619613300396052,
+  "training_time": 65.71,
+  "inference_time": 38.39,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "metadata corrected post-hoc: impl_source was wrongly carrying a fidelity judgement, which excluded 3 models from the reported comparison. No measured value changed.",
+  "extra": {
+    "device_kind": "cpu",
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 794,
+      "val": 794,
+      "test": 6358
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.32988,
+        "val_auc": 0.65941,
+        "val_f1_macro": 0.47625
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.29648,
+        "val_auc": 0.63598,
+        "val_f1_macro": 0.47625
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.28661,
+        "val_auc": 0.61519,
+        "val_f1_macro": 0.47625
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.28888,
+        "val_auc": 0.61481,
+        "val_f1_macro": 0.47625
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.26801,
+        "val_auc": 0.58903,
+        "val_f1_macro": 0.47625
+      }
+    ],
+    "test_label_distribution": {
+      "0": 5780,
+      "1": 578
+    }
+  },
+  "fidelity_class": "approximation"
+}
