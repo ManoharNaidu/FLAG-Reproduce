@@ -34,6 +34,16 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 logger = logging.getLogger(__name__)
 
 
+def default_sampling_config(dataset: str, strategy: str) -> SamplingConfig:
+    """The sampler a run uses when none is given: the variant's strategy at the
+    dataset's per-hop budget, with 'none' swapped for the dataset's
+    `baseline_sampling_strategy` on graphs too dense to keep every neighbour."""
+    spec = get_dataset(dataset)
+    if strategy == "none":
+        strategy = spec.baseline_sampling_strategy
+    return SamplingConfig(strategy=strategy, top_k=spec.default_top_k)
+
+
 class ExperimentNotAvailable(RuntimeError):
     """The requested experiment is not meaningful. Never silently substituted."""
 
@@ -124,7 +134,12 @@ def make_feature_fn(variant_key: str, payload: dict, dataset: str):
 # table) and every `flag`/`flag_finetuned` result must be read with that in
 # mind. Regenerating faithfully only requires re-running
 # `scripts.llm.generate_text --force` and updating this constant.
-PRODUCTION_LLM_CONFIG = {"max_new_tokens": 64, "truncate_chars": 300}
+# Decision D-005 (2026-10-01) supersedes that: the main 5x5 push regenerates every
+# cache at the paper-faithful budget with the batched vLLM engine. The D-004
+# caches stay on disk under their own keys; to replay them, set this back to
+# {"max_new_tokens": 64, "truncate_chars": 300}.
+PRODUCTION_LLM_CONFIG = {"max_new_tokens": 550, "truncate_chars": 1200, "engine": "vllm",
+                         "dtype": "bfloat16"}
 
 
 def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM-L6-v2",
@@ -146,7 +161,7 @@ def _llm_embeddings_path(dataset: str, kind: str, sbert_model: str = "all-MiniLM
 
     if sampling is None:
         variant = get_variant("flag")
-        sampling = SamplingConfig(strategy=variant.default_sampling_strategy)
+        sampling = default_sampling_config(dataset, variant.default_sampling_strategy)
     prompts = PromptSet.load(dataset)
     config = LLMConfig(model_id=llm_model, **PRODUCTION_LLM_CONFIG)
     key = llm_cache_key(dataset, sampling.cache_key(), prompts, config, kind)
@@ -199,11 +214,24 @@ def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str,
     raw = load_text_embeddings(dataset)
     disc = load_llm_embeddings(dataset, "discriminative", sampling)
 
+    # `+stored` (decision D-006): append the graph's own node features, z-scored
+    # with train-node statistics only, to both branches. Without scaling, raw
+    # Amazon counts (up to ~5.5e3) would swamp the unit-norm text embeddings.
+    stored = None
+    if variant.feature_source.endswith("+stored"):
+        x = payload["x"].float()
+        tr = payload["train_mask"]
+        mu, sd = x[tr].mean(0), x[tr].std(0).clamp_min(1e-6)
+        stored = (x - mu) / sd
+
+    def with_stored(t, subgraph):
+        return t if stored is None else torch.cat([t, stored[subgraph.subset]], dim=1)
+
     def feature_fn(subgraph: Subgraph):
         x_raw = raw[subgraph.subset]
         d = disc.get(int(subgraph.central))
         x_disc = d if d is not None and d.shape[0] == len(subgraph.subset) else x_raw
-        return x_raw, x_disc
+        return with_stored(x_raw, subgraph), with_stored(x_disc, subgraph)
 
     extra_feature_fn = None
     if variant.requires_finetuned_llm:
@@ -215,13 +243,16 @@ def make_dual_feature_fn(variant_key: str, payload: dict, dataset: str,
             n = len(subgraph.subset)
             if d is None or c is None or d.shape[0] != n or c.shape[0] != n:
                 return None
-            return d, c
+            return with_stored(d, subgraph), with_stored(c, subgraph)
 
+    in_dim = int(raw.shape[1]) + (int(stored.shape[1]) if stored is not None else 0)
     description = (
         f"dual-branch: raw text ({raw.shape[1]}d) + LLM discriminative text "
         f"({raw.shape[1]}d), attention-fused (models.py:DualGNN)"
+        + (f"; + engineered features ({stored.shape[1]}d, train z-scored) on both branches"
+           if stored is not None else "")
     )
-    return feature_fn, extra_feature_fn, int(raw.shape[1]), description
+    return feature_fn, extra_feature_fn, in_dim, description
 
 
 def _record_sampling_cost(result: RunResult, dataset: str, config: SamplingConfig) -> None:
@@ -260,8 +291,8 @@ def run_single(
     # so `baseline` and `+text` use plain 2-hop neighbourhoods. Handing SS to the
     # baseline would give it part of the method it is a baseline for.
     if sampling_config is None:
-        sampling_config = SamplingConfig(
-            strategy=variant_spec.default_sampling_strategy
+        sampling_config = default_sampling_config(
+            dataset, variant_spec.default_sampling_strategy
         )
     elif sampling_config.strategy != variant_spec.default_sampling_strategy:
         logger.info(

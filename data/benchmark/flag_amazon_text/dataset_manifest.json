@@ -74,5 +74,5 @@
     "splits": "DERIVED"
   },
   "relations_preserved_in": "datasets/processed/<name>/flag_dataset.pt (relation_edges); the payload here is the collapsed view FLAG requires",
-  "built_at": "2026-09-18T14:37:55+00:00"
+  "built_at": "2026-10-01T02:56:37+00:00"
 }

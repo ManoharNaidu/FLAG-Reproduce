@@ -73,9 +73,19 @@ class LLMConfig:
     batch_prompts: int = 1
     """Subgraph prompts per forward pass. Upstream does 1. >1 needs left padding
     and changes nothing semantically, but is recorded anyway."""
+    engine: str = "hf"
+    """'hf' = transformers generate(), one prompt at a time (upstream's path).
+    'vllm' = vLLM continuous batching: same prompt string, same greedy decode
+    and token budget, but kernel numerics can flip a near-tied greedy token, so
+    the text is not guaranteed byte-identical to 'hf'. It therefore enters the
+    cache key -- but only when it is not 'hf', so every pre-existing cache key
+    is unchanged."""
 
     def as_record(self) -> dict:
-        return dataclasses.asdict(self)
+        record = dataclasses.asdict(self)
+        if record["engine"] == "hf":
+            del record["engine"]
+        return record
 
 
 @dataclass
@@ -217,6 +227,9 @@ class GenerationStats:
     total_nodes: int = 0
     nodes_with_text: int = 0
     seconds: float = 0.0
+    context_overflows: int = 0
+    """vLLM only: prompts longer than the model context, counted inside
+    format_failures. HF would run past the context and emit unusable text."""
 
     def as_record(self) -> dict:
         record = dataclasses.asdict(self)
@@ -336,3 +349,111 @@ class LLMEnhancer:
 
         stats.seconds = round(time.time() - start, 1)
         return results, stats
+
+
+class VLLMEnhancer:
+    """Same contract as `LLMEnhancer.enhance`, generated with vLLM in one batch.
+
+    Faithfulness to the HF path:
+      * the prompt string is identical (`build_prompt`), fed raw -- no chat
+        template, exactly as upstream feeds Gemma;
+      * greedy decoding (temperature 0), same `max_new_tokens`;
+      * `parse_response` sees prompt + completion, which is what HF's
+        `decode(output[0])` returns, so the 'Answer:' split behaves the same.
+
+    One unavoidable difference: a prompt longer than the model context is
+    rejected by vLLM, so it is recorded as a format failure (and counted in
+    `context_overflows`). A prompt that fits but leaves fewer than
+    `max_new_tokens` of room gets the room that is left.
+
+    Device selection is by CUDA_VISIBLE_DEVICES; one process per GPU.
+    """
+
+    def __init__(self, config: LLMConfig, device: str = "cuda:0",
+                 max_model_len: int = 8192, gpu_memory_utilization: float = 0.80):
+        self.config = config
+        self.device = device
+        self.max_model_len = max_model_len
+        self.gpu_memory_utilization = gpu_memory_utilization
+        self._llm = None
+        self._tokenizer = None
+
+    def load(self) -> None:
+        if self._llm is not None:
+            return
+        import os
+
+        # The caller has already touched CUDA (torch.cuda.is_available()), so a
+        # forked engine process could not re-initialise it.
+        os.environ.setdefault("VLLM_WORKER_MULTIPROC_METHOD", "spawn")
+        from vllm import LLM
+
+        logger.info("loading %s with vLLM (%s)", self.config.model_id, self.config.dtype)
+        self._llm = LLM(
+            model=self.config.model_id,
+            dtype=self.config.dtype,
+            max_model_len=self.max_model_len,
+            gpu_memory_utilization=self.gpu_memory_utilization,
+            seed=self.config.seed,
+            enable_prefix_caching=True,
+        )
+        self._tokenizer = self._llm.get_tokenizer()
+
+    def enhance(self, subgraphs, raw_texts: list[str], prompts: PromptSet, kind: str,
+                noun: str = "posts", progress: bool = True,
+                ) -> tuple[dict[int, list[str]], GenerationStats]:
+        from vllm import SamplingParams
+
+        self.load()
+        stats = GenerationStats(total_subgraphs=len(subgraphs))
+        start = time.time()
+
+        jobs = []          # (subgraph, prompt, n_prompt_tokens)
+        for subgraph in subgraphs:
+            node_ids = subgraph.subset.tolist()
+            stats.total_nodes += len(node_ids)
+            prompt = build_prompt(prompts, kind, [raw_texts[i] for i in node_ids],
+                                  self.config, noun)
+            n_tok = len(self._tokenizer(prompt)["input_ids"])
+            if n_tok >= self.max_model_len:
+                stats.format_failures += 1
+                stats.context_overflows += 1
+                continue
+            jobs.append((subgraph, prompt, n_tok))
+
+        params = [
+            SamplingParams(
+                temperature=0.0,
+                max_tokens=min(self.config.max_new_tokens, self.max_model_len - n_tok),
+                seed=self.config.seed,
+            )
+            for _, _, n_tok in jobs
+        ]
+        outputs = self._llm.generate([p for _, p, _ in jobs], params, use_tqdm=progress)
+
+        results: dict[int, list[str]] = {}
+        for (subgraph, prompt, _), out in zip(jobs, outputs):
+            lines = parse_response(prompt + out.outputs[0].text,
+                                   expected=len(subgraph.subset))
+            if lines is None:
+                stats.format_failures += 1
+                continue
+            results[subgraph.central] = strip_numbering(lines)
+            stats.succeeded += 1
+            stats.nodes_with_text += len(subgraph.subset)
+
+        stats.seconds = round(time.time() - start, 1)
+        return results, stats
+
+
+_ENHANCERS: dict = {}
+
+
+def make_enhancer(config: LLMConfig, device: str = "cuda:0"):
+    """One enhancer per (config, device) per process, so `--kind both` loads the
+    model once instead of once per kind."""
+    key = (config, device)
+    if key not in _ENHANCERS:
+        cls = VLLMEnhancer if config.engine == "vllm" else LLMEnhancer
+        _ENHANCERS[key] = cls(config, device=device)
+    return _ENHANCERS[key]

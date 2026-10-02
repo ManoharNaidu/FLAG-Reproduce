@@ -59,6 +59,70 @@
       "path": "prompts/instagram/residual.txt",
       "chars": 815,
       "sha256": "da8340dc466353c712bbdc8947b3a8f6596d9588003d99e8c7765bf563b73483"
+    },
+    "amazon_text/system_instruction": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/amazon_text/system_instruction.txt",
+      "chars": 55,
+      "sha256": "988eb666cc706eb34f48b4a6d4e1d65abfa8c25f907340c7f2ec62c8d0e81062"
+    },
+    "amazon_text/global": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/amazon_text/global.txt",
+      "chars": 165,
+      "sha256": "f80f4ec879cefdfd5712dd0584e49365d782b6eda02761a3ca55569326536083"
+    },
+    "amazon_text/discriminative": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/amazon_text/discriminative.txt",
+      "chars": 619,
+      "sha256": "65cd3120c0fcee87072ab8066cc1335772a1139dec9bb37352ec1716412fbf71"
+    },
+    "amazon_text/residual": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/amazon_text/residual.txt",
+      "chars": 744,
+      "sha256": "3a6c7f36091ff27cd7cb9d70e66d13dca6988051fda78c69f28c31b4faa6eab9"
+    },
+    "yelpchi_text/system_instruction": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/yelpchi_text/system_instruction.txt",
+      "chars": 55,
+      "sha256": "988eb666cc706eb34f48b4a6d4e1d65abfa8c25f907340c7f2ec62c8d0e81062"
+    },
+    "yelpchi_text/global": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/yelpchi_text/global.txt",
+      "chars": 186,
+      "sha256": "ec99d2b58e2f436cc565705adefc5de5d8b11eaebc07216c150388eeb4143e02"
+    },
+    "yelpchi_text/discriminative": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/yelpchi_text/discriminative.txt",
+      "chars": 616,
+      "sha256": "984a721e646f2072c145c7188d51d07410f6c2d2a63ff24546f9d4ac0fb79c51"
+    },
+    "yelpchi_text/residual": {
+      "source_file": null,
+      "source_symbol": null,
+      "origin": "drafted in this repo, 2026-10-01: upstream FLAG has no prompt for this dataset; structure mirrors reddit/<role>.txt (system_instruction copied verbatim)",
+      "path": "prompts/yelpchi_text/residual.txt",
+      "chars": 743,
+      "sha256": "8657616df6e2c429ffa67f1f97c6baa619a59f4ed83309edc54bcca92cbb8a9d"
     }
   }
 }

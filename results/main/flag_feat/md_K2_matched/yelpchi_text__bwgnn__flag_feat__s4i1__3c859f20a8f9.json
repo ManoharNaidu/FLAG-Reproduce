@@ -1,0 +1,127 @@
+{
+  "experiment_id": "3c859f20a8f9",
+  "timestamp": "2026-10-02T08:56:34+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "yelpchi_text",
+  "model": "bwgnn",
+  "variant": "flag_feat",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "approximation",
+  "model_fidelity": "beta-wavelet basis NOT applied - the polynomial is evaluated over raw adjacency A, not the normalised Laplacian, so it is not a beta wavelet. Theta coefficients themselves are correct.",
+  "seed": 4,
+  "initialization": 1,
+  "device": "cuda:0",
+  "device_name": "NVIDIA A100-SXM4-80GB",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 3,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k3_t0_perhop_K2_matched_cosine"
+  },
+  "dataset_version": "",
+  "dataset_manifest_sha256": "",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 1,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.35,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.7594172652658024,
+  "validation_f1_macro": 0.6681803617167532,
+  "test_auc": 0.7906683118276716,
+  "test_f1_macro": 0.6745919646629289,
+  "test_precision_fraud": 0.47143681477207156,
+  "test_recall_fraud": 0.40788816774837744,
+  "test_f1_fraud": 0.43736616702355463,
+  "test_accuracy": 0.8475320059478475,
+  "test_ks": 0.4439389204054063,
+  "test_ece": 0.019623792601259918,
+  "training_time": 745.08,
+  "inference_time": 143.24,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cuda",
+    "device_memory_gb": 79.25,
+    "device_capability": "8.0",
+    "sampling_seconds": 80.7,
+    "diffusion_precompute_seconds": 3.575,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN); + engineered features (32d, train z-scored) on both branches",
+    "split_sizes": {
+      "train": 13785,
+      "val": 4596,
+      "test": 27573
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.36565,
+        "val_auc": 0.75942,
+        "val_f1_macro": 0.66818
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.35246,
+        "val_auc": 0.76453,
+        "val_f1_macro": 0.64992
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.414,
+        "val_auc": 0.77769,
+        "val_f1_macro": 0.66285
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.37103,
+        "val_auc": 0.76194,
+        "val_f1_macro": 0.66287
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.41319,
+        "val_auc": 0.76516,
+        "val_f1_macro": 0.66284
+      }
+    ],
+    "test_label_distribution": {
+      "0": 23567,
+      "1": 4006
+    },
+    "peak_gpu_mem_mb": 65.4
+  }
+}

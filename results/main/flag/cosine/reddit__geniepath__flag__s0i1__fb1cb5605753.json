@@ -1,0 +1,120 @@
+{
+  "experiment_id": "fb1cb5605753",
+  "timestamp": "2026-10-01T12:12:59+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "reddit",
+  "model": "geniepath",
+  "variant": "flag",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "adapted",
+  "model_fidelity": "closest to faithful - Breadth(GAT)+Depth(LSTM) preserved; matches PyG's example globals exactly. No official author repo exists.",
+  "seed": 0,
+  "initialization": 1,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "semantic",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "semantic_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "c1d787fb3b532fbbd9d78bae5c7d6e7ab48d9f845f1336c06f7c2f52e826a2b8",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 2,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.15,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6140840328911554,
+  "validation_f1_macro": 0.5466669579028499,
+  "test_auc": 0.6026685800326986,
+  "test_f1_macro": 0.5286297342704712,
+  "test_precision_fraud": 0.13842482100238662,
+  "test_recall_fraud": 0.2600896860986547,
+  "test_f1_fraud": 0.1806853582554517,
+  "test_accuracy": 0.7854666576031542,
+  "test_ks": 0.15880585974215497,
+  "test_ece": 0.021341499495759367,
+  "training_time": 368.74,
+  "inference_time": 147.21,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 7.6,
+    "diffusion_precompute_seconds": null,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+    "split_sizes": {
+      "train": 1839,
+      "val": 1839,
+      "test": 14711
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.35195,
+        "val_auc": 0.6144,
+        "val_f1_macro": 0.52548
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.30652,
+        "val_auc": 0.61408,
+        "val_f1_macro": 0.54667
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.29029,
+        "val_auc": 0.60914,
+        "val_f1_macro": 0.54111
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.27668,
+        "val_auc": 0.60429,
+        "val_f1_macro": 0.53179
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.26847,
+        "val_auc": 0.60217,
+        "val_f1_macro": 0.53947
+      }
+    ],
+    "test_label_distribution": {
+      "0": 13373,
+      "1": 1338
+    }
+  }
+}

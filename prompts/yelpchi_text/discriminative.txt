@@ -1,0 +1,12 @@
+Your task is to generate a brief causal text for each review that directly relates to classifying it as either fraudulent or legitimate. Ensure that the generated text is specific to the review and reflects features that help distinguish between these two categories.
+Here is the format for the input, one entry per review:
+1. [review 1]
+2. [review 2]
+3. [review 3]
+...
+For each review, generate the causal text as follows:
+1. [Generated causal text for review1]
+2. [Generated causal text for review2]
+3. [Generated causal text for review3]
+...
+Remember: Each review's causal text should occupy only one single line.

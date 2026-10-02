@@ -38,10 +38,10 @@ from flagbench.experiments.runner import load_benchmark, load_subgraphs  # noqa:
 from flagbench.llm.enhance import (  # noqa: E402
     GenerationStats,
     LLMConfig,
-    LLMEnhancer,
     PromptSet,
     build_prompt,
     cache_key,
+    make_enhancer,
 )
 from flagbench.sampling.cli import STRATEGIES, add_md_args, config_from_args  # noqa: E402
 from flagbench.sampling.semantic import SamplingConfig  # noqa: E402
@@ -53,7 +53,8 @@ log = logging.getLogger("llm")
 # Upstream uses dataset-specific nouns in the question block:
 #   chat.py  -> "The posts of these users are as follows:"
 #   chat1.py -> "The introductions of these users are as follows:"
-DATASET_NOUN = {"reddit": "posts", "instagram": "introductions"}
+DATASET_NOUN = {"reddit": "posts", "instagram": "introductions",
+                "amazon_text": "reviews", "yelpchi_text": "reviews"}
 
 
 def combine_stats(subgraphs, results: dict, failed: set, seconds: float) -> GenerationStats:
@@ -123,11 +124,14 @@ def merge_shards(out, key, dataset, kind, args, subgraphs, sampling, prompts, co
         raise RuntimeError(f"expected {args.num_shards} shard files, found {len(parts)}")
     results = dict(reuse)
     seconds = 0.0
+    overflows = 0
     for part in parts:
         blob = json.loads(part.read_text(encoding="utf-8"))
         results.update({int(k): v for k, v in blob["results"].items()})
         seconds = max(seconds, blob["stats"]["seconds"])       # shards ran in parallel
+        overflows += blob["stats"].get("context_overflows", 0)
     stats = combine_stats(subgraphs, results, reuse_failed, seconds)
+    stats.context_overflows = overflows
     return write_cache(out, key, dataset, kind, args, sampling, prompts, config,
                        payload, results, stats, reuse_meta)
 
@@ -184,7 +188,7 @@ def run(dataset: str, kind: str, args) -> dict | None:
     payload = load_benchmark(dataset)
     raw_texts = payload["raw_texts"]
 
-    sampling = config_from_args(args)
+    sampling = config_from_args(args, dataset=dataset)
     subgraphs = load_subgraphs(dataset, sampling)
     if args.limit:
         subgraphs = subgraphs[: args.limit]
@@ -192,7 +196,7 @@ def run(dataset: str, kind: str, args) -> dict | None:
     prompts = PromptSet.load(dataset)
     config = LLMConfig(
         model_id=args.model, max_new_tokens=args.max_new_tokens,
-        truncate_chars=args.truncate_chars, dtype=args.dtype,
+        truncate_chars=args.truncate_chars, dtype=args.dtype, engine=args.engine,
     )
     noun = DATASET_NOUN.get(dataset, "posts")
     key = cache_key(dataset, sampling.cache_key(), prompts, config, kind)
@@ -201,7 +205,7 @@ def run(dataset: str, kind: str, args) -> dict | None:
     print(f"\n{'=' * 76}")
     print(f"{dataset.upper()}  kind={kind}")
     print(f"{'=' * 76}")
-    print(f"  model        {config.model_id} ({config.dtype})")
+    print(f"  model        {config.model_id} ({config.dtype}, engine={config.engine})")
     print(f"  sampling     {sampling.cache_key()}")
     print(f"  prompts      {prompts.version}")
     for role, digest in prompts.hashes.items():
@@ -258,7 +262,7 @@ def run(dataset: str, kind: str, args) -> dict | None:
             print(f"  shard already done -> {part_path.relative_to(ROOT)} (resume: skipping)")
             return {"shard": args.shard, "skipped": True}
 
-    enhancer = LLMEnhancer(config, device=args.device)
+    enhancer = make_enhancer(config, device=args.device)
     results, stats = enhancer.enhance(
         todo, raw_texts, prompts, kind, noun=noun
     )
@@ -274,7 +278,9 @@ def run(dataset: str, kind: str, args) -> dict | None:
         return {"shard": args.shard}
 
     results = {**reuse, **results}
+    overflows = stats.context_overflows
     stats = combine_stats(subgraphs, results, reuse_failed, stats.seconds)
+    stats.context_overflows = overflows
 
     return write_cache(out, key, dataset, kind, args, sampling, prompts, config,
                        payload, results, stats, reuse_meta)
@@ -283,16 +289,21 @@ def run(dataset: str, kind: str, args) -> dict | None:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="reddit",
-                        choices=["reddit", "instagram", "all"])
+                        help="a dataset with prompts/<name>/, a comma-separated list, "
+                             "or 'all' (= reddit,instagram)")
     parser.add_argument("--kind", default="discriminative",
                         choices=["discriminative", "residual", "both"])
     parser.add_argument("--model", default="google/gemma-2-9b-it")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--dtype", default="float16")
+    parser.add_argument("--engine", default="hf", choices=["hf", "vllm"],
+                        help="hf = upstream's one-prompt transformers loop; vllm = batched "
+                             "(enters the cache key; device via CUDA_VISIBLE_DEVICES)")
     parser.add_argument("--max-new-tokens", type=int, default=550)
     parser.add_argument("--truncate-chars", type=int, default=1200)
     parser.add_argument("--hops", type=int, default=2)
-    parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--top-k", type=int, default=None,
+                        help="per-hop budget (default: the dataset's registry default, 10 or 3)")
     parser.add_argument("--threshold", type=float, default=0.0)
     parser.add_argument("--strategy", default="semantic", choices=STRATEGIES,
                         help="which sampler's subgraphs to enhance (default: FLAG's cosine)")
@@ -321,7 +332,8 @@ def main(argv=None) -> int:
         print("  Use --dry-run to inspect prompts on CPU.")
         return 2
 
-    datasets = ["reddit", "instagram"] if args.dataset == "all" else [args.dataset]
+    datasets = (["reddit", "instagram"] if args.dataset == "all"
+                else [d for d in args.dataset.split(",") if d])
     kinds = (
         ["discriminative", "residual"] if args.kind == "both" else [args.kind]
     )

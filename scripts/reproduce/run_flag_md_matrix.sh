@@ -28,6 +28,7 @@ mkdir -p "$OUT" logs/flag_md
 
 sampler_args() {
   case "$1" in
+    default)         echo "" ;;   # the variant's own default sampler (baseline: none/random per dataset)
     cosine)          echo "--sampling-strategy semantic" ;;
     md_K*_matched)   k=${1#md_K}; echo "--sampling-strategy markov_diffusion --diffusion-steps ${k%_matched} --md-selection matched_cosine" ;;
     md_K*_top_n)     k=${1#md_K}; echo "--sampling-strategy markov_diffusion --diffusion-steps ${k%_top_n} --md-selection top_n" ;;
@@ -42,7 +43,7 @@ run_job() {
   # A partially finished job is redone from scratch: leaving its files would
   # duplicate (seed, init) pairs on restart.
   rm -f "$dir/${ds}__${model}__${VARIANT}__"*.json
-  $PY -m scripts.train.run --dataset "$ds" --model "$model" --variant "$VARIANT" \
+  CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES-}" $PY -P -m scripts.train.run --dataset "$ds" --model "$model" --variant "$VARIANT" \
       $(sampler_args "$sampler") --seeds "$SEEDS" --inits "$INITS" --device "$DEVICE" \
       --results-dir "$dir" > "logs/flag_md/${VARIANT}_${ds}_${model}_${sampler}.log" 2>&1 \
     && echo "done  $ds $model $sampler" || echo "FAIL  $ds $model $sampler"

@@ -42,8 +42,7 @@ logs/**
 !logs/**/
 !logs/**/.gitkeep
 
-# Results: keep aggregated tables and figures, drop per-run raw dumps.
-results/raw/
+# Results: keep everything, including per-run raw dumps (small JSONs).
 !results/**/.gitkeep
 
 # ---------------------------------------------------------------------------

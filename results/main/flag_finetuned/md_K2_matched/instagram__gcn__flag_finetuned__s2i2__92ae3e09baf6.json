@@ -1,0 +1,289 @@
+{
+  "experiment_id": "92ae3e09baf6",
+  "timestamp": "2026-10-01T15:46:14+00:00",
+  "git_commit": "4eb1f3ef9c0bf9db43c9b485e432ce80bb0910a3-dirty",
+  "schema_version": "results-v1",
+  "dataset": "instagram",
+  "model": "gcn",
+  "variant": "flag_finetuned",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "faithful",
+  "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+  "seed": 2,
+  "initialization": 2,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0,
+    "ft_outer_epochs": 3,
+    "ft_inner_epochs": 10,
+    "ft_lr": 0.0001,
+    "ft_weight_decay": 0.0,
+    "ft_alpha": 0.1,
+    "ft_beta": 0.1,
+    "ft_accumulation_steps": 10,
+    "ft_orthogonality": "squared_dot",
+    "ft_selection_metric": "f1_macro"
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k10_t0_perhop_K2_matched_cosine"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "b0d8f240a7f8c9a48e35d85144621b650f8a6a09231664d413c107eacaf49406",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 25,
+  "epochs_run": 30,
+  "stopped_early": false,
+  "threshold": 0.2,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6266351184979994,
+  "validation_f1_macro": 0.5889483282107728,
+  "test_auc": 0.5808438895607093,
+  "test_f1_macro": 0.5450976183449151,
+  "test_precision_fraud": 0.16716417910447762,
+  "test_recall_fraud": 0.19377162629757785,
+  "test_f1_fraud": 0.1794871794871795,
+  "test_accuracy": 0.8389430638565587,
+  "test_ks": 0.12543252595155707,
+  "test_ece": 0.05596019901301986,
+  "training_time": 50.49,
+  "inference_time": 7.79,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 26.7,
+    "diffusion_precompute_seconds": 0.168,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+    "split_sizes": {
+      "train": 794,
+      "val": 794,
+      "test": 6358
+    },
+    "finetune": {
+      "train_subgraphs_total": 794,
+      "train_subgraphs_usable": 333,
+      "applied": true,
+      "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.32776,
+        "val_auc": 0.57402,
+        "val_f1_macro": 0.54615
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.29998,
+        "val_auc": 0.61,
+        "val_f1_macro": 0.5464
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.27678,
+        "val_auc": 0.62358,
+        "val_f1_macro": 0.56006
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.24369,
+        "val_auc": 0.61505,
+        "val_f1_macro": 0.55558
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.24774,
+        "val_auc": 0.6159,
+        "val_f1_macro": 0.55496
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.22857,
+        "val_auc": 0.61211,
+        "val_f1_macro": 0.5486
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.21233,
+        "val_auc": 0.62088,
+        "val_f1_macro": 0.55382
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.22012,
+        "val_auc": 0.62387,
+        "val_f1_macro": 0.54765
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.18542,
+        "val_auc": 0.62042,
+        "val_f1_macro": 0.5571
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.18481,
+        "val_auc": 0.62094,
+        "val_f1_macro": 0.5784
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.20205,
+        "val_auc": 0.61756,
+        "val_f1_macro": 0.57059
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.18904,
+        "val_auc": 0.61873,
+        "val_f1_macro": 0.57716
+      },
+      {
+        "epoch": 13,
+        "train_loss": 0.19484,
+        "val_auc": 0.6179,
+        "val_f1_macro": 0.56559
+      },
+      {
+        "epoch": 14,
+        "train_loss": 0.18267,
+        "val_auc": 0.62417,
+        "val_f1_macro": 0.56693
+      },
+      {
+        "epoch": 15,
+        "train_loss": 0.15911,
+        "val_auc": 0.63237,
+        "val_f1_macro": 0.5776
+      },
+      {
+        "epoch": 16,
+        "train_loss": 0.17254,
+        "val_auc": 0.63456,
+        "val_f1_macro": 0.57267
+      },
+      {
+        "epoch": 17,
+        "train_loss": 0.17283,
+        "val_auc": 0.61825,
+        "val_f1_macro": 0.56109
+      },
+      {
+        "epoch": 18,
+        "train_loss": 0.14343,
+        "val_auc": 0.62254,
+        "val_f1_macro": 0.57688
+      },
+      {
+        "epoch": 19,
+        "train_loss": 0.1668,
+        "val_auc": 0.62079,
+        "val_f1_macro": 0.5776
+      },
+      {
+        "epoch": 20,
+        "train_loss": 0.14991,
+        "val_auc": 0.62029,
+        "val_f1_macro": 0.58733
+      },
+      {
+        "epoch": 21,
+        "train_loss": 0.15441,
+        "val_auc": 0.61242,
+        "val_f1_macro": 0.5653
+      },
+      {
+        "epoch": 22,
+        "train_loss": 0.1509,
+        "val_auc": 0.62117,
+        "val_f1_macro": 0.57237
+      },
+      {
+        "epoch": 23,
+        "train_loss": 0.14526,
+        "val_auc": 0.61656,
+        "val_f1_macro": 0.58176
+      },
+      {
+        "epoch": 24,
+        "train_loss": 0.14591,
+        "val_auc": 0.61884,
+        "val_f1_macro": 0.57017
+      },
+      {
+        "epoch": 25,
+        "train_loss": 0.14605,
+        "val_auc": 0.62664,
+        "val_f1_macro": 0.58895
+      },
+      {
+        "epoch": 26,
+        "train_loss": 0.14403,
+        "val_auc": 0.61859,
+        "val_f1_macro": 0.56732
+      },
+      {
+        "epoch": 27,
+        "train_loss": 0.12638,
+        "val_auc": 0.61032,
+        "val_f1_macro": 0.56133
+      },
+      {
+        "epoch": 28,
+        "train_loss": 0.13488,
+        "val_auc": 0.61575,
+        "val_f1_macro": 0.56867
+      },
+      {
+        "epoch": 29,
+        "train_loss": 0.11514,
+        "val_auc": 0.61427,
+        "val_f1_macro": 0.56691
+      },
+      {
+        "epoch": 30,
+        "train_loss": 0.10943,
+        "val_auc": 0.61001,
+        "val_f1_macro": 0.55964
+      }
+    ],
+    "test_label_distribution": {
+      "0": 5780,
+      "1": 578
+    }
+  }
+}
