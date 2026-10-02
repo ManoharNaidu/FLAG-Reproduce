@@ -40,6 +40,11 @@ That did not block this report because no training/inference was needed.)
   cosine and FLAG-MD runs share the same seed/init streams by the project's own design
   (`run_flag_md_matrix.sh`), so this is more sensitive than comparing two independent means.
   Headline: essentially no distinguishable difference between the two samplers at n=8 pairs.
+- [`flag_md_reasons_analysis.md`](flag_md_reasons_analysis.md) — **why, mechanistically**, per
+  backbone and per dataset. Combines the paired-stats comparison above with the repo's own
+  neighbourhood diagnostics (`scripts/analyze/compare_samplers.py analyze`) and each backbone's
+  actual aggregation code to explain *why* FLAG-MD does or doesn't move each model's numbers —
+  not just that it doesn't.
 
 ## Folder layout
 
