@@ -54,7 +54,8 @@ log = logging.getLogger("llm")
 #   chat.py  -> "The posts of these users are as follows:"
 #   chat1.py -> "The introductions of these users are as follows:"
 DATASET_NOUN = {"reddit": "posts", "instagram": "introductions",
-                "amazon_text": "reviews", "yelpchi_text": "reviews"}
+                "amazon_text": "reviews", "yelpchi_text": "reviews",
+                "amazon_video_text": "reviews"}
 
 
 def combine_stats(subgraphs, results: dict, failed: set, seconds: float) -> GenerationStats:

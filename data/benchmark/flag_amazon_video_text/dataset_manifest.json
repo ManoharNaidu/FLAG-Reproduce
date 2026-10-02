@@ -1,0 +1,108 @@
+{
+  "dataset": "amazon_video_text",
+  "source_dataset": "amazon_instant_video",
+  "node_type": "user",
+  "experiment_type": "text_augmented_study",
+  "self_constructed": true,
+  "native_text": false,
+  "is_flag_reproduction": false,
+  "not_comparable_to": "FLAG Table 4 and any published Amazon result: graph built here with CARE-GNN's recipe",
+  "source": {
+    "file": "datasets/raw/amazon_video/reviews_Amazon_Instant_Video.json.gz",
+    "sha256": "47bdb8244c16a1ac98944e673e1e427395fa03bf44b6b948e0217e84ceea7321",
+    "url": "https://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Amazon_Instant_Video.json.gz",
+    "reviewers": 426922,
+    "reviews": 583933
+  },
+  "labels": {
+    "rule": "votes>=20; helpful ratio >0.8 benign, <0.2 fraud (CARE-GNN)",
+    "raw_benign": 1821,
+    "raw_fraud": 1211,
+    "downsampling": "all benign kept; fraud sampled to 1:10 (seed 0)",
+    "kept_fraud": 182
+  },
+  "context_nodes": {
+    "count": 4238,
+    "fraction_of_unlabelled": 0.01,
+    "seed": 0,
+    "note": "graph context only, excluded from every split; have text"
+  },
+  "constructed": {
+    "num_nodes": 6241,
+    "num_features": 25,
+    "num_edges": 208832,
+    "avg_degree": 33.5,
+    "num_products": 4593,
+    "label_distribution": {
+      "0": 1821,
+      "1": 182,
+      "unlabelled": 4238
+    },
+    "splits": {
+      "train": {
+        "n": 600,
+        "per_class": {
+          "0": 545,
+          "1": 55
+        }
+      },
+      "val": {
+        "n": 201,
+        "per_class": {
+          "0": 183,
+          "1": 18
+        }
+      },
+      "test": {
+        "n": 1202,
+        "per_class": {
+          "0": 1093,
+          "1": 109
+        }
+      }
+    }
+  },
+  "graph": "user-product-user (share >= 1 product), CARE-GNN's implemented relation; sparse B\u00b7B\u1d40",
+  "features": {
+    "generator": "methods/care_gnn/amazon_preprocess.py",
+    "columns_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ],
+    "note": "CARE-GNN build_features imported and run unchanged; 'filter polluted features' applied"
+  },
+  "text": {
+    "serializer": "flagbench.fraud_text.amazon.serialize_reviews",
+    "config": {
+      "aggregation": "all_reviews",
+      "max_reviews": null,
+      "max_chars": null
+    },
+    "empty_texts": 0
+  },
+  "split_protocol": "stratified train_test_split(test_size=0.60, random_state=2) over labelled nodes; val = 25% of train (random_state=0)",
+  "built_at": "2026-10-02T10:32:40+00:00"
+}

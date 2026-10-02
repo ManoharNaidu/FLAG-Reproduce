@@ -1,0 +1,120 @@
+{
+  "experiment_id": "1720c1d9ebae",
+  "timestamp": "2026-10-02T14:24:27+00:00",
+  "git_commit": "cedccecfb822fe345cc17e3895fe9f904e386308-dirty",
+  "schema_version": "results-v1",
+  "dataset": "instagram",
+  "model": "gcn",
+  "variant": "text",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "faithful",
+  "model_fidelity": "faithful - two GCNConv layers plus the Eq. 6 skip",
+  "seed": 3,
+  "initialization": 3,
+  "device": "cpu",
+  "device_name": "x86_64",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 10,
+    "similarity_threshold": 0.0,
+    "strategy": "semantic",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "cache_key": "semantic_h2_k10_t0_perhop"
+  },
+  "dataset_version": "benchmark-v1",
+  "dataset_manifest_sha256": "b0d8f240a7f8c9a48e35d85144621b650f8a6a09231664d413c107eacaf49406",
+  "prompt_version": "",
+  "llm_model": "",
+  "llm_finetuned": false,
+  "best_epoch": 2,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.1,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.6673207140658665,
+  "validation_f1_macro": 0.5624737708328011,
+  "test_auc": 0.6043249601896529,
+  "test_f1_macro": 0.5388872423616066,
+  "test_precision_fraud": 0.1519925857275255,
+  "test_recall_fraud": 0.2837370242214533,
+  "test_f1_fraud": 0.1979480989740495,
+  "test_accuracy": 0.790972003774772,
+  "test_ks": 0.1517301038062283,
+  "test_ece": 0.03025482265283392,
+  "training_time": 9.09,
+  "inference_time": 4.28,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cpu",
+    "sampling_seconds": 15.7,
+    "diffusion_precompute_seconds": null,
+    "feature_source": "Sentence-BERT of raw node text (384d)",
+    "split_sizes": {
+      "train": 794,
+      "val": 794,
+      "test": 6358
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.3321,
+        "val_auc": 0.67251,
+        "val_f1_macro": 0.55855
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.288,
+        "val_auc": 0.66732,
+        "val_f1_macro": 0.56247
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.26869,
+        "val_auc": 0.64181,
+        "val_f1_macro": 0.55643
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.25656,
+        "val_auc": 0.63287,
+        "val_f1_macro": 0.55353
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.25405,
+        "val_auc": 0.60384,
+        "val_f1_macro": 0.54114
+      }
+    ],
+    "test_label_distribution": {
+      "0": 5780,
+      "1": 578
+    }
+  }
+}

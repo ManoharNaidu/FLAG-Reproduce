@@ -263,6 +263,14 @@ VARIANT_REGISTRY: dict[str, VariantSpec] = {
             "questionable - see research/dataset_notes.md section 7"
         ),
     ),
+    "baseline_z": VariantSpec(
+        key="baseline_z", display_name="baseline (z-scored)", feature_source="stored_z",
+        notes=(
+            "decision D-007: the baseline with its engineered features z-scored on "
+            "train-node statistics, exactly as flag_feat scales them; separates the "
+            "effect of scaling from the effect of adding text"
+        ),
+    ),
     "text": VariantSpec(
         key="text", display_name="+text", feature_source="lm_text",
         notes="Sentence-BERT of the raw node text (384-d)",
@@ -340,6 +348,15 @@ DATASET_REGISTRY: dict[str, DatasetSpec] = {
         source="CARE-GNN Amazon.mat + McAuley 2014 Musical Instruments reviews",
         notes="text_augmented_study; homo adjacency (upu/usu/uvu collapsed); "
               "user nodes; 3,305 unlabelled prefix nodes have empty text",
+    ),
+    "amazon_video_text": DatasetSpec(
+        key="amazon_video_text", default_top_k=3, baseline_sampling_strategy="random",
+        display_name="Amazon Video (+text, self-built)",
+        has_native_text=True, num_relations=1,
+        source="McAuley 2014 Amazon Instant Video reviews, CARE-GNN recipe "
+               "(experiments/amazon_video/build_amazon_video.py)",
+        notes="text_augmented_study, self-constructed; user nodes; U-P-U graph; "
+              "CARE-GNN 25 features; labelled set downsampled to 1:10",
     ),
     "tfinance": DatasetSpec(
         key="tfinance", display_name="T-Finance", has_native_text=False,

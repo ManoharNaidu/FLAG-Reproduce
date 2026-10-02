@@ -2,9 +2,16 @@
 
 The ledger. Nothing is marked reproduced until it has actually run and been verified.
 
-**Last updated:** 2026-09-18 — `flag` and `flag_finetuned` now have real GPU
-results for 4 of 7 backbones; `+text` is currently missing from the tracked
-aggregation.
+**Last updated:** 2026-10-02 — full 5 × 5 study complete (see the update below and
+[`../results/2026-10-02-flag-cosine-vs-md-main-run-report.md`](../results/2026-10-02-flag-cosine-vs-md-main-run-report.md)). The 2026-09-18 text that follows is kept for history; its
+gaps (4 of 7 backbones, missing `+text`, 0.6–12.4% LLM coverage) are **closed**.
+
+> **2026-10-02 update.** All 7 backbones × baseline / flag / flag_finetuned (cosine and FLAG-MD samplers) × Reddit,
+> Instagram, Amazon, YelpChi × 5 seeds × 5 inits: **3,500 runs, 0 failed**, with LLM text regenerated at the paper's
+> budget (D-005; coverage 55–74% Reddit, 9–22% Instagram, ≥ 96% Amazon/YelpChi). Extensions: `flag_feat` (D-006, 700),
+> self-built Amazon Video (875), raw text 5 × 5 (700); follow-ups A/B/C (D-007, 2,275): **8,050 runs, 0 failed**. Still not "reproduced":
+> unpublished downsampling seed; bundled baselines are FLAG's rewrites; `flag_finetuned` keeps the LLM frozen (D-001);
+> Amazon/YelpChi/Amazon Video are a text-augmented study, not paper datasets.
 
 ---
 

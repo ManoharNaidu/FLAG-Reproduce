@@ -287,7 +287,7 @@ def build_cache(dataset: str, args) -> dict:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="all",
-                        choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "all"])
+                        choices=["reddit", "instagram", "amazon_text", "yelpchi_text", "amazon_video_text", "all"])
     parser.add_argument("--model", default="all-MiniLM-L6-v2")
     parser.add_argument("--hops", type=int, default=2)
     parser.add_argument("--top-k", type=int, default=None,

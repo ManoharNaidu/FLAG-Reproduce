@@ -181,3 +181,19 @@ the released code cannot fine-tune the LLM. Per your decision we reproduce the
 code as-is and label the variant honestly (`llm_finetuned=false`) rather than
 inventing a mechanism the authors may not have used. Contacting the authors
 remains the open action item.
+
+## Batched generation with vLLM (2026-10-01, decision D-005)
+
+The production LLM caches are generated with vLLM, not the one-prompt HF loop:
+
+```bash
+uv venv .venv-vllm --python 3.12 && VIRTUAL_ENV=.venv-vllm uv pip install vllm sentence-transformers datasets torch_geometric scikit-learn pandas
+# put src/ and the repo root on the path via a .pth file in the venv; run python with -P
+# HF_TOKEN in .env (Gemma-2 is gated)
+DATASETS="reddit instagram amazon_text yelpchi_text" bash scripts/setup/run_vllm_llm.sh   # cosine -> FLAG-MD -> encode
+```
+
+One vLLM engine per GPU (`CUDA_VISIBLE_DEVICES=g`), each handling a 1/N stride of every (dataset, kind) job, then a
+merge. Settings: `--engine vllm --dtype bfloat16 --max-new-tokens 550 --truncate-chars 1200` (vLLM refuses float16 for
+Gemma-2), `gpu_memory_utilization=0.8`, spawn start method. The engine and dtype are part of the cache key, so these
+caches never mix with HF-generated ones. All 16 main caches took ≈ 7.9 h on 4 × A100-80GB.

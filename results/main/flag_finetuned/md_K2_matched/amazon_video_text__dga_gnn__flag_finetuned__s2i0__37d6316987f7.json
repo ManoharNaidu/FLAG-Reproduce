@@ -1,0 +1,133 @@
+{
+  "experiment_id": "37d6316987f7",
+  "timestamp": "2026-10-02T11:31:20+00:00",
+  "git_commit": "cedccecfb822fe345cc17e3895fe9f904e386308-dirty",
+  "schema_version": "results-v1",
+  "dataset": "amazon_video_text",
+  "model": "dga_gnn",
+  "variant": "flag_finetuned",
+  "impl_source": "flag_bundled",
+  "fidelity_class": "approximation",
+  "model_fidelity": "NOT DGA-GNN - no decision-tree dynamic grouping, no bidirectional grouped aggregation. GraphSAGE-mean.",
+  "seed": 2,
+  "initialization": 0,
+  "device": "cuda:0",
+  "device_name": "NVIDIA A100-SXM4-80GB",
+  "framework": "torch 2.14.0+cu130",
+  "python_version": "3.12.14",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "hyperparameters": {
+    "cfg_epochs": 5,
+    "cfg_lr": 0.01,
+    "cfg_weight_decay": 0.0,
+    "cfg_dropout": 0.5,
+    "cfg_hidden_dim": 32,
+    "cfg_accumulation_steps": 10,
+    "cfg_optimizer": "adam",
+    "cfg_early_stopping": true,
+    "cfg_patience": 10,
+    "cfg_selection_metric": "f1_macro",
+    "cfg_threshold_policy": "validation_swept",
+    "cfg_class_weighted_loss": false,
+    "cfg_shuffle_each_epoch": true,
+    "cfg_max_grad_norm": null,
+    "cfg_log_every": 0
+  },
+  "sampling_config": {
+    "hops": 2,
+    "top_k": 3,
+    "similarity_threshold": 0.0,
+    "strategy": "markov_diffusion",
+    "per_hop": true,
+    "threshold_first": true,
+    "seed": 0,
+    "include_center": true,
+    "diffusion_steps": 2,
+    "diffusion_operator": "paper_eq6",
+    "diffusion_threshold": null,
+    "md_selection": "matched_cosine",
+    "cache_key": "markov_diffusion_h2_k3_t0_perhop_K2_matched_cosine"
+  },
+  "dataset_version": "",
+  "dataset_manifest_sha256": "",
+  "prompt_version": "",
+  "llm_model": "google/gemma-2-9b-it",
+  "llm_finetuned": false,
+  "best_epoch": 5,
+  "epochs_run": 5,
+  "stopped_early": false,
+  "threshold": 0.25,
+  "threshold_policy": "validation_swept",
+  "validation_auc": 0.8117789921068609,
+  "validation_f1_macro": 0.7254098360655737,
+  "test_auc": 0.8867102579383399,
+  "test_f1_macro": 0.731222636698954,
+  "test_precision_fraud": 0.509090909090909,
+  "test_recall_fraud": 0.5137614678899083,
+  "test_f1_fraud": 0.5114155251141552,
+  "test_accuracy": 0.910981697171381,
+  "test_ks": 0.651930130857752,
+  "test_ece": 0.03198199820318231,
+  "training_time": 31.62,
+  "inference_time": 3.2,
+  "checkpoint_path": "",
+  "status": "completed",
+  "error_message": "",
+  "notes": "",
+  "extra": {
+    "device_kind": "cuda",
+    "device_memory_gb": 79.25,
+    "device_capability": "8.0",
+    "sampling_seconds": 6.1,
+    "diffusion_precompute_seconds": 0.242,
+    "feature_source": "dual-branch: raw text (384d) + LLM discriminative text (384d), attention-fused (models.py:DualGNN)",
+    "split_sizes": {
+      "train": 600,
+      "val": 201,
+      "test": 1202
+    },
+    "finetune": {
+      "train_subgraphs_total": 600,
+      "train_subgraphs_usable": 578,
+      "applied": false,
+      "note": "upstream LoRA gradient path is severed; see research/decisions.md D-001"
+    },
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.32996,
+        "val_auc": 0.74287,
+        "val_f1_macro": 0.50885
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.2535,
+        "val_auc": 0.78719,
+        "val_f1_macro": 0.63178
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.25592,
+        "val_auc": 0.82757,
+        "val_f1_macro": 0.69461
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.23292,
+        "val_auc": 0.8221,
+        "val_f1_macro": 0.71927
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.1883,
+        "val_auc": 0.81178,
+        "val_f1_macro": 0.72541
+      }
+    ],
+    "test_label_distribution": {
+      "0": 1093,
+      "1": 109
+    },
+    "peak_gpu_mem_mb": 66.0
+  }
+}

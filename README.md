@@ -4,27 +4,23 @@ A reproducible research benchmark for **FLAG: Fraud Detection with LLM-enhanced
 Graph Neural Network** (KDD 2025), plus the seven GNN baselines it compares
 against, on a shared dataset/split/metric protocol.
 
-> ## Status: pipeline runs end to end; `flag` and `flag_finetuned` now have real GPU results
+> ## Status (2026-10-02): full 5 × 5 study complete, cosine vs Markov-diffusion sampler compared
 >
-> The research audit is complete (**36/36 findings backed by passing tests**),
-> both datasets are downloaded and verified, and `google/gemma-2-9b-it` has been
-> run on a rented vast.ai GPU (decision D-003) to produce **real `+FLAG` and
-> `+FLAG*` numbers** for 4 of 7 backbones (GAT, CARE-GNN, BWGNN, DGA-GNN) on
-> both Reddit and Instagram — 208 `+FLAG` runs and 200 `+FLAG*` runs, no
-> placeholders. GCN, GeniePath and PMP still only have `baseline`.
+> **Latest report: [`results/2026-10-02-flag-cosine-vs-md-main-run-report.md`](results/2026-10-02-flag-cosine-vs-md-main-run-report.md).** All runs complete:
+> baseline, `flag` and `flag_finetuned` (each with the paper's cosine sampler and with FLAG-MD) × all 7 backbones ×
+> Reddit, Instagram, Amazon, YelpChi × 5 seeds × 5 inits (3,500 runs), plus text + engineered features (`flag_feat`, 700),
+> a self-built Amazon Video graph (875), a raw-text-only reference (700) and follow-ups A/B/C (decision D-007, 2,275 runs):
+> **8,050 runs, 0 failed**.
 >
-> **The `+text` variant is currently absent from the tracked results store.**
-> `results/raw/` is git-ignored, so the `+text` numbers an earlier revision of
-> this README quoted are not part of the committed record any more — only
-> `baseline`, `flag` and `flag_finetuned` are in
-> [`results/aggregated/results.csv`](results/aggregated/results.csv) today.
-> Recorded as a gap to re-run, not silently dropped.
->
-> **Nothing is claimed as "reproduced".** The paper's downsampling seed is
-> unpublished, so exact agreement with Table 4 is not achievable in principle,
-> and `+FLAG*` reproduces the *released code's* behaviour (GNN retrains, LLM
-> frozen — decision D-001), not LLM fine-tuning.
-> The ledger is [`research/reproduction_status.md`](research/reproduction_status.md).
+> - **LLM text** regenerated at the paper's decode budget (550 tokens / 1,200 chars) with batched vLLM on 4 A100s
+>   (decision D-005); node coverage 55–74% Reddit, 9–22% Instagram, ≥ 96% Amazon / YelpChi / Amazon Video. The earlier
+>   64-token caches (D-004, 0.6–12.9% coverage) and their 4 × 2 results in `results/flag_md/` are superseded.
+> - **Amazon/YelpChi/Amazon Video are a text-augmented study** (`native_text: false`), not a reproduction; Amazon and
+>   YelpChi use top-3 sampling and a random-neighbour baseline (D-005).
+> - **Nothing is claimed as "reproduced".** The paper's downsampling seed is unpublished, and `+FLAG*` reproduces the
+>   *released code's* behaviour (GNN retrains, LLM frozen: decision D-001), not LLM fine-tuning.
+> - Decisions: [`research/decisions.md`](research/decisions.md) (D-001 … D-007). Ledger:
+>   [`research/reproduction_status.md`](research/reproduction_status.md). Live progress: `tools/flag-dashboard/`.
 
 ---
 
@@ -277,15 +273,12 @@ Four things to read carefully before drawing conclusions:
 
 - **No local GPU** -> the LLM stage only runs on a rented vast.ai instance
   (D-003). Working, but not free, and not repeatable at zero cost.
-- **`flag`/`flag_finetuned` are only run for 4 of 7 backbones** (GAT, CARE-GNN,
-  BWGNN, DGA-GNN). GCN, GeniePath and PMP have not been run under either variant.
-- **The LLM text cache has low node coverage** (0.6%-12.4%) because it was
-  generated at a reduced decode budget to control cost (D-004), so most
-  `flag`/`flag_finetuned` results reflect the raw-text fallback for most
-  subgraphs, not genuine LLM-generated text.
-- **The `+text` variant has no results in the current tracked aggregation.**
-  `results/raw/` is git-ignored; whatever produced the old `+text` numbers is
-  not part of the committed record. Needs re-running.
+- ~~`flag`/`flag_finetuned` only run for 4 of 7 backbones~~ — **closed 2026-10-02**: all 7 backbones, 5 × 5, both samplers.
+- ~~LLM text cache has low node coverage (0.6%-12.4%, D-004)~~ — **closed 2026-10-02**: regenerated at the paper's budget
+  (D-005); coverage 55–74% Reddit, ≥ 96% Amazon/YelpChi. **Instagram remains low (9–22%)**: most of its subgraphs are
+  too large for one output line per node in 550 tokens, as under upstream's own code.
+- ~~`+text` has no tracked results~~ — **closed 2026-10-02**: re-run at 5 × 5 on all four datasets, with the default,
+  cosine and FLAG-MD neighbourhoods (see the main-run report §11).
 - **`flag_finetuned` is not LLM fine-tuning as reproduced here** (D-001) — the
   released code's LoRA gradient path is severed, so this variant reproduces
   "GNN retrains, LLM frozen," not what the paper's `+FLAG*` label implies.
