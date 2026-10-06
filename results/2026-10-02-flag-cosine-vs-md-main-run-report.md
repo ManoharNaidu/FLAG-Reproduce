@@ -95,7 +95,7 @@ dashboard (v0.3.1) with a cosine-vs-MD comparison view; a wall-clock-aware ETA a
 *Auto-generated.*
 
 <!-- AUTO:progress BEGIN -->
-_Generated 2026-10-02 14:32 UTC._
+_Generated 2026-10-02 15:10 UTC._
 
 | Variant · sampler | Reddit | Instagram | Amazon | YelpChi | Total |
 |---|---:|---:|---:|---:|---:|
