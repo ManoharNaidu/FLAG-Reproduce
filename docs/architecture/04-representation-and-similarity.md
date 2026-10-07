@@ -140,9 +140,10 @@ flowchart TD
   "causal / non-causal" language, not the paper's Table 1 wording (see [08](08-paper-to-code.md)).
 - Fallback: if the subgraph's text failed the format check (or its length differs from
   `len(subset)`), `x_disc = x_raw` ([runner.py:202-206](../../src/flagbench/experiments/runner.py#L202)).
-  Coverage of generated text in the production caches is low (per `README.md` / D-004:
-  0.6%-12.4% of nodes), so most `flag` results lean on this fallback. (`cache/llm/` is empty in
-  this checkout, so that figure comes from the README, not from a file I could inspect.)
+  Coverage of generated text in the production caches (550-token budget, D-005) is 55-74% on Reddit, 9-22% on
+  Instagram and at least 96% on Amazon, YelpChi and Amazon Video, so Instagram `flag` results lean mostly on this
+  fallback. (`cache/llm/` is empty in this checkout, so these figures come from the README and the main-run report, not
+  from a file inspected here. The earlier 0.6%-12.4% figure was the superseded 64-token cache, D-004.)
 
 ## 5. Function records
 

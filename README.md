@@ -157,20 +157,15 @@ Verify:
 
 ## 6. GPU setup
 
-**Used, on a rented instance.** This development machine still has no CUDA, but
-`google/gemma-2-9b-it` has been run on a rented **vast.ai** GPU (decision D-003)
-to generate the LLM text cache the `flag`/`flag_finetuned` variants consume. Full
-workflow, instance sizing, and cache-integrity checks:
+**Used, on a rented instance.** This development machine has no CUDA, but
+`google/gemma-2-9b-it` was run on rented **vast.ai** GPUs (decision D-003) to generate the LLM text caches the
+`flag`/`flag_finetuned` variants consume. Full workflow, instance sizing, and cache-integrity checks:
 [`docs/vastai_gpu_workflow.md`](docs/vastai_gpu_workflow.md).
 
-The production cache was generated at a **reduced decode budget**
-(`max_new_tokens=64, truncate_chars=300` instead of the paper-faithful
-550/1200) to control cost — see decision D-004 in
-[`research/decisions.md`](research/decisions.md).
-Node coverage from the generated text is low (0.6%-12.4% depending on
-dataset/kind), so most `flag`/`flag_finetuned` results are, for the majority of
-subgraphs, the documented raw-text fallback rather than genuine LLM-generated
-text — a materially weaker test of the method than Table 4's.
+The production caches use the **paper-faithful decode budget** (`max_new_tokens=550, truncate_chars=1200`, decision D-005;
+`PRODUCTION_LLM_CONFIG` in `src/flagbench/experiments/runner.py`). Node coverage is 55-74% on Reddit, 9-22% on Instagram and
+at least 96% on Amazon, YelpChi and Amazon Video, so Instagram `flag` results still rest mostly on the raw-text fallback. The
+earlier 64-token caches (D-004) are superseded.
 
 ## 7. Quick start
 
@@ -227,30 +222,26 @@ After downsampling only 1.2% of Reddit nodes have degree > 10, so top-10
 selection is a no-op for 98.8% of them and every strategy picks the same
 neighbours. Full analysis: [`research/figure3a_reproduction.md`](research/figure3a_reproduction.md).
 
-**Current tables**, all `impl_source=flag_bundled`:
-[`results/tables/comparison.md`](results/tables/comparison.md) (ours only) and
-[`results/tables/comparison_vs_reported_f1_macro.md`](results/tables/comparison_vs_reported_f1_macro.md) /
-[`comparison_vs_reported_auc.md`](results/tables/comparison_vs_reported_auc.md)
-(ours vs. the paper's Table 4).
+**Current results** (8,050 runs, `impl_source=flag_bundled`, 5 seeds x 5 inits, cosine sampler for `+FLAG`/`+FLAG*`) are in
+[`results/2026-10-02-flag-cosine-vs-md-main-run-report.md`](results/2026-10-02-flag-cosine-vs-md-main-run-report.md), with a
+compact write-up in `docs/final report.docx`. Mean over the 14 Reddit/Instagram cells (7 backbones x 2 datasets), paper vs. ours (AUC / F1-macro, %):
 
-`+FLAG` and `+FLAG*` selected rows (paper vs. ours, AUC, mean over 25+ runs):
+| variant | reported | ours | delta (ours - paper) |
+|---|---|---|---|
+| baseline | 51.50 / 46.72 | 54.01 / 50.61 | +2.51 / +3.90 |
+| +text | 56.57 / 47.44 | 60.70 / 53.52 | +4.14 / +6.08 |
+| +FLAG | 58.05 / 49.03 | 60.63 / 53.54 | +2.58 / +4.51 |
+| +FLAG* | 58.48 / 49.87 | 59.91 / 53.38 | +1.43 / +3.51 |
 
-| dataset | model | variant | reported AUC | ours AUC | delta | status |
-|---|---|---|---:|---:|---:|---|
-| reddit | gat | flag | 60.61 | 64.33 | +3.72 | DEVIATION |
-| reddit | gat | flag_finetuned | 60.57 | 63.94 | +3.37 | DEVIATION |
-| reddit | dga_gnn | flag_finetuned | 61.61 | 62.07 | +0.46 | MATCH |
-| reddit | care_gnn | flag | 58.43 | 62.86 | +4.43 | DEVIATION |
-| instagram | bwgnn | flag_finetuned | 57.19 | 57.54 | +0.35 | MATCH |
-| instagram | gat | flag | 54.97 | 60.49 | +5.52 | DEVIATION |
+Of the 56 AUC cells, 12 MATCH (within 1 pp), 13 are CLOSE (within 2 pp) and 31 DEVIATE; for F1-macro, 1 matches and 55
+deviate (F1 is confounded by the validation-swept threshold; the released code uses argmax).
 
-Full 56-row comparison (28 `baseline`/`flag`/`flag_finetuned` cells x 2 metrics):
-F1-macro — 1 MATCH, 1 CLOSE, 28 DEVIATION, 26 UNAVAILABLE (`text` and the
-3 not-yet-run models). AUC — 5 MATCH, 6 CLOSE, 19 DEVIATION, 26 UNAVAILABLE.
+The files under [`results/tables/`](results/tables/) (`comparison*.md`, `flag_md_*.md`) were built from the **earlier**
+partial run (4 backbones, 4 seeds x 2 inits, 64-token text) and are kept for history only.
 
 Four things to read carefully before drawing conclusions:
 
-- **Every available `+FLAG`/`+FLAG*` AUC is above the paper's**, same direction
+- **On average `+FLAG`/`+FLAG*` AUC is above the paper's**, same direction
   and similar magnitude as the `baseline` gap below — this looks like the same
   protocol difference (split, downsampling draw, sampler reimplementation), not
   a `+FLAG`-specific effect.
@@ -258,9 +249,9 @@ Four things to read carefully before drawing conclusions:
   reproduces the released code's actual behaviour — LLM frozen, GNN inner loop
   retrains under the residual + orthogonality losses — and every row carries
   `llm_finetuned: false`.
-- **The LLM text cache has low node coverage** (0.6%-12.4%, decision D-004), so
-  most subgraphs behind these numbers use the raw-text fallback, not
-  LLM-generated text. A materially weaker test of the method than Table 4's.
+- **Instagram LLM coverage is low** (9-22% of nodes; Reddit 55-74%; the other datasets at least 96%, decision D-005), so
+  Instagram `flag` mostly uses the raw-text fallback, not LLM-generated text. (The earlier 0.6%-12.4% figure was the
+  superseded 64-token cache, D-004.)
 - **47.62 is the trivial classifier** on a 10:1 split, not a model score, and
   shows up repeatedly in `baseline`/`text` rows. The paper's repeated 45.46
   (four Reddit cells, std 0.01) and 47.29 (five Instagram cells) are almost

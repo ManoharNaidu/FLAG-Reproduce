@@ -1074,3 +1074,12 @@ python3 logs/main/parallel/plan.py && python3 logs/main/parallel/scheduler.py --
 | `tools/flag-dashboard/` | Dashboard source, backups, screenshots, changelog. |
 | `research/decisions.md` | D-001 … D-005. |
 | `results/2026-10-02-flag-cosine-vs-md-main-run-report.md` | This report. |
+
+
+## LLM token figures (summary)
+
+- Final decode budget: 550 new tokens and 1,200 characters per node (Gemma-2-9b-it, bf16, greedy, vLLM). All current results use this budget.
+- Superseded earlier budget: 64 new tokens and 300 characters per node (decision D-004); it gave only 0.6-12.9% node coverage.
+- Model context window: 8,192 tokens. About 1.2% of Reddit prompts exceeded it and count as format failures.
+- Throughput: about 5-7k prompt tokens/s and 500-680 generated tokens/s per GPU; about 7.9 h in total on 4 x A100 for the 16 caches.
+- Total prompt or generated tokens: not stated in any report.

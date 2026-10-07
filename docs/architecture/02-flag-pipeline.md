@@ -95,10 +95,9 @@ build a sampled `Subgraph` - full detail in [03](03-subgraph-generation.md).
 
 **S5 LLM text**: one prompt *per subgraph* listing every node's text (truncated), one
 generation call, response split into one line per node; wrong line count => the whole
-subgraph is dropped (later falls back to raw embeddings). Decode budget used for the
-production cache is reduced (`PRODUCTION_LLM_CONFIG = {"max_new_tokens": 64, "truncate_chars": 300}`,
-[runner.py:127](../../src/flagbench/experiments/runner.py)); the code default is
-550 / 1200.
+subgraph is dropped (later falls back to raw embeddings). The production
+cache uses the paper-faithful budget (`PRODUCTION_LLM_CONFIG = {"max_new_tokens": 550, "truncate_chars": 1200, "engine": "vllm", ...}`,
+[runner.py:147](../../src/flagbench/experiments/runner.py)). The earlier 64 / 300 budget (D-004) is superseded.
 
 **S6**: encodes the generated lines with the same Sentence-BERT; result is
 `dict[int, Tensor[k, 384]]` keyed by the subgraph's centre node.

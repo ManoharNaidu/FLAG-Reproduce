@@ -1,3 +1,5 @@
+> **Superseded (2026-10-07):** built from the earlier partial run (4 backbones, 4 seeds x 2 inits, 64-token text). Current comparison: `results/2026-10-02-flag-cosine-vs-md-main-run-report.md`.
+
 # Reproduction vs reported — F1-macro
 
 Paper: FLAG, KDD 2025, DOI 10.1145/3711896.3737220, Table 4.

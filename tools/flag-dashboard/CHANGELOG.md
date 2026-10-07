@@ -39,3 +39,9 @@ with legend; empty sections collapse to one line. Previous page kept as 2026-10-
 ## 0.1.0 (2026-10-01)
 First version: read-only FLAG progress dashboard (runs by variant, GPUs, unfinished cells with ETA, failures, LLM cache coverage). Loopback service on 8780, nice 19, 20 s snapshot cache; exposed through the instance portal as "FLAG Dashboard" (external port 10100, token auth).
 
+
+## Cleanup (2026-10-07)
+
+Removed six byte-identical duplicate snapshots (`2026-10-01-index-redesign.html`, `2026-10-01-index-v3-pipeline.html`,
+`2026-10-01-server-v3.py`, `2026-10-01-server-wall-eta.py`, `2026-10-02-index-v4-experiments.html`,
+`2026-10-02-server-v4-experiments.py`). Each was identical to a file kept above or to the live `server.py` / `index.html`.

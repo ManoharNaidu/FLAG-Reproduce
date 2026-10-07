@@ -1,3 +1,5 @@
+> **Superseded (2026-10-07):** this file covers the earlier 64-token / 4 seeds x 2 inits run (`results/flag_md/`). The current results are in [`results/2026-10-02-flag-cosine-vs-md-main-run-report.md`](../2026-10-02-flag-cosine-vs-md-main-run-report.md). Kept for history.
+
 | Dataset | Model | Variant | Impl | Runs | F1-Macro | AUC |
 | --- | --- | --- | --- | ---: | ---: | ---: |
 | instagram | bwgnn | baseline | flag_bundled | 1 | 51.90±0.00 | 54.73±0.00 |

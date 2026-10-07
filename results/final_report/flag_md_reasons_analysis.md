@@ -1,3 +1,5 @@
+> **Superseded (2026-10-07):** this file covers the earlier 64-token / 4 seeds x 2 inits run (`results/flag_md/`). The current results are in [`results/2026-10-02-flag-cosine-vs-md-main-run-report.md`](../2026-10-02-flag-cosine-vs-md-main-run-report.md). Kept for history.
+
 # FLAG-MD (Markov-diffusion sampler) vs cosine — why it did or didn't change results
 
 [Back to final report](README.md) · See also: [flag_vs_flag_md.md](flag_vs_flag_md.md) (the paired-stats comparison this document explains)

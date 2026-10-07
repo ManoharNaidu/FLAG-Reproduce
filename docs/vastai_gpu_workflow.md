@@ -4,15 +4,11 @@ Decision **D-003**: the LLM stage runs only on a GPU, on rented vast.ai
 instances. No mock LLM and no smaller substitute — a "FLAG-small" number would
 not be comparable to Table 4 and would invite misreading.
 
-**Status: this workflow has been run.** `google/gemma-2-9b-it` generated the
-production `cache/llm/` text corpus at a reduced decode budget to control cost
-(decision D-004: `max_new_tokens=64, truncate_chars=300`), giving node coverage
-of 0.6%-12.4% depending on dataset/kind. That cache backs the `flag` and
-`flag_finetuned` results now in `results/aggregated/results.csv` for GAT,
-CARE-GNN, BWGNN and DGA-GNN on both Reddit and Instagram. GCN, GeniePath and PMP
-have not been run under `flag`/`flag_finetuned` yet. Regenerating at the
-paper-faithful 550/1200 budget is still open — see `research/decisions.md` D-004
-and `research/reproduction_status.md` §7.
+**Status: this workflow has been run (updated 2026-10-07).** `google/gemma-2-9b-it` generated the
+production `cache/llm/` text corpus at the paper-faithful decode budget (`max_new_tokens=550, truncate_chars=1200`, decision
+D-005) with batched vLLM in bf16 on 4 x A100, about 7.9 h in total. That cache backs all `flag` and `flag_finetuned`
+results (7 backbones, 5 datasets, 5 seeds x 5 inits; 8,050 runs in the full study). The earlier 64-token / 300-char caches
+(decision D-004, 0.6-12.9% node coverage) are superseded. Results: `results/2026-10-02-flag-cosine-vs-md-main-run-report.md`.
 
 ## The boundary
 
