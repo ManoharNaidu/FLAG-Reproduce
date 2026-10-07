@@ -25,7 +25,7 @@ That did not block this report because no training/inference was needed.)
 | baseline | **Included.** 1 run/model/dataset (seed 0, init 0). |
 | text | **Included**, two ways: (1) the canonical 1-run cell, no sampling (same protocol as baseline); (2) a 48x-larger sampler-ablation set (6 samplers x 4 seeds x 2 inits) that reuses the `text` variant's features — see "Two different `text` result sets" below. |
 | flag | **Included.** 8 runs/model/dataset (4 seeds x 2 inits) under the cosine sampler, plus the same 8 runs under one Markov-diffusion config (`md_K2_matched`). |
-| flag_finetuned | **NOT INCLUDED — does not exist anywhere in this repository.** It needs a GPU-generated "residual" LLM-text cache; `cache/llm/` has 0 files on this machine. Not fabricated, not estimated. See [`summary/flag_finetuned_NOT_AVAILABLE.md`](summary/flag_finetuned_NOT_AVAILABLE.md). You said you have GPU access/caches elsewhere — tell me how to reach them (path to copy in, or a remote instance) and I will run it for real and add it here. |
+| flag_finetuned | **Not in this earlier report; since run.** All 7 backbones x 5 datasets x {cosine, FLAG-MD K=2}, 5 seeds x 5 inits (175 runs per dataset/sampler) now exist under `results/main/` and `results/main_gpu/`, and are reported in [`../2026-10-02-flag-cosine-vs-md-main-run-report.md`](../2026-10-02-flag-cosine-vs-md-main-run-report.md). See [`summary/flag_finetuned_SUPERSEDED.md`](summary/flag_finetuned_SUPERSEDED.md). |
 | DGP | **Excluded, per your instruction.** DGP is not an implemented method in this codebase; it is cited only as the idea source for FLAG-MD's diffusion operator. |
 | FLAG-MD | **Included** as the sampler-ablation set (see above): cosine vs. 5 Markov-diffusion configurations, for both the `text` and `flag` variants. |
 | AUC numbers | **Included** — real, from each run's stored `sklearn.roc_auc_score` result. |
@@ -66,7 +66,7 @@ results/final_report/
 │   ├── headline_baseline_text_flag.csv          the Table-4-style comparison (baseline / text-no-sampling / flag-cosine)
 │   ├── sampler_ablation_text_variant.csv        text variant x 6 samplers
 │   ├── sampler_ablation_flag_variant.csv        flag variant x 2 samplers
-│   └── flag_finetuned_NOT_AVAILABLE.md          why this cell is empty, and how to fill it
+│   └── flag_finetuned_SUPERSEDED.md             pointer to where flag_finetuned results now live
 └── figures/
     ├── headline_test_auc.png                    AUC, baseline vs text vs flag(cosine), both datasets
     ├── headline_test_f1_macro.png                same, F1-macro

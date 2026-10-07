@@ -167,8 +167,9 @@ def main() -> int:
 Source: `results/final_report/data/all_runs.csv` (built by
 `scripts.analyze.build_final_report` from `results/flag_md/flag/{{cosine,md_K2_matched}}/`).
 **No new training was run to produce this file.** `flag_finetuned` is not part of this
-comparison -- no run of that variant exists anywhere in this repository (needs a
-GPU-generated LLM cache not present on this machine).
+comparison (it was not yet run when this earlier report was built). It has since been run for all
+7 backbones x 5 datasets x {cosine, FLAG-MD K=2}; see
+`results/2026-10-02-flag-cosine-vs-md-main-run-report.md`.
 
 ## Why "paired", not just two means
 
@@ -219,7 +220,7 @@ precision, F1-fraud, accuracy, KS, ECE -- not just AUC/F1-macro shown above):
 
 ## What this does NOT cover
 
-- **flag_finetuned** vs anything -- does not exist, not fabricated.
+- **flag_finetuned** vs anything -- not in this earlier report; now covered in the main run report (see top).
 - FLAG-MD configurations other than K=2 matched-count (K=1, K=3, K=5, top-n selection) --
   those exist only for the LLM-free `text` variant
   (`summary/sampler_ablation_text_variant.csv`), not for `flag`.

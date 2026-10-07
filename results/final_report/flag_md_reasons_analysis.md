@@ -80,7 +80,7 @@ Carried over from `research/flag_md.md`'s own "Limitations and departures" secti
 3. X is MiniLM raw-text embeddings (what FLAG's cosine already uses), not DGP's original DeBERTa + numeric features; there are no metapaths since FLAG's graph is homogeneous.
 4. LLM text (the `flag` variant's discriminative text) covers only 0.6–12.9% of nodes; Instagram `flag` is almost entirely the raw-text fallback for both samplers, which limits how much the `flag`-variant comparison can say about the LLM-text pathway specifically.
 5. 8 runs per cell (4 seeds × 2 inits) under-represent variance. The repo's own research doc explicitly claims no significance test; I added one (paired t-test) in a separate pass and it agrees with the "no effect" reading.
-6. K=2 was fixed before results were seen; K in {1,3,5} and top-N selection were only run for the LLM-free `text` variant, not `flag`. `flag_finetuned` was never run under any sampler (needs a GPU-generated LLM cache not present on this machine).
+6. K=2 was fixed before results were seen; K in {1,3,5} and top-N selection were only run for the LLM-free `text` variant, not `flag`. `flag_finetuned` was not run at the time of this earlier report; it has since been run under cosine and FLAG-MD K=2 (see the main run report).
 7. The neighbourhood analysis's "no sampling" homophily reference used only the first 4,000 nodes, not the full graph.
 
 ## Source files

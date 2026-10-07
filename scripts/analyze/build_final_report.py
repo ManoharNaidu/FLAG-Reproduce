@@ -11,9 +11,8 @@ Sources (nothing else is read):
                                                 of the results grid (2 files/sampler)
 
 Not included, and not fabricated:
-    flag_finetuned  -- no run of this variant exists anywhere in this repository. It needs a
-                       GPU-generated "residual" LLM-text cache that is not present on this
-                       machine (cache/llm/ is empty). See report README "Known gaps".
+    flag_finetuned  -- not read by this (earlier) report. Its runs now live in results/main*/ and
+                       are covered by results/2026-10-02-flag-cosine-vs-md-main-run-report.md.
     DGP             -- not an implemented method in this codebase (only cited as the idea
                        source for FLAG-MD's diffusion operator). Skipped per instruction.
     ROC curves      -- no stored artifact (result JSON or checkpoint) contains raw per-example
@@ -372,17 +371,13 @@ def main() -> int:
     degenerate_runs.to_csv(OUT / "data" / "degenerate_all_majority_runs.csv", index=False)
     print(f"degenerate (predicted-zero-fraud) runs: {len(degenerate_runs)} / {len(flat)}")
 
-    (OUT / "summary" / "flag_finetuned_NOT_AVAILABLE.md").write_text(
-        "# flag_finetuned (+FLAG*) - NOT AVAILABLE\n\n"
-        "No run of this variant exists in results/raw/ or results/flag_md/ at the time this "
-        "report was built. It requires a GPU-generated 'residual' LLM-text cache "
-        "(cache/llm/*residual*.json, then its Sentence-BERT encoding in cache/embeddings/) "
-        "that is not present on this machine: cache/llm/ contains 0 files.\n\n"
-        "This report does not substitute, estimate or interpolate a number for this cell.\n\n"
-        "To add it: generate the discriminative AND residual LLM text on a GPU "
-        "(`python -m scripts.llm.generate_text --kind both`), encode it "
-        "(`python -m scripts.preprocess.encode_llm_text --kind both`), then run "
-        "`python -m scripts.train.run --variant flag_finetuned ...` and re-run this script.\n",
+    (OUT / "summary" / "flag_finetuned_SUPERSEDED.md").write_text(
+        "# flag_finetuned (+FLAG*) - not in this (earlier) report\n\n"
+        "This report was built from results/raw/ and results/flag_md/ only, which hold no flag_finetuned runs. "
+        "flag_finetuned has since been run (7 backbones x 5 datasets x {cosine, FLAG-MD K=2}, 5 seeds x 5 inits, "
+        "175 runs per dataset/sampler, under results/main/ and results/main_gpu/). Those results are in "
+        "results/2026-10-02-flag-cosine-vs-md-main-run-report.md (sections 8-10). "
+        "Per decision D-001 the LLM stays frozen, so every run carries llm_finetuned=false.\n",
         encoding="utf-8",
     )
 
